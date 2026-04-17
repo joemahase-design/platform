@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -399,9 +400,9 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
 
 <div class="toast" id="toast"></div>
 <script>
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  DATA
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 const LESSONS = {
   7: [
     { id:'y7t2', title:'Binary — Introduction & Number Systems',    file:'lessons/y7t2.html' },
@@ -426,6 +427,7 @@ const LESSONS = {
     { id:'y9t5', title:'Web Development & Ethics',                  file:'lessons/y9t5.html' },
   ],
 };
+
 const LESSON_DATA = {
   "7_0": {
     lid: 'y7t2',
@@ -1339,20 +1341,25 @@ ELSE
 ],
   },
 };
+
 const YEAR_META = {
   7: { title:'Year 7 — Foundations',  desc:'Algorithms, data, networks, Python basics and spreadsheets.', color:'var(--accent-y7)' },
   8: { title:'Year 8 — Development',  desc:'Python warm-up, binary/hex, hardware, cybersecurity and databases.', color:'var(--accent-y8)' },
   9: { title:'Year 9 — Mastery',      desc:'OOP, algorithms, AI ethics, spreadsheets and web development.', color:'var(--accent-y9)' },
 };
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  STATE
-// ═══════════════════════════════════════════════════
-let ST = { user:null, year:0, lessonKey:'', lessonTitle:'', lessonCur:0, lessonData:null, comp:{score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:''} };
+// ═══════════════════════════════════════════════════════
+let ST = {
+  user:null, year:0,
+  lessonKey:'', lessonTitle:'', lessonCur:0, lessonData:null,
+  comp:{score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:''}
+};
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  INIT
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 window.onload = () => {
   applyFilters();
   const saved = localStorage.getItem('ks3_user');
@@ -1363,9 +1370,57 @@ window.onload = () => {
   } else { showOverlay('reg-overlay'); }
 };
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  RELEASE SYSTEM
+// ═══════════════════════════════════════════════════════
+function getReleased() {
+  const s = localStorage.getItem('ks3_released');
+  return s ? JSON.parse(s) : {7:[0],8:[0],9:[0]};
+}
+function isReleased(year, idx) {
+  return (getReleased()[year]||[]).includes(idx);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PROGRESS TRACKING
+// ═══════════════════════════════════════════════════════
+function getLessonScore(key) {
+  const checks  = Object.keys(localStorage).filter(k =>
+    k.startsWith('st_fb_'+key) ||
+    (k.startsWith(key+'_pq_') && k.endsWith('_ok'))
+  );
+  const correct = checks.filter(k => localStorage.getItem(k)==='1').length;
+  return { correct, total: checks.length };
+}
+
+function getLessonDone(key) {
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_'+key)||'[]');
+  const user = ST.user;
+  const hasComp = user ? lb.some(e => e.name===user.name) : false;
+  const sc = getLessonScore(key);
+  return hasComp || sc.total > 0;
+}
+
+function updateFooter(key) {
+  const sc  = getLessonScore(key);
+  const lbl = document.getElementById('footer-score');
+  if (lbl) lbl.innerHTML = 'Progress: <strong>'+sc.correct+' / '+sc.total+'</strong> correct';
+}
+
+function updateStudentScore() {
+  if (!ST.user) return;
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  const si = students.findIndex(s => s.email===ST.user.email);
+  if (si === -1) return;
+  const allFb      = Object.keys(localStorage).filter(k => k.startsWith('st_fb_'));
+  students[si].totalCorrect  = allFb.filter(k => localStorage.getItem(k)==='1').length;
+  students[si].totalAnswered = allFb.length;
+  localStorage.setItem('ks3_students', JSON.stringify(students));
+}
+
+// ═══════════════════════════════════════════════════════
 //  AUTH
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function showOverlay(id) {
   document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
@@ -1377,40 +1432,34 @@ function register() {
   const cls   = document.getElementById('r-class').value.trim();
   const email = document.getElementById('r-email').value.trim();
   const err   = document.getElementById('r-err');
-  if (!name||!year||!cls||!email){err.style.display='block';err.textContent='Please fill in all fields.';return;}
-  if (!email.includes('@')){err.style.display='block';err.textContent='Please enter a valid email.';return;}
-  err.style.display='none';
-  const u = {name,year:parseInt(year),cls,email,joinedAt:new Date().toISOString()};
+  if (!name||!year||!cls||!email) { err.style.display='block'; err.textContent='Please fill in all fields.'; return; }
+  if (!email.includes('@'))        { err.style.display='block'; err.textContent='Please enter a valid email.'; return; }
+  err.style.display = 'none';
+  const u = {name, year:parseInt(year), cls, email, joinedAt:new Date().toISOString()};
   ST.user = u;
-  localStorage.setItem('ks3_user',JSON.stringify(u));
+  localStorage.setItem('ks3_user', JSON.stringify(u));
   const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
-  if (!students.find(s=>s.email===email)) { students.push({...u,lessonsOpened:0}); localStorage.setItem('ks3_students',JSON.stringify(students)); }
+  if (!students.find(s => s.email===email)) {
+    students.push({...u, lessonsOpened:0, totalCorrect:0, totalAnswered:0});
+    localStorage.setItem('ks3_students', JSON.stringify(students));
+  }
   showHome();
 }
 
 function logout() {
-  ST.user=null;
+  ST.user = null;
   localStorage.removeItem('ks3_user');
-  ['home-page','task-view','proof-view'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('home-page').classList.add('hidden');
   document.getElementById('task-view').classList.remove('visible');
   document.getElementById('proof-view').classList.remove('visible');
   showOverlay('reg-overlay');
 }
 
-// ═══════════════════════════════════════════════════
-//  RELEASE SYSTEM
-// ═══════════════════════════════════════════════════
-function getReleased() {
-  const s = localStorage.getItem('ks3_released');
-  return s ? JSON.parse(s) : {7:[0],8:[0],9:[0]};
-}
-function isReleased(year,idx) { return (getReleased()[year]||[]).includes(idx); }
-
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  HOME — LESSON CARDS
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function showHome() {
-  document.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden'));
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
   document.getElementById('task-view').classList.remove('visible');
   document.getElementById('proof-view').classList.remove('visible');
   document.getElementById('home-page').classList.remove('hidden');
@@ -1423,75 +1472,82 @@ function renderLessonCards() {
   const yr       = ST.user.year;
   const lessons  = LESSONS[yr];
   const meta     = YEAR_META[yr];
-  const released = getReleased();
   const colors   = {7:'var(--ay7)',8:'var(--ay8)',9:'var(--ay9)'};
   const col      = colors[yr];
-  const container = document.getElementById('lesson-grid');
+  const container= document.getElementById('lesson-grid');
+  if (!container || !lessons) return;
   container.innerHTML = '';
 
-  // Year header
   const hdr = document.createElement('div');
   hdr.className = 'year-section';
+
   const yhdr = document.createElement('div');
   yhdr.className = 'year-header';
-  yhdr.innerHTML = '<div class="year-pip" style="background:color-mix(in srgb,'+col+' 20%,transparent);color:'+col+';border:1px solid color-mix(in srgb,'+col+' 40%,transparent)">'+yr+'</div><span class="year-label">'+meta.title+'</span>';
+  yhdr.innerHTML =
+    '<div class="year-pip" style="background:color-mix(in srgb,'+col+' 20%,transparent);'+
+    'color:'+col+';border:1px solid color-mix(in srgb,'+col+' 40%,transparent)">'+yr+'</div>'+
+    '<span class="year-label">'+meta.title+'</span>';
   hdr.appendChild(yhdr);
 
   const grid = document.createElement('div');
   grid.className = 'lesson-cards';
 
   lessons.forEach((l, i) => {
-    const rel     = isReleased(yr, i);
-    const key     = yr+'_'+i;
-    const score   = getLessonScore(key);
-    const done    = getLessonDone(key);
-    const card    = document.createElement('div');
+    const rel   = isReleased(yr, i);
+    const key   = yr+'_'+i;
+    const score = getLessonScore(key);
+    const done  = getLessonDone(key);
+    const card  = document.createElement('div');
     card.className = 'lesson-card'+(rel?'':' locked');
     card.style.setProperty('--card-color', col);
-
-    const pct = done ? Math.round((score.correct/(score.total||1))*100) : 0;
+    const pct = (done && score.total > 0) ? Math.round(score.correct/score.total*100) : 0;
     card.innerHTML =
-      '<div class="lc-top"><span class="lc-num">Lesson 0'+(i+1)+'</span><span class="lc-status">'+(rel?(done?'✓':'▶'):'🔒')+'</span></div>'+
+      '<div class="lc-top">'+
+        '<span class="lc-num">Lesson 0'+(i+1)+'</span>'+
+        '<span class="lc-status">'+(rel ? (done?'✓':'▶') : '🔒')+'</span>'+
+      '</div>'+
       '<div class="lc-title">'+l.title+'</div>'+
-      '<div class="lc-meta">'+(rel?(done?'Completed · '+score.correct+'/'+score.total+' correct':'Ready to start'):'Not yet released by teacher')+'</div>'+
+      '<div class="lc-meta">'+(rel
+        ? (done ? 'Completed · '+score.correct+'/'+score.total+' correct' : 'Ready to start')
+        : 'Not yet released by teacher'
+      )+'</div>'+
       '<div class="lc-bar"><div class="lc-bar-fill" style="width:'+pct+'%"></div></div>';
 
-    if (rel) {
-      card.addEventListener('click', () => openLesson(yr, i));
-    } else {
-      card.addEventListener('click', () => toast('🔒 This lesson has not been released yet','err'));
-    }
+    card.addEventListener('click', rel
+      ? () => openLesson(yr, i)
+      : () => toast('🔒 This lesson has not been released yet','err')
+    );
     grid.appendChild(card);
   });
 
   hdr.appendChild(grid);
   container.appendChild(hdr);
 
-  // Proof button only shows if any lesson done
   const anyDone = lessons.some((_,i) => getLessonDone(yr+'_'+i));
-  document.getElementById('proof-btn').style.display = anyDone ? 'flex' : 'none';
+  const pb = document.getElementById('proof-btn');
+  if (pb) pb.style.display = anyDone ? 'flex' : 'none';
 }
 
-// ═══════════════════════════════════════════════════
-//  LESSON TASK VIEW
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  LESSON SLIDE VIEWER
+// ═══════════════════════════════════════════════════════
 function openLesson(year, idx) {
   const lesson = LESSONS[year][idx];
   const key    = year+'_'+idx;
   const data   = LESSON_DATA[key];
-  ST.lessonKey   = key;
-  ST.lessonTitle = lesson.title;
-  ST.lessonCur   = 0;
+  ST.lessonKey  = key;
+  ST.lessonCur  = 0;
+  ST.lessonData = data;
   ST.comp = {score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:ST.user.name};
 
   // Track lesson opened
   const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
-  const si = students.findIndex(s=>s.email===ST.user.email);
+  const si = students.findIndex(s => s.email===ST.user.email);
   if (si !== -1) {
-    const openedKey = 'ks3_opened_'+ST.user.email+'_'+year+'_'+idx;
+    const openedKey = 'opened_'+ST.user.email+'_'+key;
     if (!localStorage.getItem(openedKey)) {
-      students[si].lessonsOpened = (students[si].lessonsOpened||0) + 1;
-      localStorage.setItem(openedKey, '1');
+      students[si].lessonsOpened = (students[si].lessonsOpened||0)+1;
+      localStorage.setItem(openedKey,'1');
       localStorage.setItem('ks3_students', JSON.stringify(students));
     }
   }
@@ -1501,16 +1557,17 @@ function openLesson(year, idx) {
   document.getElementById('tv-title').textContent = lesson.title;
   document.getElementById('tv-year').textContent  = 'Year '+year;
 
-  const body = document.getElementById('task-body');
   if (!data) {
-    body.innerHTML = '<div style="text-align:center;padding:48px"><div style="font-size:48px;margin-bottom:16px">🔧</div><h3>Coming Soon</h3><p style="color:var(--muted);margin-top:8px">This lesson is being prepared.</p></div>';
+    document.getElementById('task-body').innerHTML =
+      '<div style="text-align:center;padding:48px">'+
+      '<div style="font-size:48px;margin-bottom:16px">🔧</div>'+
+      '<h3>Coming Soon</h3>'+
+      '<p style="color:var(--muted);margin-top:8px">This lesson is being prepared.</p></div>';
     return;
   }
-  ST.lessonData = data;
   renderStudentSlide();
 }
 
-// ── Student slide renderer ─────────────────────────────────
 function renderStudentSlide() {
   const data   = ST.lessonData;
   const slides = data.slides;
@@ -1518,53 +1575,62 @@ function renderStudentSlide() {
   const total  = slides.length;
   const body   = document.getElementById('task-body');
   const typeLabel = s.type==='compete'?'Competition':s.type.charAt(0).toUpperCase()+s.type.slice(1);
-  const isTask = s.type==='activity' || s.type==='compete';
 
-  // Build dot row
+  // Dots
   let dots = '';
   slides.forEach((sl,i) => {
     const isC = sl.type==='compete';
-    dots += '<div class="sv-dot'+(isC?' cdot':'')+(i===ST.lessonCur?' active':i<ST.lessonCur?' done':'')+'" onclick="svGoTo('+i+')" title="'+sl.title.replace(/"/g,"'")+'"></div>';
+    dots += '<div class="sv-dot'+(isC?' cdot':'')+(i===ST.lessonCur?' active':i<ST.lessonCur?' done':'')+
+            '" onclick="svGoTo('+i+')" title="'+sl.title.replace(/"/g,"'")+'" style="cursor:pointer"></div>';
   });
 
-  let slideContent = '<div class="sv-eyebrow">'+
-    '<span class="sv-type sv-t-'+s.type+'">'+typeLabel+'</span>'+
-    '<span class="sv-num">Slide '+(ST.lessonCur+1)+' of '+total+'</span></div>'+
+  let slideContent =
+    '<div class="sv-eyebrow">'+
+      '<span class="sv-type sv-t-'+s.type+'">'+typeLabel+'</span>'+
+      '<span class="sv-num">Slide '+(ST.lessonCur+1)+' of '+total+'</span>'+
+    '</div>'+
     '<h1>'+s.title+'</h1>'+
     '<div class="sb">'+(s.body||'')+'</div>';
 
-  // For competition slide — show the full compete UI
+  // Competition slide — add compete UI
   if (s.type === 'compete') {
-    const lid2 = data.lid || ST.lessonKey;
-    const clb2 = JSON.parse(localStorage.getItem('ks3_lb_'+lid2)||'[]');
-    const med2 = ['🥇','🥈','🥉'];
-    const clbHtml2 = clb2.length===0
+    const lid  = data.lid || ST.lessonKey;
+    const clb  = JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+    const med  = ['🥇','🥈','🥉'];
+    const clbH = clb.length===0
       ? '<li style="color:var(--muted);font-size:13px">No scores yet — be the first!</li>'
-      : clb2.map((e,i)=>'<li><span class="lb-pos">'+(med2[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+      : clb.map((e,i)=>'<li><span class="lb-pos">'+(med[i]||'#'+(i+1))+'</span>'+
+          '<span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+
     slideContent +=
       '<div class="compete-box" style="margin-top:16px">'+
-        '<h4>🏆 Speed Challenge — '+data.comp.length+' questions · 15 seconds each</h4>'+
+        '<h4>🏆 Speed Challenge — '+data.comp.length+' questions · 15s each</h4>'+
         '<div id="cs-start">'+
-          '<div style="background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">'+
+          '<div style="background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);'+
+               'border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">'+
             '<span style="font-size:20px">👤</span>'+
             '<div><p style="font-size:12px;color:var(--muted);margin:0 0 2px">Competing as</p>'+
-            '<p style="font-size:15px;font-weight:700;color:var(--text);margin:0">'+ST.user.name+'</p></div>'+
+            '<p style="font-size:15px;font-weight:700;margin:0">'+ST.user.name+'</p></div>'+
           '</div>'+
           '<button class="comp-btn" id="cs-start-btn">🚀 Start Challenge!</button>'+
-          '<div style="margin-top:14px"><p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">🏆 Leaderboard</p>'+
-          '<ul class="lb" id="cs-lb">'+clbHtml2+'</ul></div>'+
+          '<div style="margin-top:14px">'+
+            '<p style="font-size:11px;color:var(--muted);margin-bottom:6px;'+
+               'text-transform:uppercase;letter-spacing:1px">🏆 Leaderboard</p>'+
+            '<ul class="lb" id="cs-lb">'+clbH+'</ul>'+
+          '</div>'+
         '</div>'+
         '<div id="cs-game" style="display:none">'+
           '<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px">'+
             '<span id="cs-qnum">1/'+data.comp.length+'</span>'+
             '<span id="cs-tl" style="color:var(--warn)">15s</span></div>'+
           '<div class="timer-bar"><div class="timer-fill" id="cs-tfill" style="width:100%"></div></div>'+
-          '<div class="comp-q" id="cs-q">Loading...</div>'+
+          '<div class="comp-q" id="cs-q" style="min-height:60px"></div>'+
           '<input class="comp-input" id="cs-ans" placeholder="Type your answer..." autocomplete="off">'+
           '<button class="comp-btn" id="cs-sub-btn">Submit ↵</button>'+
           '<div style="display:flex;justify-content:space-between;margin-top:8px">'+
-            '<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warn);font-family:var(--mono)" id="cs-score">0</strong></span>'+
-            '<span id="cs-fb" style="font-size:13px;font-weight:700"></span></div>'+
+            '<span style="font-size:13px;color:var(--muted)">Score: <strong id="cs-score" style="color:var(--warn);font-family:var(--mono)">0</strong></span>'+
+            '<span id="cs-fb" style="font-size:13px;font-weight:700"></span>'+
+          '</div>'+
         '</div>'+
         '<div id="cs-end" style="display:none;text-align:center">'+
           '<div style="font-size:36px;margin-bottom:8px">🎉</div>'+
@@ -1574,7 +1640,8 @@ function renderStudentSlide() {
           '<button class="comp-btn" style="margin-top:10px" id="cs-again-btn">🔄 Play Again</button>'+
           '<div style="margin-top:14px;text-align:left">'+
             '<p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">🏆 Top Scores</p>'+
-            '<ul class="lb" id="cs-lb2"></ul></div>'+
+            '<ul class="lb" id="cs-lb2"></ul>'+
+          '</div>'+
         '</div>'+
       '</div>';
   }
@@ -1584,56 +1651,51 @@ function renderStudentSlide() {
       '<div class="sv-prog"><div class="sv-prog-fill" style="width:'+((ST.lessonCur+1)/total*100)+'%"></div></div>'+
       '<div class="sv-slide">'+slideContent+'</div>'+
       '<div class="sv-nav">'+
-        '<button class="sv-btn" onclick="svNav(-1)"'+(ST.lessonCur===0?' disabled':'')+'>← Back</button>'+
+        '<button class="sv-btn" id="sv-prev-btn"'+(ST.lessonCur===0?' disabled':'')+'>← Back</button>'+
         '<div class="sv-center">'+
           '<div class="sv-dots">'+dots+'</div>'+
           '<span class="sv-ctr">'+(ST.lessonCur+1)+' / '+total+'</span>'+
-          '<span style="font-size:11px;color:var(--muted)">Tap dots or use Back / Next</span>'+
         '</div>'+
-        '<button class="sv-btn primary" onclick="svNav(1)"'+(ST.lessonCur===total-1?' disabled':'')+'>Next →</button>'+
+        '<button class="sv-btn primary" id="sv-next-btn"'+(ST.lessonCur===total-1?' disabled':'')+'>Next →</button>'+
       '</div>'+
     '</div>';
 
-  wireTaskHandlers();
+  // Wire nav buttons with addEventListener (no inline onclick on buttons)
+  const prevBtn = document.getElementById('sv-prev-btn');
+  const nextBtn = document.getElementById('sv-next-btn');
+  if (prevBtn) prevBtn.addEventListener('click', () => svNav(-1));
+  if (nextBtn) nextBtn.addEventListener('click', () => svNav(1));
 
-  // Init competition if on compete slide
+  // Wire check buttons
+  document.querySelectorAll('#task-body .check-btn').forEach(btn => {
+    const oc = btn.getAttribute('onclick');
+    if (oc) {
+      btn.removeAttribute('onclick');
+      btn.addEventListener('click', () => eval(oc));
+    }
+  });
+
+  // Wire competition if on compete slide
   if (s.type === 'compete') {
-    const startBtn = document.getElementById('cs-start-btn');
-    if (startBtn) startBtn.addEventListener('click', startComp);
-    const subBtn = document.getElementById('cs-sub-btn');
-    if (subBtn) subBtn.addEventListener('click', submitComp);
-    const ansIn = document.getElementById('cs-ans');
-    if (ansIn) ansIn.addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault();submitComp();}});
-    const againBtn = document.getElementById('cs-again-btn');
-    if (againBtn) againBtn.addEventListener('click', resetComp);
-    // Load leaderboard
-    const lid = data.lid || ST.lessonKey;
-    const lb = JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
-    const medals = ['🥇','🥈','🥉'];
-    const lbEl = document.getElementById('cs-lb');
-    if (lbEl) lbEl.innerHTML = lb.length===0
-      ? '<li style="color:var(--muted);font-size:13px">No scores yet!</li>'
-      : lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+    const sb = document.getElementById('cs-start-btn');
+    const sub= document.getElementById('cs-sub-btn');
+    const ans= document.getElementById('cs-ans');
+    const ag = document.getElementById('cs-again-btn');
+    if (sb)  sb.addEventListener('click', startComp);
+    if (sub) sub.addEventListener('click', submitComp);
+    if (ans) ans.addEventListener('keydown', e=>{ if(e.key==='Enter'){e.preventDefault();submitComp();} });
+    if (ag)  ag.addEventListener('click', resetComp);
   }
 
   updateFooter(ST.lessonKey);
 }
 
-function svGoTo(i) { ST.lessonCur=i; renderStudentSlide(); }
+function svGoTo(i)  { ST.lessonCur=i; renderStudentSlide(); }
 function svNav(dir) {
   const total = ST.lessonData.slides.length;
   ST.lessonCur = Math.max(0, Math.min(total-1, ST.lessonCur+dir));
   renderStudentSlide();
 }
-
-// Keyboard nav for student slide view
-document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('task-view').classList.contains('visible')) return;
-  if (e.target && e.target.tagName==='INPUT') return;
-  if (e.key==='ArrowRight'||e.key===' '){e.preventDefault();svNav(1);}
-  if (e.key==='ArrowLeft'){e.preventDefault();svNav(-1);}
-});
-
 
 function closeLesson() {
   clearInterval(ST.comp.timer);
@@ -1641,10 +1703,58 @@ function closeLesson() {
   showHome();
 }
 
-// ═══════════════════════════════════════════════════
-//  COMPETITION (student-scoped)
-// ═══════════════════════════════════════════════════
-function getCompData() { return LESSON_DATA[ST.lessonKey]?.comp || []; }
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('task-view').classList.contains('visible')) return;
+  if (e.target && e.target.tagName==='INPUT') return;
+  if (e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); svNav(1); }
+  if (e.key==='ArrowLeft')               { e.preventDefault(); svNav(-1); }
+});
+
+// ═══════════════════════════════════════════════════════
+//  TASK CHECK HELPERS
+// ═══════════════════════════════════════════════════════
+function schk(inputId, fbId, correct) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = val === String(correct).toLowerCase().replace(/\s+/g,'');
+  fb.className = 'fb '+(ok?'ok':'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: '+correct;
+  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
+  localStorage.setItem('st_fb_' +ST.lessonKey+'_'+inputId, ok?'1':'0');
+  updateFooter(ST.lessonKey);
+  updateStudentScore();
+}
+function schkAny(inputId, fbId, answers) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  fb.className = 'fb '+(ok?'ok':'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: '+answers[0];
+  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
+  localStorage.setItem('st_fb_' +ST.lessonKey+'_'+inputId, ok?'1':'0');
+  updateFooter(ST.lessonKey);
+  updateStudentScore();
+}
+
+function wireTaskHandlers() {
+  document.querySelectorAll('#task-body .check-btn').forEach(btn => {
+    const oc = btn.getAttribute('onclick');
+    if (oc) { btn.removeAttribute('onclick'); btn.addEventListener('click', () => eval(oc)); }
+  });
+  document.querySelectorAll('#task-body .ans-input').forEach(inp => {
+    const saved = localStorage.getItem('st_ans_'+ST.lessonKey+'_'+inp.id);
+    if (saved) inp.value = saved;
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  COMPETITION ENGINE
+// ═══════════════════════════════════════════════════════
+function getCompData() { return ST.lessonData?.comp || []; }
 
 function startComp() {
   ST.comp = {score:0,qIdx:0,timer:null,timeLeft:15,active:true,name:ST.user.name};
@@ -1654,75 +1764,94 @@ function startComp() {
 }
 function nextCompQ() {
   const qs = getCompData();
-  if(ST.comp.qIdx>=qs.length){endComp();return;}
+  if (ST.comp.qIdx>=qs.length) { endComp(); return; }
   clearInterval(ST.comp.timer);
-  ST.comp.timeLeft=15;
-  const q=qs[ST.comp.qIdx];
-  document.getElementById('cs-q').textContent=q.q;
-  document.getElementById('cs-ans').value='';
-  document.getElementById('cs-ans').focus();
-  document.getElementById('cs-score').textContent=ST.comp.score;
-  document.getElementById('cs-qnum').textContent=(ST.comp.qIdx+1)+'/'+qs.length;
-  document.getElementById('cs-fb').textContent='';
+  ST.comp.timeLeft = 15;
+  const q = qs[ST.comp.qIdx];
+  document.getElementById('cs-q').textContent      = q.q;
+  const ansEl = document.getElementById('cs-ans');
+  if (ansEl) { ansEl.value=''; ansEl.focus(); }
+  document.getElementById('cs-score').textContent  = ST.comp.score;
+  document.getElementById('cs-qnum').textContent   = (ST.comp.qIdx+1)+'/'+qs.length;
+  document.getElementById('cs-fb').textContent     = '';
   updateCompTimer();
-  ST.comp.timer=setInterval(()=>{ST.comp.timeLeft--;updateCompTimer();if(ST.comp.timeLeft<=0){clearInterval(ST.comp.timer);autoWrongComp();}},1000);
+  ST.comp.timer = setInterval(()=>{
+    ST.comp.timeLeft--;
+    updateCompTimer();
+    if (ST.comp.timeLeft<=0) { clearInterval(ST.comp.timer); autoWrongComp(); }
+  },1000);
 }
-function updateCompTimer(){
-  const pct=ST.comp.timeLeft/15*100;
-  document.getElementById('cs-tfill').style.width=pct+'%';
-  document.getElementById('cs-tl').textContent=ST.comp.timeLeft+'s';
+function updateCompTimer() {
+  const pct = ST.comp.timeLeft/15*100;
+  const fill= document.getElementById('cs-tfill');
+  const tl  = document.getElementById('cs-tl');
+  if (fill) fill.style.width=pct+'%';
+  if (tl)   tl.textContent=ST.comp.timeLeft+'s';
 }
-function submitComp(){
-  if(!ST.comp.active)return;
+function submitComp() {
+  if (!ST.comp.active) return;
   clearInterval(ST.comp.timer);
-  const q=getCompData()[ST.comp.qIdx];
-  const val=document.getElementById('cs-ans').value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok=q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
-  const fb=document.getElementById('cs-fb');
-  if(ok){const pts=Math.max(1,ST.comp.timeLeft);ST.comp.score+=pts;fb.style.color='var(--success)';fb.textContent='✓ +'+pts;}
-  else{fb.style.color='var(--danger)';fb.textContent='✗ '+q.answers[0];}
+  const q   = getCompData()[ST.comp.qIdx];
+  const ans = document.getElementById('cs-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('cs-fb');
+  if (ok) {
+    const pts = Math.max(1,ST.comp.timeLeft);
+    ST.comp.score += pts;
+    fb.style.color='var(--success)'; fb.textContent='✓ +'+pts+' points';
+  } else {
+    fb.style.color='var(--danger)'; fb.textContent='✗ '+q.answers[0];
+  }
   ST.comp.qIdx++;
   setTimeout(nextCompQ,1200);
 }
-function autoWrongComp(){
-  const q=getCompData()[ST.comp.qIdx];
-  document.getElementById('cs-fb').style.color='var(--danger)';
-  document.getElementById('cs-fb').textContent='⏱ '+q.answers[0];
-  ST.comp.qIdx++;setTimeout(nextCompQ,1400);
+function autoWrongComp() {
+  const q = getCompData()[ST.comp.qIdx];
+  const fb= document.getElementById('cs-fb');
+  fb.style.color='var(--danger)'; fb.textContent='⏱ '+q.answers[0];
+  ST.comp.qIdx++;
+  setTimeout(nextCompQ,1400);
 }
-function endComp(){
-  clearInterval(ST.comp.timer);ST.comp.active=false;
+function endComp() {
+  clearInterval(ST.comp.timer); ST.comp.active=false;
   document.getElementById('cs-game').style.display='none';
   document.getElementById('cs-end').style.display='block';
-  document.getElementById('cs-escore').textContent=ST.comp.score;
-  document.getElementById('cs-ename').textContent=ST.comp.name;
-  const lid=LESSON_DATA[ST.lessonKey]?.lid||ST.lessonKey;
-  const lb=JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+  document.getElementById('cs-escore').textContent = ST.comp.score;
+  document.getElementById('cs-ename').textContent  = ST.comp.name;
+  const lid = ST.lessonData?.lid || ST.lessonKey;
+  const lb  = JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
   lb.push({name:ST.comp.name,score:ST.comp.score,date:new Date().toLocaleDateString()});
   lb.sort((a,b)=>b.score-a.score);
-  const top=lb.slice(0,10);
-  localStorage.setItem('ks3_lb_'+lid,JSON.stringify(top));
-  const medals=['🥇','🥈','🥉'];
-  const lbHtml=top.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
-  document.getElementById('cs-lb2').innerHTML=lbHtml;
-  updateFooter(ST.lessonKey);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_'+lid, JSON.stringify(top10));
+  const med = ['🥇','🥈','🥉'];
+  const el  = document.getElementById('cs-lb2');
+  if (el) el.innerHTML = top10.map((e,i)=>
+    '<li><span class="lb-pos">'+(med[i]||'#'+(i+1))+'</span>'+
+    '<span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>'
+  ).join('');
+  updateStudentScore();
   renderLessonCards();
 }
-function resetComp(){
+function resetComp() {
   clearInterval(ST.comp.timer);
   ST.comp={score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:ST.user.name};
   document.getElementById('cs-start').style.display='block';
   document.getElementById('cs-game').style.display='none';
   document.getElementById('cs-end').style.display='none';
-  const lid=LESSON_DATA[ST.lessonKey]?.lid||ST.lessonKey;
-  const lb=JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
-  const medals=['🥇','🥈','🥉'];
-  document.getElementById('cs-lb').innerHTML=lb.length===0?'<li style="color:var(--muted);font-size:13px">No scores yet</li>':lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+  const lid = ST.lessonData?.lid || ST.lessonKey;
+  const lb  = JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+  const med = ['🥇','🥈','🥉'];
+  const el  = document.getElementById('cs-lb');
+  if (el) el.innerHTML = lb.length===0
+    ? '<li style="color:var(--muted);font-size:13px">No scores yet!</li>'
+    : lb.map((e,i)=>'<li><span class="lb-pos">'+(med[i]||'#'+(i+1))+'</span>'+
+        '<span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
 }
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  PROOF OF LEARNING
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function openProof() {
   document.getElementById('home-page').classList.add('hidden');
   document.getElementById('proof-view').classList.add('visible');
@@ -1732,163 +1861,147 @@ function closeProof() {
   document.getElementById('proof-view').classList.remove('visible');
   showHome();
 }
-
 function buildProof() {
   const u   = ST.user;
   const yr  = u.year;
   const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
-  const body = document.getElementById('proof-body');
-  let html = '<div class="proof-header">'+
-    '<h2>📄 Proof of Learning</h2>'+
-    '<p>Generated '+now+' &nbsp;·&nbsp; This is a record of your work on the KS3 Computer Science platform.</p>'+
-  '</div>';
+  let html  =
+    '<div class="proof-header">'+
+      '<h2>📄 Proof of Learning</h2>'+
+      '<p>Generated '+now+' &nbsp;·&nbsp; Corby Business Academy</p>'+
+    '</div>'+
+    '<div class="proof-section">'+
+      '<div class="proof-section-head"><span>👤 Student Details</span></div>'+
+      '<div class="proof-rows">'+
+        '<div class="proof-row"><span class="pr-label">Name</span><span class="pr-val">'+u.name+'</span></div>'+
+        '<div class="proof-row"><span class="pr-label">Year Group</span><span class="pr-val">Year '+u.year+'</span></div>'+
+        '<div class="proof-row"><span class="pr-label">Class</span><span class="pr-val">'+u.cls+'</span></div>'+
+        '<div class="proof-row"><span class="pr-label">Email</span><span class="pr-val">'+u.email+'</span></div>'+
+      '</div>'+
+    '</div>';
 
-  // Student info
-  html += '<div class="proof-section">'+
-    '<div class="proof-section-head"><span>👤 Student Details</span></div>'+
-    '<div class="proof-rows">'+
-      '<div class="proof-row"><span class="pr-label">Name</span><span class="pr-val">'+u.name+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Year Group</span><span class="pr-val">Year '+u.year+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Class</span><span class="pr-val">'+u.cls+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Email</span><span class="pr-val">'+u.email+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Registered</span><span class="pr-val">'+(u.joinedAt||'').split('T')[0]+'</span></div>'+
-    '</div></div>';
-
-  // Per-lesson results
   const lessons = LESSONS[yr];
-  lessons.forEach((l, i) => {
+  lessons.forEach((l,i) => {
     const key  = yr+'_'+i;
     const data = LESSON_DATA[key];
     if (!data) return;
+    const sc   = getLessonScore(key);
+    const lb   = JSON.parse(localStorage.getItem('ks3_lb_'+(data.lid||key))||'[]');
+    const mine = lb.find(e=>e.name===u.name);
+    const ansKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key));
+    if (sc.total===0 && !mine) return;
 
-    // Collect all answers for this lesson
-    const ansKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key)||k.startsWith('st_fb_'+key)||k.startsWith(key+'_pq_'));
-    if (ansKeys.length === 0) {
-      const lb = JSON.parse(localStorage.getItem('ks3_lb_'+data.lid)||'[]');
-      const myScore = lb.find(e=>e.name===u.name);
-      if (!myScore) return; // skip lessons not started
-    }
+    html +=
+      '<div class="proof-section">'+
+        '<div class="proof-section-head">'+
+          '<span>📖 '+l.title+'</span>'+
+          '<span class="pr-badge pr-ok">'+sc.correct+'/'+sc.total+' correct</span>'+
+        '</div><div class="proof-rows">';
 
-    const sc = getLessonScore(key);
-    const lb = JSON.parse(localStorage.getItem('ks3_lb_'+(data.lid||key))||'[]');
-    const myComp = lb.find(e=>e.name===u.name);
-
-    html += '<div class="proof-section">'+
-      '<div class="proof-section-head">'+
-        '<span>📖 '+l.title+'</span>'+
-        '<span class="pr-badge pr-ok">'+sc.correct+'/'+sc.total+' correct</span>'+
-      '</div><div class="proof-rows">';
-
-    // Written answers
-    const writtenKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key));
-    if (writtenKeys.length > 0) {
-      writtenKeys.forEach(wk => {
-        const inputId = wk.replace('st_ans_'+key+'_','');
-        const val     = localStorage.getItem(wk)||'';
-        const fbKey   = 'st_fb_'+key+'_'+inputId;
-        const correct = localStorage.getItem(fbKey);
-        if (!val) return;
-        html += '<div class="proof-row">'+
+    ansKeys.forEach(ak => {
+      const inputId = ak.replace('st_ans_'+key+'_','');
+      const val     = localStorage.getItem(ak)||'';
+      const fb      = localStorage.getItem('st_fb_'+key+'_'+inputId);
+      if (!val) return;
+      html +=
+        '<div class="proof-row">'+
           '<span class="pr-label" style="font-family:var(--mono);font-size:11px">'+inputId+'</span>'+
           '<span class="pr-val">'+val+'</span>'+
-          (correct!==null?'<span class="pr-badge '+(correct==='1'?'pr-ok':'pr-no')+'">'+(correct==='1'?'✓':'✗')+'</span>':'')+
+          (fb!==null?'<span class="pr-badge '+(fb==='1'?'pr-ok':'pr-no')+'">'+(fb==='1'?'✓':'✗')+'</span>':'')+
         '</div>';
-      });
-    }
-
-    // Practice question answers
-    const pqKeys = Object.keys(localStorage).filter(k=>k.startsWith(key+'_pq_')&&!k.endsWith('_ok'));
-    pqKeys.forEach(pk=>{
-      const val = localStorage.getItem(pk)||'';
-      const ok  = localStorage.getItem(pk+'_ok');
-      if (!val) return;
-      const qIdx = parseInt(pk.split('_pq_')[1]);
-      const qText = data.comp[qIdx]?.q||'Question';
-      html += '<div class="proof-row">'+
-        '<span class="pr-label" style="font-size:12px">'+qText.substring(0,40)+'…</span>'+
-        '<span class="pr-val">'+val+'</span>'+
-        (ok!==null?'<span class="pr-badge '+(ok==='1'?'pr-ok':'pr-no')+'">'+(ok==='1'?'✓':'✗')+'</span>':'')+
-      '</div>';
     });
 
-    // Competition score
-    if (myComp) {
-      html += '<div class="proof-row">'+
-        '<span class="pr-label">🏆 Speed Challenge</span>'+
-        '<span class="pr-val">'+myComp.score+' points ('+myComp.date+')</span>'+
-        '<span class="pr-badge pr-pts">🏆</span>'+
-      '</div>';
+    if (mine) {
+      html +=
+        '<div class="proof-row">'+
+          '<span class="pr-label">🏆 Speed Challenge</span>'+
+          '<span class="pr-val">'+mine.score+' points ('+mine.date+')</span>'+
+          '<span class="pr-badge pr-pts">🏆</span>'+
+        '</div>';
     }
-
     html += '</div></div>';
   });
 
-  // Summary
-  const totalCorrect = lessons.reduce((a,_,i)=>{const s=getLessonScore(yr+'_'+i);return a+s.correct;},0);
-  const totalQs      = lessons.reduce((a,_,i)=>{const s=getLessonScore(yr+'_'+i);return a+s.total;},0);
-  html += '<div class="proof-section">'+
-    '<div class="proof-section-head">📊 Summary</div>'+
-    '<div class="proof-rows">'+
-      '<div class="proof-row"><span class="pr-label">Total Questions</span><span class="pr-val">'+totalQs+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Total Correct</span><span class="pr-val">'+totalCorrect+' / '+totalQs+'</span></div>'+
-      '<div class="proof-row"><span class="pr-label">Overall Score</span><span class="pr-val">'+(totalQs>0?Math.round(totalCorrect/totalQs*100):0)+'%</span></div>'+
-    '</div></div>';
+  const totalCorrect  = lessons.reduce((a,_,i)=>{ const s=getLessonScore(yr+'_'+i); return a+s.correct; },0);
+  const totalAnswered = lessons.reduce((a,_,i)=>{ const s=getLessonScore(yr+'_'+i); return a+s.total;   },0);
+  html +=
+    '<div class="proof-section">'+
+      '<div class="proof-section-head">📊 Summary</div>'+
+      '<div class="proof-rows">'+
+        '<div class="proof-row"><span class="pr-label">Total Correct</span><span class="pr-val">'+totalCorrect+' / '+totalAnswered+'</span></div>'+
+        '<div class="proof-row"><span class="pr-label">Score</span><span class="pr-val">'+(totalAnswered>0?Math.round(totalCorrect/totalAnswered*100):0)+'%</span></div>'+
+      '</div>'+
+    '</div>';
 
-  body.innerHTML = html;
+  document.getElementById('proof-body').innerHTML = html;
 }
 
 function downloadProof() {
   buildProof();
   const u    = ST.user;
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Proof of Learning — '+u.name+'</title>'+
-    '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#111;}'+
+  const body = document.getElementById('proof-body').innerHTML;
+  const html =
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+    '<title>Proof of Learning — '+u.name+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;max-width:780px;margin:40px auto;padding:20px;color:#111;}'+
     'h2{font-size:22px;margin-bottom:4px;}p{color:#555;font-size:14px;margin-bottom:20px;}'+
-    '.section{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:16px;}'+
-    '.sec-head{background:#f5f5f5;padding:12px 16px;font-weight:700;font-size:13px;display:flex;justify-content:space-between;}'+
-    '.row{display:flex;gap:12px;padding:9px 16px;border-top:1px solid #eee;font-size:13px;}'+
-    '.lbl{color:#777;min-width:160px;}.val{flex:1;}'+
-    '.ok{color:green;font-weight:700;}.no{color:red;font-weight:700;}.pts{color:#b8860b;font-weight:700;}'+
+    '.proof-section{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:16px;}'+
+    '.proof-section-head{background:#f5f5f5;padding:12px 16px;font-weight:700;font-size:13px;display:flex;justify-content:space-between;}'+
+    '.proof-rows{}'+
+    '.proof-row{display:flex;gap:12px;padding:9px 16px;border-top:1px solid #eee;font-size:13px;}'+
+    '.pr-label{color:#777;min-width:160px;}.pr-val{flex:1;}'+
+    '.pr-ok{color:green;font-weight:700;}.pr-no{color:red;font-weight:700;}.pr-pts{color:#b8860b;font-weight:700;}'+
+    '.pr-badge{font-size:11px;padding:2px 8px;border-radius:6px;}'+
     '@media print{button{display:none!important;}}</style></head><body>'+
-    '<h2>📄 Proof of Learning — '+u.name+'</h2>'+
-    '<p>Generated '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+
-    ' &nbsp;·&nbsp; Year '+u.year+' &nbsp;·&nbsp; '+u.cls+'</p>'+
-    document.getElementById('proof-body').innerHTML+
-    '</body></html>';
+    '<h2>📄 Proof of Learning</h2>'+
+    '<p>'+u.name+' &nbsp;·&nbsp; Year '+u.year+' &nbsp;·&nbsp; '+u.cls+'</p>'+
+    body+'</body></html>';
   const a = document.createElement('a');
   a.href = 'data:text/html;charset=utf-8,'+encodeURIComponent(html);
-  a.download = 'proof_of_learning_'+u.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().split('T')[0]+'.html';
+  a.download = 'proof_'+u.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().split('T')[0]+'.html';
   a.click();
-  toast('📄 Proof of learning downloaded!','ok');
+  toast('📄 Downloaded!','ok');
 }
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  FILTERS
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function toggleFilter(type) {
-  if(type==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}
-  else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}
+  if (type==='ng') {
+    document.body.classList.remove('superpower');
+    const on = document.body.classList.toggle('nature-green');
+    localStorage.setItem('ks3_ng',on?'1':'0');
+    localStorage.setItem('ks3_sp','0');
+  } else {
+    document.body.classList.remove('nature-green');
+    const on = document.body.classList.toggle('superpower');
+    localStorage.setItem('ks3_sp',on?'1':'0');
+    localStorage.setItem('ks3_ng','0');
+  }
   syncFilters();
 }
-function applyFilters(){
-  if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');
-  if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');
+function applyFilters() {
+  if (localStorage.getItem('ks3_ng')==='1') document.body.classList.add('nature-green');
+  if (localStorage.getItem('ks3_sp')==='1') document.body.classList.add('superpower');
   syncFilters();
 }
-function syncFilters(){
-  const ng=document.body.classList.contains('nature-green');
-  const sp=document.body.classList.contains('superpower');
-  document.querySelectorAll('.ng-btn').forEach(b=>{b.classList.toggle('on-ng',ng);});
-  document.querySelectorAll('.sp-btn').forEach(b=>{b.classList.toggle('on-sp',sp);});
+function syncFilters() {
+  const ng = document.body.classList.contains('nature-green');
+  const sp = document.body.classList.contains('superpower');
+  document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));
+  document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));
 }
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 //  TOAST
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 let _tt;
-function toast(msg,type='ok'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast show '+type;
-  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show '+type;
+  clearTimeout(_tt);
+  _tt = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 </script>
 </body>
