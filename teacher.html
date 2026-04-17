@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,6 +158,7 @@ input:checked+.t-track::before{background:#fff;transform:translateX(19px);}
 .toast.err{background:rgba(231,76,60,.15);border:1px solid var(--danger);color:var(--danger);}
 @keyframes tIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 @media(max-width:640px){.nav-tabs{gap:2px;}.nav-tab{padding:6px 10px;font-size:12px;}.lesson-cards{grid-template-columns:1fr;}}
+#pres-overlay{display:none;}#pres-overlay:not(.hidden){display:flex;}
 </style>
 </head>
 <body>
@@ -1495,13 +1495,11 @@ function openPresenter(year, idx) {
 
   document.getElementById('pres-title').textContent = 'Year '+year+' — '+lesson.title;
   document.getElementById('pres-overlay').classList.remove('hidden');
-  document.getElementById('pres-overlay').style.display = 'flex';
   renderPresSlide();
 }
 
 function closePresenter() {
   document.getElementById('pres-overlay').classList.add('hidden');
-  document.getElementById('pres-overlay').style.display = 'none';
 }
 
 function renderPresSlide() {
@@ -1545,7 +1543,7 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 <!-- PRESENTER OVERLAY -->
-<div id="pres-overlay" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;">
+<div id="pres-overlay" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;">
   <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
     <button onclick="closePresenter()" style="width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">←</button>
     <span id="pres-title" style="font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;"></span>
