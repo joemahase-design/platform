@@ -230,6 +230,72 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
   body{background:#fff!important;color:#000!important;}
   .proof-body{padding:0!important;}}
 @media(max-width:640px){.match-grid{grid-template-columns:1fr;}.lesson-cards{grid-template-columns:1fr;}}
+
+/* ── Student slide viewer ── */
+.sv-wrap{display:flex;flex-direction:column;min-height:100%;}
+.sv-prog{height:3px;background:var(--border);flex-shrink:0;}
+.sv-prog-fill{height:100%;background:var(--accent);transition:width .4s ease;}
+.sv-slide{background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  padding:38px 44px;margin:18px 20px;position:relative;overflow-y:auto;
+  animation:svIn .3s ease;}
+@keyframes svIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:none;}}
+.sv-slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),transparent);}
+.sv-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sv-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  padding:3px 10px;border-radius:5px;display:inline-block;}
+.sv-t-intro{background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.sv-t-concept{background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.sv-t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.sv-t-summary{background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.sv-t-compete{background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.sv-num{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.sv-slide h1{font-size:clamp(18px,3vw,30px);font-weight:700;line-height:1.15;margin-bottom:16px;}
+.sv-slide .sb{color:var(--muted);font-size:15px;line-height:1.8;}
+.sv-slide .sb ul,.sv-slide .sb ol{padding-left:20px;}
+.sv-slide .sb li{margin-bottom:7px;}
+.sv-slide .sb li::marker{color:var(--accent);}
+.sv-slide .sb strong{color:var(--text);}
+.sv-slide .sb p{margin-bottom:10px;}
+.sv-slide .sb code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);
+  padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+.sv-slide .sb pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);
+  padding:14px 18px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;
+  margin:10px 0;line-height:1.7;white-space:pre-wrap;}
+.sv-slide .callout{background:var(--surface2);border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14px;color:var(--text);}
+.sv-slide .callout.warn{border-left-color:var(--warn);}
+.sv-slide .callout.success{border-left-color:var(--success);}
+.sv-slide .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+.sv-slide .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0;}
+.sv-slide .card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.sv-slide .card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;}
+.sv-slide .bit-table{width:100%;border-collapse:collapse;margin:12px 0;font-family:var(--mono);font-size:13px;}
+.sv-slide .bit-table th{background:var(--surface2);padding:8px 12px;border:1px solid var(--border);text-align:center;color:var(--accent);}
+.sv-slide .bit-table td{padding:8px 12px;border:1px solid var(--border);text-align:center;}
+.sv-slide .bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+.sv-nav{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.sv-btn{padding:7px 20px;border-radius:8px;font-weight:600;font-size:13px;
+  cursor:pointer;border:1px solid var(--border);background:var(--surface2);
+  color:var(--text);transition:all .2s;font-family:var(--sans);}
+.sv-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.sv-btn:disabled{opacity:.3;cursor:not-allowed;}
+.sv-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.sv-center{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sv-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:280px;}
+.sv-dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;}
+.sv-dot.active{background:var(--accent);transform:scale(1.4);}
+.sv-dot.done{background:var(--muted);}
+.sv-dot.cdot{background:rgba(241,196,15,.4);}
+.sv-dot.cdot.active{background:var(--warn);}
+.sv-ctr{font-family:var(--mono);font-size:11px;color:var(--muted);}
+/* Task section inside slide viewer */
+.sv-task-section{margin:0 20px 24px;}
+.sv-task-head{font-size:14px;font-weight:700;margin-bottom:12px;padding:10px 0 10px;
+  border-top:2px solid var(--border);display:flex;align-items:center;gap:8px;color:var(--text);}
+@media(max-width:640px){.sv-slide{padding:22px 16px;}.sv-slide .two-col,.sv-slide .three-col{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -1260,7 +1326,7 @@ const YEAR_META = {
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let ST = { user:null, year:0, lessonKey:'', lessonTitle:'', comp:{score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:''} };
+let ST = { user:null, year:0, lessonKey:'', lessonTitle:'', lessonCur:0, lessonData:null, comp:{score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:''} };
 
 // ═══════════════════════════════════════════════════
 //  INIT
@@ -1393,8 +1459,10 @@ function openLesson(year, idx) {
   const data   = LESSON_DATA[key];
   ST.lessonKey   = key;
   ST.lessonTitle = lesson.title;
+  ST.lessonCur   = 0;
   ST.comp = {score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:ST.user.name};
-  // Track lesson opened in student record
+
+  // Track lesson opened
   const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
   const si = students.findIndex(s=>s.email===ST.user.email);
   if (si !== -1) {
@@ -1405,9 +1473,9 @@ function openLesson(year, idx) {
       localStorage.setItem('ks3_students', JSON.stringify(students));
     }
   }
+
   document.getElementById('home-page').classList.add('hidden');
-  const tv = document.getElementById('task-view');
-  tv.classList.add('visible');
+  document.getElementById('task-view').classList.add('visible');
   document.getElementById('tv-title').textContent = lesson.title;
   document.getElementById('tv-year').textContent  = 'Year '+year;
 
@@ -1416,233 +1484,93 @@ function openLesson(year, idx) {
     body.innerHTML = '<div style="text-align:center;padding:48px"><div style="font-size:48px;margin-bottom:16px">🔧</div><h3>Coming Soon</h3><p style="color:var(--muted);margin-top:8px">This lesson is being prepared.</p></div>';
     return;
   }
-
-  let html = '';
-  // Quiz questions from slides
-  const quizSlides = data.slides.filter(s => s.type==='activity' || s.type==='concept');
-
-  // Section: Quiz tasks
-  const quizHtml = buildQuizSection(data, key);
-  if (quizHtml) html += '<div class="task-section"><div class="task-section-head">📝 Knowledge Check</div>'+quizHtml+'</div>';
-
-  // Section: Competition
-  html += '<div class="task-section"><div class="task-section-head">🏆 Speed Challenge</div>'+buildCompSection(data, key)+'</div>';
-
-  body.innerHTML = html;
-  wireTaskHandlers();
-  updateFooter(key);
+  ST.lessonData = data;
+  renderStudentSlide();
 }
 
-function buildQuizSection(data, key) {
-  // Extract quiz questions from embedded task bodies in slides
-  // Look for slides with task-box content
-  let html = '';
-  data.slides.forEach((s,si) => {
-    if (!s.body) return;
-    const hasTask = s.body.includes('task-box') || s.body.includes('ans-input');
-    if (hasTask) {
-      html += '<div class="task-card"><div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">'+s.title+'</div>'+s.body+'</div>';
-    }
+// ── Student slide renderer ─────────────────────────────────
+function renderStudentSlide() {
+  const data   = ST.lessonData;
+  const slides = data.slides;
+  const s      = slides[ST.lessonCur];
+  const total  = slides.length;
+  const body   = document.getElementById('task-body');
+  const typeLabel = s.type==='compete'?'Competition':s.type.charAt(0).toUpperCase()+s.type.slice(1);
+  const isTask = s.type==='activity' || s.type==='compete';
+
+  // Build dot row
+  let dots = '';
+  slides.forEach((sl,i) => {
+    const isC = sl.type==='compete';
+    dots += '<div class="sv-dot'+(isC?' cdot':'')+(i===ST.lessonCur?' active':i<ST.lessonCur?' done':'')+'" onclick="svGoTo('+i+')" title="'+sl.title.replace(/"/g,"'")+'"></div>';
   });
 
-  // Also build MCQ from comp questions as a practice quiz
-  if (data.comp && data.comp.length > 0) {
-    const subset = data.comp.slice(0, Math.min(5, data.comp.length));
-    let qhtml = '<div class="task-card"><div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">Practice Questions</div>';
-    subset.forEach((q,qi) => {
-      const qkey = key+'_pq_'+qi;
-      const saved = localStorage.getItem(qkey);
-      qhtml += '<div style="margin-bottom:20px">';
-      qhtml += '<div class="qtext">Q'+(qi+1)+': '+q.q+'</div>';
-      qhtml += '<div><input class="written-input" style="min-height:44px" placeholder="Type your answer..." id="pq_'+qkey+'" value="'+(saved||'')+'">';
-      qhtml += '<button class="btn btn-secondary" style="margin-top:6px;font-size:12px;padding:6px 14px" data-qkey="'+qkey+'" data-answers="'+encodeURIComponent(JSON.stringify(q.answers))+'">Check Answer</button>';
-      qhtml += '<div class="qfb" id="pfb_'+qkey+'"></div></div></div>';
-    });
-    qhtml += '</div>';
-    html += qhtml;
+  let slideContent = '<div class="sv-eyebrow">'+
+    '<span class="sv-type sv-t-'+s.type+'">'+typeLabel+'</span>'+
+    '<span class="sv-num">Slide '+(ST.lessonCur+1)+' of '+total+'</span></div>'+
+    '<h1>'+s.title+'</h1>'+
+    '<div class="sb">'+(s.body||'')+'</div>';
+
+  // For competition slide — show the full compete UI
+  if (s.type === 'compete') {
+    slideContent += buildCompSection(data, ST.lessonKey);
   }
-  return html;
-}
 
-function buildCompSection(data, key) {
-  const lb = JSON.parse(localStorage.getItem('ks3_lb_'+data.lid)||'[]');
-  const medals = ['🥇','🥈','🥉'];
-  const lbHtml = lb.length===0
-    ? '<li style="color:var(--muted);font-size:13px">No scores yet — be the first!</li>'
-    : lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+  body.innerHTML =
+    '<div class="sv-wrap">'+
+      '<div class="sv-prog"><div class="sv-prog-fill" style="width:'+((ST.lessonCur+1)/total*100)+'%"></div></div>'+
+      '<div class="sv-slide">'+slideContent+'</div>'+
+      '<div class="sv-nav">'+
+        '<button class="sv-btn" onclick="svNav(-1)"'+(ST.lessonCur===0?' disabled':'')+'>← Back</button>'+
+        '<div class="sv-center">'+
+          '<div class="sv-dots">'+dots+'</div>'+
+          '<span class="sv-ctr">'+(ST.lessonCur+1)+' / '+total+'</span>'+
+          '<span style="font-size:11px;color:var(--muted)">Tap dots or use Back / Next</span>'+
+        '</div>'+
+        '<button class="sv-btn primary" onclick="svNav(1)"'+(ST.lessonCur===total-1?' disabled':'')+'>Next →</button>'+
+      '</div>'+
+    '</div>';
 
-  return '<div class="compete-box">'+
-    '<h4>🏆 Speed Challenge — '+data.comp.length+' questions, 15 seconds each</h4>'+
-    '<div id="cs-start">'+
-      '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Faster correct answers = more points. Your score is saved to the leaderboard.</p>'+
-      '<button class="comp-btn" id="cs-start-btn">🚀 Start Challenge!</button>'+
-      '<div style="margin-top:14px"><p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Leaderboard</p>'+
-      '<ul class="lb" id="cs-lb">'+lbHtml+'</ul></div>'+
-    '</div>'+
-    '<div id="cs-game" style="display:none">'+
-      '<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px">'+
-        '<span id="cs-qnum">1/10</span><span id="cs-tl" style="color:var(--warn)">15s</span></div>'+
-      '<div class="timer-bar"><div class="timer-fill" id="cs-tfill" style="width:100%"></div></div>'+
-      '<div class="comp-q" id="cs-q"></div>'+
-      '<input class="comp-input" id="cs-ans" placeholder="Type answer..." autocomplete="off">'+
-      '<button class="comp-btn" id="cs-sub-btn">Submit ↵</button>'+
-      '<div style="display:flex;justify-content:space-between;margin-top:8px">'+
-        '<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warn);font-family:var(--mono)" id="cs-score">0</strong></span>'+
-        '<span id="cs-fb" style="font-size:13px;font-weight:700"></span></div>'+
-    '</div>'+
-    '<div id="cs-end" style="display:none;text-align:center">'+
-      '<div style="font-size:36px;margin-bottom:8px">🎉</div>'+
-      '<p style="font-size:17px;font-weight:700;margin-bottom:4px">Great work, <span id="cs-ename"></span>!</p>'+
-      '<p style="color:var(--muted);font-size:13px;margin-bottom:6px">Final score</p>'+
-      '<div class="score-big" id="cs-escore">0</div>'+
-      '<button class="comp-btn" style="margin-top:10px" id="cs-again-btn">🔄 Play Again</button>'+
-      '<div style="margin-top:14px;text-align:left"><p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Top Scores</p>'+
-      '<ul class="lb" id="cs-lb2"></ul></div>'+
-    '</div>'+
-  '</div>';
-}
+  wireTaskHandlers();
 
-function wireTaskHandlers() {
-  // check-btn onclick attributes
-  document.querySelectorAll('#task-body .check-btn').forEach(btn => {
-    const oc = btn.getAttribute('onclick');
-    if (oc) { btn.removeAttribute('onclick'); btn.addEventListener('click', ()=>eval(oc.replace(/lchk\(/g,'schk(').replace(/lchkAny\(/g,'schkAny(').replace(/(?<!s)chk\(/g,'schk(').replace(/(?<!s)chkAny\(/g,'schkAny('))); }
-  });
-  // answer inputs — save on change
-  document.querySelectorAll('#task-body .ans-input, #task-body .written-input').forEach(inp => {
-    const saved = localStorage.getItem('st_ans_'+ST.lessonKey+'_'+inp.id);
-    if (saved) inp.value = saved;
-    inp.addEventListener('change', () => {
-      localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inp.id, inp.value);
-      updateFooter(ST.lessonKey);
-    });
-  });
-  // Competition
-  const startBtn = document.getElementById('cs-start-btn');
-  if (startBtn) startBtn.addEventListener('click', startComp);
-  const subBtn = document.getElementById('cs-sub-btn');
-  if (subBtn) subBtn.addEventListener('click', submitComp);
-  const ansIn = document.getElementById('cs-ans');
-  if (ansIn) ansIn.addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault();submitComp();}});
-  const againBtn = document.getElementById('cs-again-btn');
-  if (againBtn) againBtn.addEventListener('click', resetComp);
-  // Practice check buttons (data-attribute approach)
-  document.querySelectorAll('#task-body [data-qkey]').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const qkey    = this.getAttribute('data-qkey');
-      const answers = JSON.parse(decodeURIComponent(this.getAttribute('data-answers')));
-      checkPractice(qkey, answers);
-    });
-  });
-  // Drag-drop for match tasks
-  initDragDrop();
-}
+  // Init competition if on compete slide
+  if (s.type === 'compete') {
+    const startBtn = document.getElementById('cs-start-btn');
+    if (startBtn) startBtn.addEventListener('click', startComp);
+    const subBtn = document.getElementById('cs-sub-btn');
+    if (subBtn) subBtn.addEventListener('click', submitComp);
+    const ansIn = document.getElementById('cs-ans');
+    if (ansIn) ansIn.addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault();submitComp();}});
+    const againBtn = document.getElementById('cs-again-btn');
+    if (againBtn) againBtn.addEventListener('click', resetComp);
+    // Load leaderboard
+    const lid = data.lid || ST.lessonKey;
+    const lb = JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+    const medals = ['🥇','🥈','🥉'];
+    const lbEl = document.getElementById('cs-lb');
+    if (lbEl) lbEl.innerHTML = lb.length===0
+      ? '<li style="color:var(--muted);font-size:13px">No scores yet!</li>'
+      : lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+  }
 
-// ── Task check helpers (scoped) ─────────────────────────────
-function schk(inputId, fbId, correct) {
-  const inp = document.getElementById(inputId);
-  const fb  = document.getElementById(fbId);
-  if (!inp||!fb) return;
-  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = val === String(correct).toLowerCase().replace(/\s+/g,'');
-  fb.className='qfb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ Correct!':'✗ Try again — answer: '+correct;
-  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
-  localStorage.setItem('st_fb_'+ST.lessonKey+'_'+inputId, ok?'1':'0');
-  updateFooter(ST.lessonKey);
-  updateStudentScore();
-}
-function schkAny(inputId, fbId, answers) {
-  const inp = document.getElementById(inputId);
-  const fb  = document.getElementById(fbId);
-  if (!inp||!fb) return;
-  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
-  fb.className='qfb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ Correct!':'✗ Try again — answer: '+answers[0];
-  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
-  localStorage.setItem('st_fb_'+ST.lessonKey+'_'+inputId, ok?'1':'0');
-  updateFooter(ST.lessonKey);
-  updateStudentScore();
-}
-function checkPractice(qkey, answers) {
-  const inp = document.getElementById('pq_'+qkey);
-  const fb  = document.getElementById('pfb_'+qkey);
-  if (!inp||!fb) return;
-  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
-  fb.className='qfb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ Correct!':'✗ Answer: '+answers[0];
-  localStorage.setItem(qkey, inp.value);
-  localStorage.setItem(qkey+'_ok', ok?'1':'0');
   updateFooter(ST.lessonKey);
 }
 
-// ── Drag-drop ───────────────────────────────────────────────
-function initDragDrop() {
-  document.querySelectorAll('.match-term').forEach(t => {
-    t.addEventListener('dragstart', e=>{e.dataTransfer.setData('text/plain',t.id);t.style.opacity='.5';});
-    t.addEventListener('dragend', ()=>t.style.opacity='1');
-  });
-  document.querySelectorAll('.match-zone').forEach(z => {
-    z.addEventListener('dragover', e=>{e.preventDefault();z.classList.add('over');});
-    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
-    z.addEventListener('drop', e=>{
-      e.preventDefault();z.classList.remove('over');
-      const t = document.getElementById(e.dataTransfer.getData('text/plain'));
-      if(!t) return;
-      z.textContent = decodeURIComponent(t.getAttribute('data-term')||t.textContent);
-      z.setAttribute('data-dropped', t.getAttribute('data-term')||encodeURIComponent(t.textContent));
-      z.classList.add('filled');
-    });
-  });
-  document.querySelectorAll('[onclick^="checkMatch"]').forEach(btn=>{
-    const oc=btn.getAttribute('onclick');
-    btn.removeAttribute('onclick');
-    btn.addEventListener('click',()=>eval(oc));
-  });
-}
-function checkMatch(id, len) {
-  let correct=0;
-  document.querySelectorAll('[id^="mzone_'+id+'_"]').forEach(z=>{
-    const d=z.getAttribute('data-dropped'), e=z.getAttribute('data-correct');
-    if(d&&d===e){z.classList.add('correct');correct++;}
-    else if(d){z.classList.add('wrong');}
-  });
-  toast(correct===len?'✓ Perfect! All '+len+' correct!':correct+'/'+len+' correct','ok');
+function svGoTo(i) { ST.lessonCur=i; renderStudentSlide(); }
+function svNav(dir) {
+  const total = ST.lessonData.slides.length;
+  ST.lessonCur = Math.max(0, Math.min(total-1, ST.lessonCur+dir));
+  renderStudentSlide();
 }
 
-// ── Score / progress tracking ───────────────────────────────
-function getLessonScore(key) {
-  const checks = Object.keys(localStorage).filter(k=>k.startsWith('st_fb_'+key)||k.startsWith(key+'_pq_')&&k.endsWith('_ok'));
-  const correct = checks.filter(k=>localStorage.getItem(k)==='1').length;
-  return { correct, total: checks.length };
-}
-function getLessonDone(key) {
-  const lb = JSON.parse(localStorage.getItem('ks3_lb_'+key)||'[]');
-  const hasComp = lb.some(e=>e.name===ST.user?.name);
-  const sc = getLessonScore(key);
-  return hasComp || sc.total > 0;
-}
-function updateFooter(key) {
-  const sc = getLessonScore(key);
-  const lbl = document.getElementById('footer-score');
-  if (lbl) lbl.innerHTML = 'Your progress: <strong>'+sc.correct+' / '+sc.total+'</strong> questions correct';
-}
+// Keyboard nav for student slide view
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('task-view').classList.contains('visible')) return;
+  if (e.target && e.target.tagName==='INPUT') return;
+  if (e.key==='ArrowRight'||e.key===' '){e.preventDefault();svNav(1);}
+  if (e.key==='ArrowLeft'){e.preventDefault();svNav(-1);}
+});
 
-function updateStudentScore() {
-  if (!ST.user) return;
-  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
-  const si = students.findIndex(s=>s.email===ST.user.email);
-  if (si === -1) return;
-  // Count total correct across all lessons
-  const allKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_fb_'));
-  const totalCorrect = allKeys.filter(k=>localStorage.getItem(k)==='1').length;
-  const totalAnswered = allKeys.length;
-  students[si].totalCorrect  = totalCorrect;
-  students[si].totalAnswered = totalAnswered;
-  localStorage.setItem('ks3_students', JSON.stringify(students));
-}
 
 function closeLesson() {
   clearInterval(ST.comp.timer);
