@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,23 +22,23 @@ body::before{content:'';position:fixed;inset:0;
   background-size:40px 40px;pointer-events:none;z-index:0;}
 .hidden{display:none!important;}
 /* Overlay / modal */
-.overlay{position:fixed;inset:0;background:rgba(15,17,30,0.75);backdrop-filter:blur(12px);
+.overlay{position:fixed;inset:0;background:rgba(10,12,24,0.55);backdrop-filter:blur(16px);
   display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-.modal{background:#1e2235;border:1px solid #3a3f60;border-radius:16px;
+.modal{background:#2a2f4a;border:1px solid #4a5070;border-radius:16px;
   padding:28px 32px;width:100%;max-width:380px;
-  box-shadow:0 0 80px rgba(0,240,255,.18);animation:mIn .3s ease;text-align:center;}
+  box-shadow:0 0 100px rgba(0,240,255,.22);animation:mIn .3s ease;text-align:center;}
 @keyframes mIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:none;}}
 .modal-logo{font-family:var(--mono);font-size:10px;color:var(--muted);
   text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;}
 .modal-icon{font-size:40px;margin-bottom:12px;}
-.modal h2{font-size:20px;font-weight:700;margin-bottom:8px;}
-.modal p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5;}
+.modal h2{font-size:20px;font-weight:700;margin-bottom:8px;color:#ffffff;}
+.modal p{color:#9098c0;font-size:13px;margin-bottom:18px;line-height:1.5;}
 .fg{margin-bottom:11px;text-align:left;}
 .fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);
   text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
 .fg input{width:100%;padding:9px 12px;background:var(--surface2);
-  border:1px solid #454870;border-radius:8px;color:#f0f0ff;
-  font-family:var(--mono);font-size:18px;text-align:center;transition:border-color .2s;}
+  border:1px solid #5560a0;border-radius:8px;color:#ffffff;
+  font-family:var(--mono);font-size:18px;text-align:center;background:#323660;transition:border-color .2s;}
 .fg input:focus{outline:none;border-color:var(--accent);}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;
   border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;
@@ -407,10 +408,9 @@ function renderPresent() {
       // Open presentation in new tab
       const presentBtn = card.querySelector('.ob-present');
       if (rel) {
-        presentBtn.addEventListener('click', () => {
-          window.open(l.file, '_blank');
-          toast('Opening '+l.title+' in new tab...','ok');
-        });
+        presentBtn.addEventListener('click', (function(y,i,f){
+          return function(){ openPresenter(y,i); };
+        })(year,i,l.file));
       }
 
       // Toggle lock/release
@@ -571,6 +571,1028 @@ function toast(msg, type='ok') {
   t.textContent = msg; t.className = 'toast show '+type;
   clearTimeout(_tt); _tt = setTimeout(()=>t.classList.remove('show'), 3000);
 }
+
+// ═══════════════════════════════════════════════════
+//  EMBEDDED PRESENTATION ENGINE
+// ═══════════════════════════════════════════════════
+const TEACHER_LESSON_DATA = {
+  "7_0": { lid:'y7t2', slides:[
+  {
+    type: 'intro',
+    title: 'Binary — The Language of Computers',
+    body: `<p>Every piece of data on a computer — photos, music, games, text — is stored as <strong>binary</strong>. It is the most fundamental concept in computer science.</p>
+<div class="two-col">
+  <div class="card"><h4>What is Binary?</h4><p>A number system that uses only <strong>two digits</strong>: <code>0</code> and <code>1</code>. These represent two electrical states: <strong>off</strong> and <strong>on</strong>.</p></div>
+  <div class="card"><h4>Why Binary?</h4><p>Computers use transistors — tiny switches that are either off (0) or on (1). Binary maps directly to this physical reality.</p></div>
+</div>
+<div class="callout">🎯 <strong>Today's goals:</strong> Understand why computers use binary, convert between binary and decimal, add binary numbers, and understand data sizes.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Bits and Bytes',
+    body: `<p>The building blocks of all digital data:</p>
+<table class="bit-table">
+  <tr><th>Unit</th><th>Size</th><th>Example</th><th>What it can store</th></tr>
+  <tr><td><strong>Bit</strong></td><td>1 binary digit</td><td><code>0</code> or <code>1</code></td><td>One switch: on or off</td></tr>
+  <tr><td><strong>Nibble</strong></td><td>4 bits</td><td><code>1010</code></td><td>One hex digit</td></tr>
+  <tr><td><strong>Byte</strong></td><td>8 bits</td><td><code>0100 0001</code></td><td>One character (e.g. "A")</td></tr>
+  <tr><td><strong>Kilobyte (KB)</strong></td><td>1,024 bytes</td><td>—</td><td>A short text message</td></tr>
+  <tr><td><strong>Megabyte (MB)</strong></td><td>1,024 KB</td><td>—</td><td>A 3-minute song</td></tr>
+  <tr><td><strong>Gigabyte (GB)</strong></td><td>1,024 MB</td><td>—</td><td>About 250 songs</td></tr>
+  <tr><td><strong>Terabyte (TB)</strong></td><td>1,024 GB</td><td>—</td><td>250,000 songs</td></tr>
+</table>
+<div class="callout warn">⚠️ Note: 1 KB = 1,024 bytes (not 1,000) because computers work in powers of 2.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Place Values',
+    body: `<p>Just like decimal uses place values (units, tens, hundreds...), binary uses <strong>powers of 2</strong>:</p>
+<table class="bit-table">
+  <tr><th>Bit 8</th><th>Bit 7</th><th>Bit 6</th><th>Bit 5</th><th>Bit 4</th><th>Bit 3</th><th>Bit 2</th><th>Bit 1</th></tr>
+  <tr><td><strong>128</strong></td><td><strong>64</strong></td><td><strong>32</strong></td><td><strong>16</strong></td><td><strong>8</strong></td><td><strong>4</strong></td><td><strong>2</strong></td><td><strong>1</strong></td></tr>
+</table>
+<div class="callout">📌 <strong>The golden rule:</strong> each column is exactly double the one to its right. Starting from 1: 1, 2, 4, 8, 16, 32, 64, 128.</div>
+<div class="two-col">
+  <div class="card"><h4>Example: 0100 0001 = 65</h4><p>Bit 7 (64) = 1 ✓<br>Bit 1 (1) = 1 ✓<br>All others = 0<br><strong>64 + 1 = 65</strong><br>This is the ASCII code for "A"!</p></div>
+  <div class="card"><h4>Example: 1000 1000 = 136</h4><p>Bit 8 (128) = 1 ✓<br>Bit 4 (8) = 1 ✓<br>All others = 0<br><strong>128 + 8 = 136</strong></p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary to Decimal — Step by Step',
+    body: `<p>To convert a binary number to decimal, multiply each bit by its place value and add them up.</p>
+<div class="callout"><strong>Example: Convert 0110 1100 to decimal</strong></div>
+<table class="bit-table">
+  <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+  <tr><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td>0</td></tr>
+  <tr><td>0</td><td>64</td><td>32</td><td>0</td><td>8</td><td>4</td><td>0</td><td>0</td></tr>
+</table>
+<p style="margin-top:12px">Add the highlighted values: <strong>64 + 32 + 8 + 4 = 108</strong></p>
+<div class="callout success">✅ <strong>0110 1100 in decimal = 108</strong></div>
+<div class="card" style="margin-top:14px"><h4>Your turn — try these:</h4><p>• 0000 1001 = ?<br>• 0011 0011 = ?<br>• 1010 1010 = ?</p><p style="color:var(--text-muted);font-size:12px;margin-top:8px">Answers: 9 | 51 | 170</p></div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Decimal to Binary — Step by Step',
+    body: `<p>To convert decimal to binary, repeatedly divide by 2 and record the remainders — then read them <strong>bottom to top</strong>.</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Method: Division by 2</h4>
+    <pre>Convert 45 to binary:
+45 ÷ 2 = 22 remainder 1 ↑
+22 ÷ 2 = 11 remainder 0 ↑
+11 ÷ 2 =  5 remainder 1 ↑
+ 5 ÷ 2 =  2 remainder 1 ↑
+ 2 ÷ 2 =  1 remainder 0 ↑
+ 1 ÷ 2 =  0 remainder 1 ↑
+
+Read upward: 101101
+8-bit: 0010 1101</pre>
+  </div>
+  <div class="card">
+    <h4>Method: Subtract Place Values</h4>
+    <p>Starting from 128, ask: "Does this fit?"</p>
+    <pre>Convert 100:
+128? No (too big)
+ 64? Yes → bit=1, left=36
+ 32? Yes → bit=1, left=4
+ 16? No
+  8? No
+  4? Yes → bit=1, left=0
+  2? No  1? No
+
+= 0110 0100</pre>
+  </div>
+</div>
+<div class="callout success">✅ Check: 64+32+4 = 100 ✓</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Addition',
+    body: `<p>Binary addition uses the same column-by-column method as decimal, but with only 0 and 1:</p>
+<table class="bit-table">
+  <tr><th>Rule</th><th>Result</th><th>Carry</th></tr>
+  <tr><td><code>0 + 0</code></td><td class="bit-highlight">0</td><td>0</td></tr>
+  <tr><td><code>0 + 1</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 0</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 1</code></td><td class="bit-highlight">0</td><td>1 (carry)</td></tr>
+  <tr><td><code>1 + 1 + 1</code></td><td class="bit-highlight">1</td><td>1 (carry)</td></tr>
+</table>
+<div class="callout"><strong>Example: 0001 0111 + 0000 1011 (23 + 11 = 34)</strong></div>
+<pre>  0001 0111   (23)
++ 0000 1011   (11)
+──────────────
+  0010 0010   (34)
+
+Working right to left:
+1+1=10 → write 0 carry 1
+1+1+1=11 → write 1 carry 1
+1+0+1=10 → write 0 carry 1
+0+0+1=1 → write 1
+...</pre>
+<div class="callout warn">⚠️ <strong>Overflow:</strong> If the result needs more than 8 bits, the 9th bit is lost. This is called overflow.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Why Binary? The Hardware Link',
+    body: `<p>Understanding <em>why</em> computers use binary helps everything else make sense.</p>
+<div class="three-col">
+  <div class="card"><h4>Transistors</h4><p>Modern CPUs contain <strong>billions</strong> of transistors — tiny switches. Each is either on (1) or off (0). Binary maps directly to this.</p></div>
+  <div class="card"><h4>Reliability</h4><p>Distinguishing just two states (high/low voltage) is far more reliable than ten. Less chance of errors over billions of operations.</p></div>
+  <div class="card"><h4>Logic Gates</h4><p>AND, OR, NOT — logical operations on binary values. All computing is built from combinations of these simple gates.</p></div>
+</div>
+<div class="callout">🔌 Even the Wi-Fi signal carrying this page is ultimately a stream of 0s and 1s — billions of them per second.</div>
+<div class="two-col">
+  <div class="card"><h4>Text — ASCII</h4><p>"A" = 65 = <code>0100 0001</code><br>"a" = 97 = <code>0110 0001</code><br>"0" = 48 = <code>0011 0000</code></p></div>
+  <div class="card"><h4>Colours — RGB</h4><p>Red = <code>FF 00 00</code><br>Each channel: 0–255 (8 bits)<br>24 bits per pixel total</p></div>
+</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Binary Practice',
+    body: `<p>Work through each question and type your answer. Press <strong>Check</strong> to see if you are right.</p>
+<div class="task-box">
+  <h4>📝 Task A — Binary to Decimal</h4>
+  <div class="answer-row"><label>1. Convert <code>0000 0001</code> to decimal:</label><input class="ans-input" id="t1" placeholder="?"><button class="check-btn" onclick="chk('t1','f1','1')">Check</button><span class="fb" id="f1"></span></div>
+  <div class="answer-row"><label>2. Convert <code>0000 1010</code> to decimal:</label><input class="ans-input" id="t2" placeholder="?"><button class="check-btn" onclick="chk('t2','f2','10')">Check</button><span class="fb" id="f2"></span></div>
+  <div class="answer-row"><label>3. Convert <code>0001 1000</code> to decimal:</label><input class="ans-input" id="t3" placeholder="?"><button class="check-btn" onclick="chk('t3','f3','24')">Check</button><span class="fb" id="f3"></span></div>
+  <div class="answer-row"><label>4. Convert <code>0101 0101</code> to decimal:</label><input class="ans-input" id="t4" placeholder="?"><button class="check-btn" onclick="chk('t4','f4','85')">Check</button><span class="fb" id="f4"></span></div>
+  <div class="answer-row"><label>5. Convert <code>1111 1111</code> to decimal:</label><input class="ans-input" id="t5" placeholder="?"><button class="check-btn" onclick="chk('t5','f5','255')">Check</button><span class="fb" id="f5"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Decimal to Binary (8-bit)</h4>
+  <div class="answer-row"><label>6. Convert <strong>5</strong> to 8-bit binary:</label><input class="ans-input" id="t6" placeholder="????????"><button class="check-btn" onclick="chkAny('t6','f6',['00000101','0000 0101'])">Check</button><span class="fb" id="f6"></span></div>
+  <div class="answer-row"><label>7. Convert <strong>13</strong> to 8-bit binary:</label><input class="ans-input" id="t7" placeholder="????????"><button class="check-btn" onclick="chkAny('t7','f7',['00001101','0000 1101'])">Check</button><span class="fb" id="f7"></span></div>
+  <div class="answer-row"><label>8. Convert <strong>64</strong> to 8-bit binary:</label><input class="ans-input" id="t8" placeholder="????????"><button class="check-btn" onclick="chkAny('t8','f8',['01000000','0100 0000'])">Check</button><span class="fb" id="f8"></span></div>
+  <div class="answer-row"><label>9. Convert <strong>200</strong> to 8-bit binary:</label><input class="ans-input" id="t9" placeholder="????????"><button class="check-btn" onclick="chkAny('t9','f9',['11001000','1100 1000'])">Check</button><span class="fb" id="f9"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Binary Addition</h4>
+  <div class="answer-row"><label>10. <code>0000 0011</code> + <code>0000 0101</code> =</label><input class="ans-input" id="t10" placeholder="?"><button class="check-btn" onclick="chk('t10','f10','8')">Check</button><span class="fb" id="f10"></span></div>
+  <div class="answer-row"><label>11. <code>0001 0000</code> + <code>0000 1111</code> =</label><input class="ans-input" id="t11" placeholder="?"><button class="check-btn" onclick="chk('t11','f11','31')">Check</button><span class="fb" id="f11"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Tip:</strong> Use the place value table — 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 — and add up the values where there is a 1.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'What We Covered Today',
+    body: `<ul>
+  <li>Computers use <strong>binary</strong> (0 and 1) because transistors have two states</li>
+  <li>8 bits = 1 byte; data sizes: KB → MB → GB → TB (multiply by 1,024 each time)</li>
+  <li>Binary place values: <strong>128 | 64 | 32 | 16 | 8 | 4 | 2 | 1</strong></li>
+  <li>Binary → decimal: add up place values where bit = 1</li>
+  <li>Decimal → binary: subtract place values or divide by 2</li>
+  <li>Binary addition: column by column, carry when you get 1+1</li>
+  <li>Overflow: when a result needs more bits than available</li>
+</ul>
+<div class="callout success">✅ You can now read and write in the language computers use!</div>
+<div class="callout">🏆 Now test yourself — the competition is up next!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Binary Speed Challenge',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">How fast can you convert? Score points for correct answers — faster = more points!</p>
+<div class="compete-board">
+  <h4>🏆 Binary Speed Challenge</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y7t2")||"[]"); renderLeaderboard(lb); },
+  },
+], comp:[
+  { q: 'Convert binary 00001010 to decimal', answers: ['10'] },
+  { q: 'Convert binary 00001111 to decimal', answers: ['15'] },
+  { q: 'Convert decimal 8 to binary (8-bit)', answers: ['00001000','0000 1000'] },
+  { q: 'Convert binary 01000000 to decimal', answers: ['64'] },
+  { q: 'Convert decimal 255 to decimal — what is the max 8-bit value?', answers: ['255'] },
+  { q: 'How many bits in one byte?', answers: ['8'] },
+  { q: 'Convert binary 00110000 to decimal', answers: ['48'] },
+  { q: 'Convert decimal 16 to binary (just the 4 significant bits)', answers: ['00010000','0001 0000','10000'] },
+  { q: '00000011 + 00000100 = ? (decimal answer)', answers: ['7'] },
+  { q: 'Convert binary 10000000 to decimal', answers: ['128'] },
+  { q: 'How many bytes in 1 kilobyte?', answers: ['1024'] },
+  { q: 'Convert decimal 12 to binary (8-bit)', answers: ['00001100','0000 1100'] },
+] },
+  "7_1": { lid:'y7t1', slides:[
+  {
+    type: 'intro',
+    title: 'What is an Algorithm?',
+    body: `<p>An algorithm is a <strong>step-by-step set of instructions</strong> for solving a problem or completing a task.</p>
+    <ul>
+      <li>Every computer program is built on algorithms</li>
+      <li>Algorithms must be <strong>precise</strong>, <strong>unambiguous</strong> and <strong>finite</strong></li>
+      <li>We use them every day without realising!</li>
+    </ul>
+    <div class="callout">🧩 Think of a recipe — it's an algorithm for making food. Each step must be in the right order.</div>`
+  },
+  {
+    type: 'concept',
+    title: 'Representing Algorithms',
+    body: `<p>We can write algorithms in different ways:</p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Pseudocode</h4>
+        <p>Written in plain English-like statements. Easy to read and plan with.</p>
+        <br><code>IF score &gt; 50<br>&nbsp;&nbsp;PRINT "Pass"<br>ELSE<br>&nbsp;&nbsp;PRINT "Try again"</code>
+      </div>
+      <div class="col-card">
+        <h4>Flowcharts</h4>
+        <p>Visual diagrams using shapes to show steps, decisions and flow.</p>
+        <br><p>▭ Rectangle = Process<br>◇ Diamond = Decision<br>○ Oval = Start / End</p>
+      </div>
+    </div>`
+  },
+  {
+    type: 'concept',
+    title: 'Decomposition',
+    body: `<p><strong>Decomposition</strong> means breaking a large, complex problem into smaller, more manageable sub-problems.</p>
+    <ul>
+      <li>Each sub-problem is easier to understand and solve</li>
+      <li>Solutions to sub-problems can be combined to solve the original</li>
+      <li>Used by all professional software developers</li>
+    </ul>
+    <div class="callout">💡 Example: Building a game = graphics + sound + controls + scoring + saving. Each part can be tackled separately.</div>`
+  },
+  {
+    type: 'concept',
+    title: 'Abstraction',
+    body: `<p><strong>Abstraction</strong> means removing unnecessary detail so you can focus on what matters.</p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Real World Example</h4>
+        <p>A map is an abstraction of the real world — it shows roads and places, but leaves out trees, lamp posts and other irrelevant detail.</p>
+      </div>
+      <div class="col-card">
+        <h4>In Programming</h4>
+        <p>When you call <code>print("Hello")</code>, you don't need to know how the screen works — that detail is abstracted away.</p>
+      </div>
+    </div>`
+  },
+  {
+    type: 'activity',
+    title: 'Activity: Spot the Algorithm',
+    body: `<p>Look at the following everyday tasks. With a partner, write out the steps as an algorithm:</p>
+    <ul>
+      <li>Making a cup of tea</li>
+      <li>Crossing the road safely</li>
+      <li>Searching for a word in a dictionary</li>
+    </ul>
+    <div class="callout">Think about: <strong>What decisions need to be made? What can go wrong? What order must the steps be in?</strong><br><br>Try drawing your algorithm as a flowchart!</div>`
+  },
+  {
+    type: 'activity',
+    title: 'Activity: Write Pseudocode',
+    body: `<p>Write a pseudocode algorithm for the following problem:</p>
+    <div class="callout" style="font-size:16px;font-weight:600">A program asks the user to enter a number. If the number is greater than 10, print "Big number". Otherwise, print "Small number".</div>
+    <br>
+    <p>Your pseudocode should include:</p>
+    <ul>
+      <li>An <strong>INPUT</strong> statement</li>
+      <li>An <strong>IF / ELSE</strong> decision</li>
+      <li>Two <strong>OUTPUT</strong> statements</li>
+    </ul>`
+  },
+  {
+    type: 'summary',
+    title: 'Topic Summary',
+    body: `<p>Here is what we covered today:</p>
+    <ul>
+      <li>An <strong>algorithm</strong> is a precise, step-by-step set of instructions</li>
+      <li>Algorithms can be written as <strong>pseudocode</strong> or drawn as <strong>flowcharts</strong></li>
+      <li><strong>Decomposition</strong> breaks big problems into smaller, manageable parts</li>
+      <li><strong>Abstraction</strong> hides unnecessary detail so we can focus on what matters</li>
+      <li>All programs are built on algorithms — getting them right is the foundation of computing</li>
+    </ul>
+    <div class="callout">✅ Next lesson: Data & Binary Representation — how computers store information using only 0s and 1s.</div>`
+  },
+], comp:[] },
+  "8_0": { lid:'y8t2', slides:[
+  {
+    type: 'intro',
+    title: 'Binary, Denary & Hexadecimal',
+    body: `<p>Year 8 builds on your binary knowledge, introducing <strong>denary</strong> (the proper name for our base-10 number system) and <strong>hexadecimal</strong> — the base-16 system used everywhere in computing.</p>
+<div class="three-col">
+  <div class="card"><h4>Binary (Base-2)</h4><p>Digits: <strong>0, 1</strong><br>Used inside computers. Place values: 1, 2, 4, 8, 16...</p></div>
+  <div class="card"><h4>Denary (Base-10)</h4><p>Digits: <strong>0–9</strong><br>What humans use every day. Place values: 1, 10, 100, 1000...</p></div>
+  <div class="card"><h4>Hexadecimal (Base-16)</h4><p>Digits: <strong>0–9, A–F</strong><br>Shorthand for binary. Used in colour codes, memory addresses, MACs.</p></div>
+</div>
+<div class="callout">🎯 <strong>Goals:</strong> Convert fluently between all three number systems, understand why hex exists, and use it in real computing contexts.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary & Denary — Recap',
+    body: `<p>A quick recap of binary conversion before we extend to hexadecimal.</p>
+<table class="bit-table">
+  <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th><th>=</th><th>Denary</th></tr>
+  <tr><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td>→</td><td><strong>106</strong></td></tr>
+  <tr><td>0</td><td>0</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td>0</td><td>0</td><td class="bit-highlight">1</td><td>→</td><td><strong>17</strong></td></tr>
+  <tr><td class="bit-highlight">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>→</td><td><strong>128</strong></td></tr>
+</table>
+<div class="two-col">
+  <div class="card"><h4>Binary → Denary</h4><p>Add up place values where bit = 1.<br>Row 1: 64+32+8+2 = <strong>106</strong></p></div>
+  <div class="card"><h4>Denary → Binary</h4><p>Subtract largest fitting power of 2, work down.<br>Or: divide repeatedly by 2, read remainders upward.</p></div>
+</div>
+<div class="callout warn">⚠️ <strong>Denary vs decimal:</strong> Same thing! "Denary" (from Latin <em>denarius</em>) is the precise term for base-10. You'll see both in exam questions.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Introducing Hexadecimal',
+    body: `<p>Hexadecimal (<strong>hex</strong>) is base-16. It needs 16 distinct symbols — it uses digits 0–9 then letters A–F:</p>
+<table class="bit-table">
+  <tr><th>Denary</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+  <tr><td><strong>Hex</strong></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td class="bit-highlight">A</td><td class="bit-highlight">B</td><td class="bit-highlight">C</td><td class="bit-highlight">D</td><td class="bit-highlight">E</td><td class="bit-highlight">F</td></tr>
+</table>
+<div class="callout">💡 A = 10, B = 11, C = 12, D = 13, E = 14, F = 15. Easy to remember: after 9, continue with A!</div>
+<div class="two-col">
+  <div class="card"><h4>Why does hex exist?</h4><p>Binary is unwieldy — <code>11110000</code> is hard to read. Hex is a compact shorthand. One hex digit = exactly <strong>4 binary bits</strong> (a nibble).</p></div>
+  <div class="card"><h4>Where is hex used?</h4><p>• Colour codes: <code>#FF5733</code><br>• Memory addresses: <code>0x1A2B</code><br>• MAC addresses: <code>A1:B2:C3:D4</code><br>• Error codes in computing</p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Converting Hex ↔ Denary',
+    body: `<p>Hexadecimal uses place values that are powers of 16:</p>
+<table class="bit-table">
+  <tr><th>Position</th><th>256s</th><th>16s</th><th>1s</th></tr>
+  <tr><td><strong>Place value</strong></td><td>16²= 256</td><td>16¹= 16</td><td>16⁰= 1</td></tr>
+</table>
+<div class="two-col">
+  <div class="card">
+    <h4>Hex → Denary: 3F</h4>
+    <p>3 is in the 16s column: 3 × 16 = 48<br>F (=15) is in the 1s column: 15 × 1 = 15<br><strong>48 + 15 = 63</strong></p>
+  </div>
+  <div class="card">
+    <h4>Hex → Denary: B4</h4>
+    <p>B (=11) × 16 = 176<br>4 × 1 = 4<br><strong>176 + 4 = 180</strong></p>
+  </div>
+</div>
+<div class="two-col">
+  <div class="card">
+    <h4>Denary → Hex: 200</h4>
+    <p>200 ÷ 16 = 12 remainder 8<br>12 = C in hex<br><strong>200 = C8</strong></p>
+  </div>
+  <div class="card">
+    <h4>Denary → Hex: 255</h4>
+    <p>255 ÷ 16 = 15 remainder 15<br>15 = F, 15 = F<br><strong>255 = FF</strong></p>
+  </div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary ↔ Hex — The Nibble Trick',
+    body: `<p>The most powerful shortcut in computing: <strong>every hex digit = exactly 4 binary bits</strong>.</p>
+<div class="callout">🔑 Split any binary number into groups of 4 (nibbles) from the right, then convert each nibble to one hex digit.</div>
+<table class="bit-table">
+  <tr><th>Binary Nibble</th><th>0000</th><th>0001</th><th>0010</th><th>0011</th><th>0100</th><th>0101</th><th>0110</th><th>0111</th></tr>
+  <tr><td><strong>Hex</strong></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+  <tr><th>Binary Nibble</th><th>1000</th><th>1001</th><th>1010</th><th>1011</th><th>1100</th><th>1101</th><th>1110</th><th>1111</th></tr>
+  <tr><td><strong>Hex</strong></td><td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+</table>
+<div class="two-col">
+  <div class="card">
+    <h4>Binary → Hex: 1010 1100</h4>
+    <p>Split: <code>1010</code> | <code>1100</code><br>1010 = A, 1100 = C<br><strong>= AC</strong><br>Check: 10×16+12 = 172 ✓</p>
+  </div>
+  <div class="card">
+    <h4>Hex → Binary: 5E</h4>
+    <p>5 = <code>0101</code><br>E (=14) = <code>1110</code><br><strong>= 0101 1110</strong><br>Check: 64+16+8+4+2 = 94 ✓</p>
+  </div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Hex in the Real World — Colour Codes',
+    body: `<p>The most visible use of hex in everyday life is <strong>HTML/CSS colour codes</strong>. Every colour on a screen is defined by three hex pairs: <code>#RRGGBB</code></p>
+<table class="bit-table">
+  <tr><th>Colour</th><th>Hex Code</th><th>Red (RR)</th><th>Green (GG)</th><th>Blue (BB)</th></tr>
+  <tr><td>🔴 Pure Red</td><td><code>#FF0000</code></td><td class="bit-highlight">FF = 255</td><td>00 = 0</td><td>00 = 0</td></tr>
+  <tr><td>🟢 Pure Green</td><td><code>#00FF00</code></td><td>00 = 0</td><td class="bit-highlight">FF = 255</td><td>00 = 0</td></tr>
+  <tr><td>🔵 Pure Blue</td><td><code>#0000FF</code></td><td>00 = 0</td><td>00 = 0</td><td class="bit-highlight">FF = 255</td></tr>
+  <tr><td>⚪ White</td><td><code>#FFFFFF</code></td><td>FF = 255</td><td>FF = 255</td><td>FF = 255</td></tr>
+  <tr><td>⚫ Black</td><td><code>#000000</code></td><td>00 = 0</td><td>00 = 0</td><td>00 = 0</td></tr>
+  <tr><td>🟠 Orange</td><td><code>#FF7A20</code></td><td>FF = 255</td><td>7A = 122</td><td>20 = 32</td></tr>
+</table>
+<div class="callout">🎨 Each channel (R, G, B) is 1 byte = 8 bits = 2 hex digits = values 0–255. So we get 256 × 256 × 256 = <strong>16,777,216 possible colours</strong>!</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Hex, Binary & Denary',
+    body: `<p>Work through each question and check your answer.</p>
+<div class="task-box">
+  <h4>📝 Task A — Binary to Denary</h4>
+  <div class="answer-row"><label>1. <code>0011 1100</code> to denary:</label><input class="ans-input" id="a1" placeholder="?"><button class="check-btn" onclick="chk('a1','fa1','60')">Check</button><span class="fb" id="fa1"></span></div>
+  <div class="answer-row"><label>2. <code>1001 0110</code> to denary:</label><input class="ans-input" id="a2" placeholder="?"><button class="check-btn" onclick="chk('a2','fa2','150')">Check</button><span class="fb" id="fa2"></span></div>
+  <div class="answer-row"><label>3. <code>1111 0000</code> to denary:</label><input class="ans-input" id="a3" placeholder="?"><button class="check-btn" onclick="chk('a3','fa3','240')">Check</button><span class="fb" id="fa3"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Denary to Hex</h4>
+  <div class="answer-row"><label>4. Convert denary <strong>10</strong> to hex:</label><input class="ans-input" id="b1" placeholder="?"><button class="check-btn" onclick="chkAny('b1','fb1',['A','0A','a','0a'])">Check</button><span class="fb" id="fb1"></span></div>
+  <div class="answer-row"><label>5. Convert denary <strong>15</strong> to hex:</label><input class="ans-input" id="b2" placeholder="?"><button class="check-btn" onclick="chkAny('b2','fb2',['F','0F','f','0f'])">Check</button><span class="fb" id="fb2"></span></div>
+  <div class="answer-row"><label>6. Convert denary <strong>255</strong> to hex:</label><input class="ans-input" id="b3" placeholder="?"><button class="check-btn" onclick="chkAny('b3','fb3',['FF','ff'])">Check</button><span class="fb" id="fb3"></span></div>
+  <div class="answer-row"><label>7. Convert denary <strong>200</strong> to hex:</label><input class="ans-input" id="b4" placeholder="?"><button class="check-btn" onclick="chkAny('b4','fb4',['C8','c8'])">Check</button><span class="fb" id="fb4"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Hex to Denary</h4>
+  <div class="answer-row"><label>8. Convert hex <strong>1A</strong> to denary:</label><input class="ans-input" id="c1" placeholder="?"><button class="check-btn" onclick="chk('c1','fc1','26')">Check</button><span class="fb" id="fc1"></span></div>
+  <div class="answer-row"><label>9. Convert hex <strong>3F</strong> to denary:</label><input class="ans-input" id="c2" placeholder="?"><button class="check-btn" onclick="chk('c2','fc2','63')">Check</button><span class="fb" id="fc2"></span></div>
+  <div class="answer-row"><label>10. Convert hex <strong>B4</strong> to denary:</label><input class="ans-input" id="c3" placeholder="?"><button class="check-btn" onclick="chk('c3','fc3','180')">Check</button><span class="fb" id="fc3"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task D — Binary to Hex</h4>
+  <div class="answer-row"><label>11. <code>1010 1010</code> to hex:</label><input class="ans-input" id="d1" placeholder="?"><button class="check-btn" onclick="chkAny('d1','fd1',['AA','aa'])">Check</button><span class="fb" id="fd1"></span></div>
+  <div class="answer-row"><label>12. <code>1111 0000</code> to hex:</label><input class="ans-input" id="d2" placeholder="?"><button class="check-btn" onclick="chkAny('d2','fd2',['F0','f0'])">Check</button><span class="fb" id="fd2"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Shortcut:</strong> Split binary into nibbles (4 bits) and convert each nibble to one hex digit.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'Summary — Three Number Systems',
+    body: `<table class="bit-table">
+  <tr><th>System</th><th>Base</th><th>Digits</th><th>Place values</th><th>Used for</th></tr>
+  <tr><td><strong>Denary</strong></td><td>10</td><td>0–9</td><td>1, 10, 100...</td><td>Human mathematics</td></tr>
+  <tr><td><strong>Binary</strong></td><td>2</td><td>0, 1</td><td>1, 2, 4, 8...</td><td>Inside computers</td></tr>
+  <tr><td><strong>Hex</strong></td><td>16</td><td>0–9, A–F</td><td>1, 16, 256...</td><td>Colours, memory, MACs</td></tr>
+</table>
+<ul style="margin-top:14px">
+  <li>1 hex digit = 4 binary bits (a nibble) — the most useful conversion shortcut</li>
+  <li>FF in hex = 255 in denary = 1111 1111 in binary (maximum 8-bit value)</li>
+  <li>Colour codes: <code>#RRGGBB</code> — each pair is one byte (0–255)</li>
+  <li>Denary → hex: divide by 16, use A–F for remainders 10–15</li>
+</ul>
+<div class="callout success">✅ You can now navigate fluently between all three number systems used in computing!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Hex, Binary & Denary Speed Round',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">Convert between binary, hex and denary as fast as you can!</p>
+<div class="compete-board">
+  <h4>🏆 Number Systems Speed Round</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y8t2")||"[]"); renderLeaderboard(lb); },
+  },
+], comp:[
+  { q: 'What is hex A in denary?', answers: ['10'] },
+  { q: 'What is hex F in denary?', answers: ['15'] },
+  { q: 'Convert denary 255 to hex', answers: ['FF','ff'] },
+  { q: 'Convert binary 1111 to hex', answers: ['F','f'] },
+  { q: 'Convert binary 1010 1010 to hex', answers: ['AA','aa'] },
+  { q: 'What is hex FF in denary?', answers: ['255'] },
+  { q: 'Convert hex 1A to denary', answers: ['26'] },
+  { q: 'How many bits does one hex digit represent?', answers: ['4'] },
+  { q: 'Convert denary 16 to hex', answers: ['10'] },
+  { q: 'What colour does #FF0000 represent?', answers: ['red'] },
+  { q: 'Convert hex C to denary', answers: ['12'] },
+  { q: 'Convert binary 0000 1111 to hex', answers: ['F','0F','0f','f'] },
+  { q: 'Convert denary 32 to hex', answers: ['20'] },
+  { q: 'What is hex B in denary?', answers: ['11'] },
+] },
+  "9_0": { lid:'y9t6', slides:[
+  {
+    type: 'intro',
+    title: 'Pseudocode — Designing Before Coding',
+    body: `<p><strong>Pseudocode</strong> is a way of describing an algorithm using structured English that resembles code, but can be understood by anyone — regardless of the programming language they know.</p>
+<div class="two-col">
+  <div class="card"><h4>Why use pseudocode?</h4><ul><li>Plan logic before writing real code</li><li>Communicate algorithms clearly</li><li>Language-independent — works for Python, Java, C#...</li><li>Essential in GCSE and A-Level exams</li></ul></div>
+  <div class="card"><h4>Pseudocode vs Code</h4><p><strong>Python:</strong></p><pre style="font-size:12px">if score >= 50:
+    print("Pass")</pre><p><strong>Pseudocode:</strong></p><pre style="font-size:12px">IF score >= 50 THEN
+    OUTPUT "Pass"
+ENDIF</pre></div>
+</div>
+<div class="callout">🎯 <strong>Goals:</strong> Read and write pseudocode fluently using variables, input/output, selection, loops, and subroutines.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Variables, Assignment & Data Types',
+    body: `<p>A <strong>variable</strong> is a named location in memory that stores a value. In pseudocode, we use the <code>←</code> arrow for assignment:</p>
+<pre>name ← "Alice"
+age  ← 17
+score ← 95.5
+passed ← TRUE</pre>
+<table class="bit-table">
+  <tr><th>Data Type</th><th>Description</th><th>Example</th></tr>
+  <tr><td><strong>Integer</strong></td><td>Whole number</td><td><code>score ← 42</code></td></tr>
+  <tr><td><strong>Real</strong></td><td>Decimal number</td><td><code>pi ← 3.14159</code></td></tr>
+  <tr><td><strong>String</strong></td><td>Text (in quotes)</td><td><code>name ← "Bob"</code></td></tr>
+  <tr><td><strong>Boolean</strong></td><td>True or False</td><td><code>logged ← TRUE</code></td></tr>
+  <tr><td><strong>Char</strong></td><td>Single character</td><td><code>grade ← 'A'</code></td></tr>
+</table>
+<div class="callout warn">⚠️ <strong>= vs ←</strong> In pseudocode, <code>←</code> means assignment (store this value). <code>=</code> means comparison (are these equal?). Never mix them up!</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Input & Output',
+    body: `<p>Programs communicate with users through <strong>INPUT</strong> and <strong>OUTPUT</strong>:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>INPUT — Read from user</h4>
+    <pre>name ← INPUT("Enter name: ")
+age  ← INPUT("Enter age: ")</pre>
+    <p>The value typed by the user is stored in the variable.</p>
+  </div>
+  <div class="card">
+    <h4>OUTPUT — Display to screen</h4>
+    <pre>OUTPUT "Hello, " + name
+OUTPUT "You are " + age
+OUTPUT score * 2</pre>
+    <p>Can output text, variables, or expressions.</p>
+  </div>
+</div>
+<div class="callout">
+  <strong>Full example:</strong>
+  <pre>name ← INPUT("What is your name? ")
+OUTPUT "Welcome, " + name + "!"</pre>
+</div>
+<div class="two-col">
+  <div class="card"><h4>String Concatenation</h4><p>Join strings with <code>+</code>:<br><pre>"Hello, " + name</pre></p></div>
+  <div class="card"><h4>Type Conversion</h4><p>Convert types when needed:<br><pre>INT("42") → 42
+STR(42) → "42"</pre></p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Selection — IF, ELSE IF, ELSE',
+    body: `<p>Selection lets a program make decisions and follow different paths:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Simple IF</h4>
+    <pre>IF age >= 18 THEN
+    OUTPUT "Adult"
+ENDIF</pre>
+  </div>
+  <div class="card">
+    <h4>IF...ELSE</h4>
+    <pre>IF age >= 18 THEN
+    OUTPUT "Adult"
+ELSE
+    OUTPUT "Minor"
+ENDIF</pre>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <h4>IF...ELSE IF...ELSE (multiple branches)</h4>
+  <pre>IF score >= 70 THEN
+    OUTPUT "Distinction"
+ELSE IF score >= 50 THEN
+    OUTPUT "Pass"
+ELSE IF score >= 30 THEN
+    OUTPUT "Near miss"
+ELSE
+    OUTPUT "Fail"
+ENDIF</pre>
+</div>
+<div class="callout warn">⚠️ Always end with <code>ENDIF</code>. Indentation shows what is inside the block — this is critical for readability.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Iteration — FOR and WHILE Loops',
+    body: `<p><strong>Iteration</strong> repeats a block of code. There are two main types:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>FOR loop — count-controlled</h4>
+    <p>Use when you know how many times to repeat.</p>
+    <pre>FOR i ← 1 TO 5
+    OUTPUT i
+ENDFOR
+
+FOR i ← 1 TO 10 STEP 2
+    OUTPUT i
+ENDFOR</pre>
+    <p style="font-size:12px;color:var(--text-muted)">Outputs: 1 3 5 7 9 (odd numbers)</p>
+  </div>
+  <div class="card">
+    <h4>WHILE loop — condition-controlled</h4>
+    <p>Use when you repeat until a condition is false.</p>
+    <pre>count ← 0
+WHILE count < 5
+    OUTPUT count
+    count ← count + 1
+ENDWHILE
+
+password ← INPUT("Password: ")
+WHILE password ≠ "secret"
+    OUTPUT "Wrong!"
+    password ← INPUT("Try again: ")
+ENDWHILE</pre>
+  </div>
+</div>
+<div class="callout">🔑 <strong>Key difference:</strong> FOR is for definite iteration (known count); WHILE is for indefinite iteration (unknown count).</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Subroutines — Procedures & Functions',
+    body: `<p><strong>Subroutines</strong> are named, reusable blocks of code. They help us avoid repeating ourselves (the DRY principle — Don't Repeat Yourself).</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Procedure (no return value)</h4>
+    <pre>PROCEDURE greet(name)
+    OUTPUT "Hello, " + name
+    OUTPUT "Welcome back!"
+ENDPROCEDURE
+
+CALL greet("Alice")
+CALL greet("Bob")</pre>
+  </div>
+  <div class="card">
+    <h4>Function (returns a value)</h4>
+    <pre>FUNCTION square(n)
+    RETURN n * n
+ENDFUNCTION
+
+result ← square(5)
+OUTPUT result    # outputs 25
+
+OUTPUT square(7) # outputs 49</pre>
+  </div>
+</div>
+<div class="callout">💡 <strong>Parameters</strong> are the inputs to a subroutine (e.g. <code>name</code>, <code>n</code>). Functions use <code>RETURN</code> to send a value back. Procedures do not.</div>
+<div class="callout warn">⚠️ <strong>Scope:</strong> Variables declared inside a subroutine are <em>local</em> — they only exist within that subroutine.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Arrays in Pseudocode',
+    body: `<p>An <strong>array</strong> stores multiple values under one name, accessed by index (position).</p>
+<pre># Declare and initialise
+scores ← [85, 72, 91, 60, 78]
+
+# Access by index (starts at 0)
+OUTPUT scores[0]    # 85
+OUTPUT scores[2]    # 91
+
+# Set a value
+scores[1] ← 99
+
+# Loop through an array
+FOR i ← 0 TO LEN(scores) - 1
+    OUTPUT scores[i]
+ENDFOR</pre>
+<div class="two-col">
+  <div class="card"><h4>Useful Array Functions</h4><p><code>LEN(array)</code> — number of items<br><code>array[i]</code> — access item at index i<br><code>array[i] ← value</code> — set item</p></div>
+  <div class="card"><h4>Common Pattern: Find Max</h4><pre>max ← scores[0]
+FOR i ← 1 TO LEN(scores)-1
+    IF scores[i] > max THEN
+        max ← scores[i]
+    ENDIF
+ENDFOR
+OUTPUT max</pre></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Putting It Together — Full Algorithm Examples',
+    body: `<p>Let's see complete algorithms that combine everything we've covered.</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Example 1: Grade Calculator</h4>
+    <pre>PROCEDURE getGrade(score)
+    IF score >= 70 THEN
+        OUTPUT "A"
+    ELSE IF score >= 60 THEN
+        OUTPUT "B"
+    ELSE IF score >= 50 THEN
+        OUTPUT "C"
+    ELSE
+        OUTPUT "U"
+    ENDIF
+ENDPROCEDURE
+
+total ← 0
+FOR i ← 1 TO 5
+    s ← INPUT("Score: ")
+    total ← total + INT(s)
+ENDFOR
+avg ← total / 5
+OUTPUT "Average: " + STR(avg)
+CALL getGrade(avg)</pre>
+  </div>
+  <div class="card">
+    <h4>Example 2: Number Guessing Game</h4>
+    <pre>secret ← 42
+guess ← 0
+attempts ← 0
+
+WHILE guess ≠ secret
+    guess ← INT(INPUT("Guess: "))
+    attempts ← attempts + 1
+    IF guess < secret THEN
+        OUTPUT "Too low!"
+    ELSE IF guess > secret THEN
+        OUTPUT "Too high!"
+    ENDIF
+ENDWHILE
+
+OUTPUT "Correct!"
+OUTPUT "Attempts: " + STR(attempts)</pre>
+  </div>
+</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Pseudocode Practice',
+    body: `<p>Write pseudocode for each problem. Type your answer and check key terms.</p>
+<div class="task-box">
+  <h4>📝 Task A — Concepts Check</h4>
+  <div class="answer-row"><label>1. What keyword starts a loop that repeats a set number of times?</label><input class="ans-input" id="p1" placeholder="keyword"><button class="check-btn" onclick="chkAny('p1','fp1',['FOR','for'])">Check</button><span class="fb" id="fp1"></span></div>
+  <div class="answer-row"><label>2. What keyword starts a conditional block?</label><input class="ans-input" id="p2" placeholder="keyword"><button class="check-btn" onclick="chkAny('p2','fp2',['IF','if'])">Check</button><span class="fb" id="fp2"></span></div>
+  <div class="answer-row"><label>3. What keyword outputs to the screen?</label><input class="ans-input" id="p3" placeholder="keyword"><button class="check-btn" onclick="chkAny('p3','fp3',['OUTPUT','output','PRINT','print'])">Check</button><span class="fb" id="fp3"></span></div>
+  <div class="answer-row"><label>4. What keyword reads input from a user?</label><input class="ans-input" id="p4" placeholder="keyword"><button class="check-btn" onclick="chkAny('p4','fp4',['INPUT','input'])">Check</button><span class="fb" id="fp4"></span></div>
+  <div class="answer-row"><label>5. What symbol assigns a value to a variable?</label><input class="ans-input" id="p5" placeholder="symbol"><button class="check-btn" onclick="chk('p5','fp5','←')">Check</button><span class="fb" id="fp5"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Trace the Code</h4>
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Given this pseudocode — what does it output?</p>
+  <pre>x ← 5
+y ← 3
+z ← x * y + 2
+OUTPUT z</pre>
+  <div class="answer-row"><label>6. What does the pseudocode above output?</label><input class="ans-input" id="p6" placeholder="?"><button class="check-btn" onclick="chk('p6','fp6','17')">Check</button><span class="fb" id="fp6"></span></div>
+  <pre>FOR i ← 1 TO 3
+    OUTPUT i * 2
+ENDFOR</pre>
+  <div class="answer-row"><label>7. How many lines does this loop print?</label><input class="ans-input" id="p7" placeholder="?"><button class="check-btn" onclick="chk('p7','fp7','3')">Check</button><span class="fb" id="fp7"></span></div>
+  <div class="answer-row"><label>8. What is the last value printed?</label><input class="ans-input" id="p8" placeholder="?"><button class="check-btn" onclick="chk('p8','fp8','6')">Check</button><span class="fb" id="fp8"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Spot the Error</h4>
+  <pre>score ← INPUT("Enter score: ")
+IF score >= 50
+    OUTPUT "Pass"
+ELSE
+    OUTPUT "Fail"</pre>
+  <div class="answer-row"><label>9. What is missing from the IF line?</label><input class="ans-input" id="p9" placeholder="keyword"><button class="check-btn" onclick="chkAny('p9','fp9',['THEN','then'])">Check</button><span class="fb" id="fp9"></span></div>
+  <div class="answer-row"><label>10. What keyword is missing at the end?</label><input class="ans-input" id="p10" placeholder="keyword"><button class="check-btn" onclick="chkAny('p10','fp10',['ENDIF','endif'])">Check</button><span class="fb" id="fp10"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Remember:</strong> Every IF needs THEN and ENDIF. Every FOR needs ENDFOR. Every WHILE needs ENDWHILE.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'Pseudocode — Key Reference',
+    body: `<table class="bit-table">
+  <tr><th>Construct</th><th>Syntax</th><th>Used for</th></tr>
+  <tr><td><strong>Assignment</strong></td><td><code>x ← value</code></td><td>Storing a value in a variable</td></tr>
+  <tr><td><strong>Input</strong></td><td><code>x ← INPUT("prompt")</code></td><td>Reading from user</td></tr>
+  <tr><td><strong>Output</strong></td><td><code>OUTPUT value</code></td><td>Displaying to screen</td></tr>
+  <tr><td><strong>Selection</strong></td><td><code>IF...THEN...ELSE...ENDIF</code></td><td>Making decisions</td></tr>
+  <tr><td><strong>FOR loop</strong></td><td><code>FOR i ← 1 TO n...ENDFOR</code></td><td>Definite iteration</td></tr>
+  <tr><td><strong>WHILE loop</strong></td><td><code>WHILE cond...ENDWHILE</code></td><td>Indefinite iteration</td></tr>
+  <tr><td><strong>Procedure</strong></td><td><code>PROCEDURE name(params)...ENDPROCEDURE</code></td><td>Reusable block, no return</td></tr>
+  <tr><td><strong>Function</strong></td><td><code>FUNCTION name(params)...RETURN...ENDFUNCTION</code></td><td>Reusable block, returns value</td></tr>
+  <tr><td><strong>Array</strong></td><td><code>arr ← [v1, v2, v3]</code> / <code>arr[i]</code></td><td>Storing multiple values</td></tr>
+</table>
+<div class="callout success">✅ Pseudocode is your planning tool — write it before every program and exam answer!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Pseudocode Lightning Round',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">Test your pseudocode knowledge! Keywords, traces, and logic — as fast as you can!</p>
+<div class="compete-board">
+  <h4>🏆 Pseudocode Lightning Round</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y9t6")||"[]"); renderLeaderboard(lb); },
+  },
+], comp:[
+  { q: 'What symbol is used for assignment in pseudocode?', answers: ['←','<-'] },
+  { q: 'What keyword displays output to the screen?', answers: ['OUTPUT','output'] },
+  { q: 'What keyword reads input from a user?', answers: ['INPUT','input'] },
+  { q: 'What keyword ends an IF block?', answers: ['ENDIF','endif'] },
+  { q: 'What keyword ends a FOR loop?', answers: ['ENDFOR','endfor'] },
+  { q: 'What keyword ends a WHILE loop?', answers: ['ENDWHILE','endwhile'] },
+  { q: 'What keyword sends a value back from a function?', answers: ['RETURN','return'] },
+  { q: 'FOR i ← 1 TO 5 — how many times does the loop run?', answers: ['5'] },
+  { q: 'What data type stores True or False?', answers: ['Boolean','boolean'] },
+  { q: 'x ← 4, y ← 3 — what is x * y + 1?', answers: ['13'] },
+  { q: 'What does LEN(array) return?', answers: ['the number of items','length','number of items','size'] },
+  { q: 'FOR loops are used for which type of iteration?', answers: ['definite','count-controlled'] },
+  { q: 'What is the index of the FIRST element in an array?', answers: ['0'] },
+  { q: 'A subroutine that returns a value is called a...', answers: ['function','Function'] },
+] },
+};
+
+let presState = { slides:[], cur:0, lessonKey:'', file:'' };
+let presFile = '';
+
+function openPresenter(year, idx) {
+  const lesson = LESSONS[year][idx];
+  const key    = year+'_'+idx;
+  const data   = TEACHER_LESSON_DATA[key];
+  presFile     = lesson.file;
+
+  if (!data) {
+    // No embedded data — open in new tab as fallback
+    window.open(lesson.file, '_blank');
+    toast('Opening in new tab (no embedded data yet)','ok');
+    return;
+  }
+
+  presState.slides    = data.slides;
+  presState.cur       = 0;
+  presState.lessonKey = key;
+
+  document.getElementById('pres-title').textContent = 'Year '+year+' — '+lesson.title;
+  document.getElementById('pres-overlay').classList.remove('hidden');
+  document.getElementById('pres-overlay').style.display = 'flex';
+  renderPresSlide();
+}
+
+function closePresenter() {
+  document.getElementById('pres-overlay').classList.add('hidden');
+  document.getElementById('pres-overlay').style.display = 'none';
+}
+
+function renderPresSlide() {
+  const slides = presState.slides;
+  const s      = slides[presState.cur];
+  const total  = slides.length;
+  const typeLabel = s.type==='compete'?'Competition':s.type.charAt(0).toUpperCase()+s.type.slice(1);
+
+  document.getElementById('pres-slide').innerHTML =
+    '<span class="stype t-'+s.type+'">'+typeLabel+'</span>' +
+    '<h1>'+s.title+'</h1>' +
+    '<div class="sb">'+(s.body||'')+'</div>';
+
+  document.getElementById('pres-counter').textContent = (presState.cur+1)+' / '+total;
+  document.getElementById('pres-prev').disabled = presState.cur===0;
+  document.getElementById('pres-next').disabled = presState.cur===total-1;
+
+  const dotsEl = document.getElementById('pres-dots');
+  dotsEl.innerHTML = '';
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'pdot2'+(i===presState.cur?' active':i<presState.cur?' done':'');
+    d.onclick = () => { presState.cur=i; renderPresSlide(); };
+    dotsEl.appendChild(d);
+  });
+}
+
+function presNav(dir) {
+  const total = presState.slides.length;
+  presState.cur = Math.max(0, Math.min(total-1, presState.cur+dir));
+  renderPresSlide();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('pres-overlay').classList.contains('hidden')) return;
+  if (e.key==='ArrowRight'||e.key===' '){e.preventDefault();presNav(1);}
+  if (e.key==='ArrowLeft'){e.preventDefault();presNav(-1);}
+  if (e.key==='Escape'){closePresenter();}
+});
+
 </script>
+
+<!-- PRESENTER OVERLAY -->
+<div id="pres-overlay" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;">
+  <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
+    <button onclick="closePresenter()" style="width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">←</button>
+    <span id="pres-title" style="font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;"></span>
+    <button onclick="window.open(presFile,'_blank')" style="padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--sans);">⧉ New Tab</button>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;">
+    <div id="pres-slide" style="width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 52px;position:relative;overflow-y:auto;max-height:calc(100vh - 140px);animation:sIn .3s ease;"></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
+    <button id="pres-prev" onclick="presNav(-1)" style="padding:8px 22px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">← Previous</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <div id="pres-dots" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;"></div>
+      <span id="pres-counter" style="font-family:var(--mono);font-size:11px;color:var(--muted);">1 / 1</span>
+      <span style="font-size:11px;color:var(--muted);">← → or Space to navigate</span>
+    </div>
+    <button id="pres-next" onclick="presNav(1)" style="padding:8px 22px;border-radius:8px;background:var(--accent);color:#000;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">Next →</button>
+  </div>
+</div>
+<style>
+@keyframes sIn{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:none;}}
+#pres-slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+#pres-slide .sb{color:var(--muted);font-size:15px;line-height:1.8;}
+#pres-slide .sb ul{padding-left:22px;}#pres-slide .sb li{margin-bottom:7px;}
+#pres-slide .sb li::marker{color:var(--accent);}#pres-slide .sb strong{color:var(--text);}
+#pres-slide .sb p{margin-bottom:12px;}
+#pres-slide code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+#pres-slide pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;white-space:pre-wrap;}
+#pres-slide .callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+#pres-slide .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+#pres-slide .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+#pres-slide .card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+#pres-slide .card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+#pres-slide .bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+#pres-slide .bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+#pres-slide .bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+#pres-slide .bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+#pres-slide .stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;margin-bottom:14px;}
+#pres-slide .t-intro{background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+#pres-slide .t-concept{background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+#pres-slide .t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+#pres-slide .t-summary{background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+#pres-slide .t-compete{background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.pdot2{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot2.active{background:var(--accent);transform:scale(1.4);}
+.pdot2.done{background:var(--muted);}
+@media(max-width:640px){#pres-slide{padding:24px 18px;} #pres-slide .two-col,#pres-slide .three-col{grid-template-columns:1fr;}}
+</style>
+
 </body>
 </html>
