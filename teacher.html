@@ -159,6 +159,25 @@ input:checked+.t-track::before{background:#fff;transform:translateX(19px);}
 @keyframes tIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 @media(max-width:640px){.nav-tabs{gap:2px;}.nav-tab{padding:6px 10px;font-size:12px;}.lesson-cards{grid-template-columns:1fr;}}
 #pres-overlay{display:none;}#pres-overlay:not(.hidden){display:flex;}
+
+/* ── Task elements (used in slide bodies) ── */
+.task-box{background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);flex:1;min-width:180px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;
+  padding:7px 12px;color:var(--text);font-family:var(--mono);font-size:14px;
+  width:110px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);
+  background:transparent;color:var(--accent);font-size:12px;font-weight:700;
+  cursor:pointer;font-family:var(--sans);transition:all .2s;white-space:nowrap;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+
 </style>
 </head>
 <body>
@@ -1496,6 +1515,14 @@ function openPresenter(year, idx) {
   document.getElementById('pres-title').textContent = 'Year '+year+' — '+lesson.title;
   document.getElementById('pres-overlay').classList.remove('hidden');
   renderPresSlide();
+  // Wire new tab button now that presFile is set
+  const ntBtn = document.getElementById('pres-newtab-btn');
+  if (ntBtn) {
+    ntBtn.onclick = function() {
+      if (presFile) window.open(presFile, '_blank');
+      else toast('No standalone file available for this lesson','err');
+    };
+  }
 }
 
 function closePresenter() {
@@ -1525,6 +1552,11 @@ function renderPresSlide() {
     d.onclick = () => { presState.cur=i; renderPresSlide(); };
     dotsEl.appendChild(d);
   });
+  // Wire check-btn onclick in activity slides
+  document.querySelectorAll('#pres-slide .check-btn').forEach(btn => {
+    const oc = btn.getAttribute('onclick');
+    if (oc) { btn.removeAttribute('onclick'); btn.addEventListener('click', () => eval(oc)); }
+  });
 }
 
 function presNav(dir) {
@@ -1540,6 +1572,27 @@ document.addEventListener('keydown', function(e) {
   if (e.key==='Escape'){closePresenter();}
 });
 
+
+// ── Task check helpers for presenter activity slides ──
+function schk(inputId, fbId, correct) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = val === String(correct).toLowerCase().replace(/\s+/g,'');
+  fb.className = 'fb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ Correct!':'Answer: '+correct;
+}
+function schkAny(inputId, fbId, answers) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  fb.className = 'fb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ Correct!':'Answer: '+answers[0];
+}
+
 </script>
 
 <!-- PRESENTER OVERLAY -->
@@ -1547,7 +1600,7 @@ document.addEventListener('keydown', function(e) {
   <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
     <button onclick="closePresenter()" style="width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">←</button>
     <span id="pres-title" style="font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;"></span>
-    <button onclick="window.open(presFile,'_blank')" style="padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--sans);">⧉ New Tab</button>
+    <button id="pres-newtab-btn" style="padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--sans);">⧉ New Tab</button>
   </div>
   <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;">
     <div id="pres-slide" style="width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 52px;position:relative;overflow-y:auto;max-height:calc(100vh - 140px);animation:sIn .3s ease;"></div>
