@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KS3 Computer Science — Student Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117; --surface:#1a1d2e; --surface2:#22263a; --border:#353a5c;
+  --accent:#00f0ff; --ay7:#00f0ff; --ay8:#bf5fff; --ay9:#ff7a20;
+  --text:#f0f0ff; --muted:#9090c0; --success:#2ecc71; --warn:#f1c40f; --danger:#e74c3c;
+  --mono:'Space Mono','Courier New',monospace;
+  --sans:'DM Sans','Segoe UI',system-ui,sans-serif;
+  --ng-bg:#f4f1e8; --ng-surf:#fff; --ng-surf2:#ebe6d5; --ng-border:#a8956a;
+  --ng-text:#1c1a0e; --ng-muted:#5c5430; --ng-acc:#3a7a3a;
+  --sp-bg:#fffbea; --sp-surf:#fff; --sp-surf2:#f5f0dc; --sp-border:#c8b97a;
+  --sp-text:#1a1200; --sp-muted:#5a4e20; --sp-acc:#1a6fd4;
+  --sp-font:'OpenDyslexic','Comic Sans MS',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,240,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+body.nature-green{background:var(--ng-bg);--bg:var(--ng-bg);--surface:var(--ng-surf);
+  --surface2:var(--ng-surf2);--border:var(--ng-border);--text:var(--ng-text);
+  --muted:var(--ng-muted);--accent:var(--ng-acc);}
+body.nature-green::before{opacity:0;}
+body.superpower{background:var(--sp-bg);--bg:var(--sp-bg);--surface:var(--sp-surf);
+  --surface2:var(--sp-surf2);--border:var(--sp-border);--text:var(--sp-text);
+  --muted:var(--sp-muted);--accent:var(--sp-acc);}
+body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
+  word-spacing:.18em;line-height:1.9!important;}
+.hidden{display:none!important;}
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(15,17,30,0.75);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.modal{background:#1e2235;border:1px solid #3a3f60;border-radius:16px;
+  padding:28px 32px;width:100%;max-width:400px;
+  box-shadow:0 0 80px rgba(0,240,255,.18);animation:mIn .3s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:none;}}
+.modal-logo{font-family:var(--mono);font-size:10px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:3px;margin-bottom:14px;}
+.modal h2{font-size:20px;font-weight:700;margin-bottom:4px;}
+.modal p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5;}
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.fg input,.fg select{width:100%;padding:9px 12px;background:#262a42;border:1px solid #454870;border-radius:8px;color:#f0f0ff;
+  font-family:var(--sans);font-size:14px;transition:border-color .2s;}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--accent);}
+.fg select option{background:var(--surface2);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
+  border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#000;width:100%;justify-content:center;}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-ghost{background:transparent;color:var(--muted);font-size:12px;padding:6px 0;}
+.btn-ghost:hover{color:var(--text);}
+.err{color:var(--danger);font-size:12px;margin-top:6px;display:none;}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;border-bottom:1px solid var(--border);
+  background:var(--surface);position:sticky;top:0;z-index:50;}
+.topbar-logo{font-family:var(--mono);font-size:12px;color:var(--muted);}
+.topbar-logo span{color:var(--accent);}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.chip{display:flex;align-items:center;gap:7px;padding:5px 12px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;font-size:12px;color:var(--muted);}
+.chip strong{color:var(--text);}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--success);}
+.filter-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:16px;border:2px solid var(--border);background:var(--surface2);
+  color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filter-btn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
+.filter-btn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
+.fdot{width:7px;height:7px;border-radius:50%;}
+/* Page */
+.page{position:relative;z-index:1;}
+.page.hidden{display:none;}
+/* Hero */
+.hero{padding:40px 24px 28px;text-align:center;}
+.hero-tag{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--accent);
+  text-transform:uppercase;letter-spacing:3px;padding:4px 14px;
+  border:1px solid rgba(0,240,255,.3);border-radius:20px;margin-bottom:16px;}
+.hero h1{font-size:clamp(24px,5vw,40px);font-weight:700;line-height:1.1;margin-bottom:10px;}
+.hero h1 span{color:var(--accent);}
+.hero p{color:var(--muted);font-size:15px;max-width:460px;margin:0 auto;}
+/* Lesson grid */
+.lesson-grid{max-width:900px;margin:0 auto;padding:0 24px 48px;display:flex;flex-direction:column;gap:20px;}
+.year-section{}
+.year-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.year-pip{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;}
+.year-label{font-size:16px;font-weight:700;}
+.lesson-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.lesson-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--card-color);opacity:0;transition:opacity .25s;}
+.lesson-card:hover{border-color:var(--card-color);transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.lesson-card:hover::before{opacity:1;}
+.lesson-card.locked{opacity:.4;cursor:not-allowed;}
+.lesson-card.locked:hover{transform:none;box-shadow:none;border-color:var(--border);}
+.lesson-card.locked::before{display:none;}
+.lc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.lc-num{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.lc-status{font-size:13px;}
+.lc-title{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.3;}
+.lc-meta{font-size:12px;color:var(--muted);}
+.lc-bar{height:4px;background:var(--border);border-radius:2px;margin-top:12px;}
+.lc-bar-fill{height:100%;background:var(--card-color);border-radius:2px;transition:width .4s;}
+/* Lesson task view */
+#task-view{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+#task-view.visible{display:flex;}
+.task-topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;
+  background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;position:sticky;top:0;z-index:50;}
+.back-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
+.back-btn:hover{border-color:var(--accent);color:var(--accent);}
+.task-title{font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;}
+.task-title strong{color:var(--text);}
+.task-body{flex:1;overflow-y:auto;padding:28px 24px;max-width:820px;margin:0 auto;width:100%;}
+.task-section{margin-bottom:32px;}
+.task-section-head{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;
+  align-items:center;gap:10px;}
+.task-section-head::after{content:'';flex:1;height:1px;background:var(--border);}
+.task-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:22px;margin-bottom:14px;}
+/* Quiz */
+.qtext{font-size:15px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.opts{display:grid;gap:8px;}
+.opt{padding:11px 15px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;font-size:14px;text-align:left;
+  color:var(--text);font-family:var(--sans);transition:all .2s;}
+.opt:hover:not(.disabled){border-color:var(--accent);color:var(--accent);}
+.opt.correct{border-color:var(--success)!important;background:rgba(46,204,113,.1)!important;color:var(--success)!important;}
+.opt.wrong{border-color:var(--danger)!important;background:rgba(231,76,60,.1)!important;color:var(--danger)!important;}
+.opt.disabled{cursor:not-allowed;}
+.qfb{padding:10px 14px;border-radius:8px;margin-top:10px;font-size:13px;font-weight:600;display:none;}
+.qfb.ok{background:rgba(46,204,113,.1);color:var(--success);border:1px solid var(--success);display:block;}
+.qfb.no{background:rgba(231,76,60,.1);color:var(--danger);border:1px solid var(--danger);display:block;}
+/* Match */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+.match-col h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.match-term{padding:9px 13px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);font-size:13px;cursor:grab;user-select:none;
+  transition:all .2s;margin-bottom:6px;}
+.match-term:active{cursor:grabbing;}
+.match-zone{min-height:38px;padding:7px 13px;border-radius:8px;
+  border:1px dashed var(--border);font-size:13px;color:var(--muted);
+  transition:all .2s;display:flex;align-items:center;margin-bottom:6px;}
+.match-zone.over{border-color:var(--accent);background:rgba(0,240,255,.05);}
+.match-zone.filled{border-style:solid;border-color:var(--accent);color:var(--text);background:var(--surface2);}
+.match-zone.correct{border-color:var(--success)!important;background:rgba(46,204,113,.08)!important;color:var(--success)!important;}
+.match-zone.wrong{border-color:var(--danger)!important;background:rgba(231,76,60,.08)!important;color:var(--danger)!important;}
+/* Written */
+.written-prompt{font-size:14px;color:var(--muted);margin-bottom:12px;white-space:pre-line;line-height:1.7;}
+.written-input{width:100%;min-height:110px;padding:12px 14px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:10px;color:var(--text);
+  font-family:var(--sans);font-size:14px;resize:vertical;transition:border-color .2s;}
+.written-input:focus{outline:none;border-color:var(--accent);}
+/* Competition */
+.compete-box{background:var(--surface2);border:2px solid var(--warn);border-radius:14px;padding:20px;margin-top:8px;}
+.compete-box h4{color:var(--warn);font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.comp-input{background:var(--bg);border:2px solid var(--warn);border-radius:8px;
+  padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:18px;
+  width:100%;text-align:center;margin:8px 0;}
+.comp-input:focus{outline:none;}
+.comp-btn{padding:10px;border-radius:8px;border:none;background:var(--warn);
+  color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);
+  width:100%;margin-top:6px;}
+.score-big{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warn);text-align:center;margin:8px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warn);border-radius:4px;transition:width 1s linear;}
+.comp-q{font-size:17px;font-weight:700;text-align:center;padding:12px;min-height:52px;}
+.lb{list-style:none;margin-top:8px;}
+.lb li{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;
+  font-size:13px;margin-bottom:3px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:11px;color:var(--warn);width:22px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-pts{font-family:var(--mono);font-size:13px;color:var(--warn);}
+/* Progress footer */
+.task-footer{padding:20px 24px;border-top:1px solid var(--border);
+  background:var(--surface);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.progress-label{font-size:13px;color:var(--muted);flex:1;}
+.progress-label strong{color:var(--text);}
+/* Proof of learning */
+#proof-view{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+#proof-view.visible{display:flex;}
+.proof-topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;
+  background:var(--surface);border-bottom:1px solid var(--border);}
+.proof-body{flex:1;overflow-y:auto;padding:28px 24px;max-width:820px;margin:0 auto;width:100%;}
+.proof-header{margin-bottom:28px;}
+.proof-header h2{font-size:24px;font-weight:700;margin-bottom:4px;}
+.proof-header p{color:var(--muted);font-size:14px;}
+.proof-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;margin-bottom:16px;}
+.proof-section-head{padding:14px 18px;background:var(--surface2);border-bottom:1px solid var(--border);
+  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;}
+.proof-rows{padding:4px 0;}
+.proof-row{display:flex;align-items:flex-start;gap:12px;padding:10px 18px;
+  border-bottom:1px solid rgba(53,58,92,.4);font-size:13px;}
+.proof-row:last-child{border-bottom:none;}
+.pr-label{color:var(--muted);min-width:160px;flex-shrink:0;}
+.pr-val{color:var(--text);flex:1;}
+.pr-badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;}
+.pr-ok{background:rgba(46,204,113,.15);color:var(--success);}
+.pr-no{background:rgba(231,76,60,.15);color:var(--danger);}
+.pr-pts{background:rgba(241,196,15,.15);color:var(--warn);}
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;padding:11px 16px;border-radius:10px;
+  font-size:13px;font-weight:600;z-index:9999;display:none;}
+.toast.show{display:flex;align-items:center;gap:8px;animation:tIn .3s ease;}
+.toast.ok{background:rgba(46,204,113,.15);border:1px solid var(--success);color:var(--success);}
+.toast.err{background:rgba(231,76,60,.15);border:1px solid var(--danger);color:var(--danger);}
+@keyframes tIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+@media print{.task-topbar,.task-footer,.topbar,.filter-btn,.btn,.comp-btn{display:none!important;}
+  body{background:#fff!important;color:#000!important;}
+  .proof-body{padding:0!important;}}
+@media(max-width:640px){.match-grid{grid-template-columns:1fr;}.lesson-cards{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- REGISTER -->
+<div class="overlay" id="reg-overlay">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-logo">📡 <span style="color:var(--accent)">CBA</span> Computer Science</div>
+      <div style="display:flex;gap:6px">
+        <button class="filter-btn ng-btn" onclick="toggleFilter('ng')"><span class="fdot" style="background:#6a9a4a"></span>🌿</button>
+        <button class="filter-btn sp-btn" onclick="toggleFilter('sp')"><span class="fdot" style="background:#f1c40f"></span>⚡</button>
+      </div>
+    </div>
+    <h2>Student Sign In</h2>
+    <p>Enter your details to access your lessons.</p>
+    <div class="fg"><label>Full Name</label><input id="r-name" placeholder="e.g. Alex Johnson" autocomplete="off"></div>
+    <div class="fg"><label>Year Group</label>
+      <select id="r-year"><option value="">— Select —</option><option value="7">Year 7</option><option value="8">Year 8</option><option value="9">Year 9</option></select>
+    </div>
+    <div class="fg"><label>Class</label><input id="r-class" placeholder="e.g. 7A, 8CS2" autocomplete="off"></div>
+    <div class="fg"><label>School Email</label><input type="email" id="r-email" placeholder="student@corby.academy"></div>
+    <div class="err" id="r-err"></div>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="register()">Access My Lessons →</button>
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn btn-ghost" onclick="window.location.href='teacher.html'">Teacher? → Go to Teacher Portal</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="home-page" class="page hidden">
+  <div class="topbar">
+    <div class="topbar-logo">📡 <span>CBA</span> — KS3 CS</div>
+    <div class="topbar-right">
+      <div class="chip"><div class="chip-dot"></div><strong id="user-name">—</strong> &nbsp;<span id="user-year" style="color:var(--accent)"></span></div>
+      <button class="filter-btn ng-btn" onclick="toggleFilter('ng')"><span class="fdot" style="background:#6a9a4a"></span>🌿 Green</button>
+      <button class="filter-btn sp-btn" onclick="toggleFilter('sp')"><span class="fdot" style="background:#f1c40f"></span>⚡ Superpower</button>
+      <button class="btn btn-secondary" id="proof-btn" style="padding:7px 14px;font-size:12px;display:none" onclick="openProof()">📄 My Progress</button>
+      <button class="btn btn-secondary" style="padding:7px 14px;font-size:12px" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-tag">KS3 Computer Science</div>
+    <h1>Your <span>Lessons</span></h1>
+    <p>Select a lesson below to start your tasks. Your teacher will unlock lessons as you progress.</p>
+  </div>
+  <div class="lesson-grid" id="lesson-grid"></div>
+</div>
+
+<!-- TASK VIEW -->
+<div id="task-view">
+  <div class="task-topbar">
+    <button class="back-btn" onclick="closeLesson()">←</button>
+    <div class="task-title"><span id="tv-year" style="color:var(--accent)"></span> &mdash; <strong id="tv-title">Lesson</strong></div>
+    <button class="filter-btn ng-btn" onclick="toggleFilter('ng')"><span class="fdot" style="background:#6a9a4a"></span>🌿</button>
+    <button class="filter-btn sp-btn" onclick="toggleFilter('sp')"><span class="fdot" style="background:#f1c40f"></span>⚡</button>
+  </div>
+  <div class="task-body" id="task-body"></div>
+  <div class="task-footer">
+    <div class="progress-label" id="footer-score">Your progress: <strong>0 / 0</strong> questions correct</div>
+    <button class="btn btn-secondary" style="font-size:13px;padding:8px 16px" onclick="openProof()">📄 View My Progress</button>
+    <button class="btn btn-secondary" style="font-size:13px;padding:8px 16px" onclick="closeLesson()">← Back to Lessons</button>
+  </div>
+</div>
+
+<!-- PROOF OF LEARNING -->
+<div id="proof-view">
+  <div class="proof-topbar">
+    <button class="back-btn" onclick="closeProof()">←</button>
+    <div class="task-title"><strong>📄 My Proof of Learning</strong></div>
+    <button class="btn btn-primary" style="padding:8px 18px;font-size:13px" onclick="downloadProof()">⬇ Download</button>
+    <button class="btn btn-secondary" style="padding:8px 14px;font-size:13px" onclick="window.print()">🖨 Print</button>
+    <button class="filter-btn ng-btn" onclick="toggleFilter('ng')"><span class="fdot" style="background:#6a9a4a"></span>🌿</button>
+    <button class="filter-btn sp-btn" onclick="toggleFilter('sp')"><span class="fdot" style="background:#f1c40f"></span>⚡</button>
+  </div>
+  <div class="proof-body" id="proof-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════
+const LESSONS = {
+  7: [
+    { id:'y7t2', title:'Binary — Introduction & Number Systems',    file:'lessons/y7t2.html' },
+    { id:'y7t1', title:'Algorithms & Problem Solving',              file:'lessons/y7t1.html' },
+    { id:'y7t3', title:'Networks & the Internet',                   file:'lessons/y7t3.html' },
+    { id:'y7t4', title:'Introduction to Programming',               file:'lessons/y7t4.html' },
+    { id:'y7t5', title:'7.5.1 — Spreadsheet Modelling',            file:'lessons/y7t5.html' },
+  ],
+  8: [
+    { id:'y8t2', title:'Binary, Hexadecimal & Denary',              file:'lessons/y8t2.html' },
+    { id:'y8t1', title:'8.5.1 — Python Warm Up',                   file:'lessons/y8t1.html' },
+    { id:'y8t3', title:'Computer Hardware & FDE',                   file:'lessons/y8t3.html' },
+    { id:'y8t4', title:'Cybersecurity',                             file:'lessons/y8t4.html' },
+    { id:'y8t5', title:'Databases & SQL',                           file:'lessons/y8t5.html' },
+  ],
+  9: [
+    { id:'y9t6', title:'Pseudocode — Introduction & Practice',      file:'lessons/y9t6.html' },
+    { id:'y9t1', title:'Object-Oriented Programming',               file:'lessons/y9t1.html' },
+    { id:'y9t2', title:'Searching & Sorting Algorithms',            file:'lessons/y9t2.html' },
+    { id:'y9t3', title:'AI & Machine Learning Ethics',              file:'lessons/y9t3.html' },
+    { id:'y9t4', title:'9.4.1 — Software: Spreadsheets',           file:'lessons/y9t4.html' },
+    { id:'y9t5', title:'Web Development & Ethics',                  file:'lessons/y9t5.html' },
+  ],
+};
+const LESSON_DATA = {
+  "7_0": {
+    lid: 'y7t2',
+    slides: [
+  {
+    type: 'intro',
+    title: 'Binary — The Language of Computers',
+    body: `<p>Every piece of data on a computer — photos, music, games, text — is stored as <strong>binary</strong>. It is the most fundamental concept in computer science.</p>
+<div class="two-col">
+  <div class="card"><h4>What is Binary?</h4><p>A number system that uses only <strong>two digits</strong>: <code>0</code> and <code>1</code>. These represent two electrical states: <strong>off</strong> and <strong>on</strong>.</p></div>
+  <div class="card"><h4>Why Binary?</h4><p>Computers use transistors — tiny switches that are either off (0) or on (1). Binary maps directly to this physical reality.</p></div>
+</div>
+<div class="callout">🎯 <strong>Today's goals:</strong> Understand why computers use binary, convert between binary and decimal, add binary numbers, and understand data sizes.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Bits and Bytes',
+    body: `<p>The building blocks of all digital data:</p>
+<table class="bit-table">
+  <tr><th>Unit</th><th>Size</th><th>Example</th><th>What it can store</th></tr>
+  <tr><td><strong>Bit</strong></td><td>1 binary digit</td><td><code>0</code> or <code>1</code></td><td>One switch: on or off</td></tr>
+  <tr><td><strong>Nibble</strong></td><td>4 bits</td><td><code>1010</code></td><td>One hex digit</td></tr>
+  <tr><td><strong>Byte</strong></td><td>8 bits</td><td><code>0100 0001</code></td><td>One character (e.g. "A")</td></tr>
+  <tr><td><strong>Kilobyte (KB)</strong></td><td>1,024 bytes</td><td>—</td><td>A short text message</td></tr>
+  <tr><td><strong>Megabyte (MB)</strong></td><td>1,024 KB</td><td>—</td><td>A 3-minute song</td></tr>
+  <tr><td><strong>Gigabyte (GB)</strong></td><td>1,024 MB</td><td>—</td><td>About 250 songs</td></tr>
+  <tr><td><strong>Terabyte (TB)</strong></td><td>1,024 GB</td><td>—</td><td>250,000 songs</td></tr>
+</table>
+<div class="callout warn">⚠️ Note: 1 KB = 1,024 bytes (not 1,000) because computers work in powers of 2.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Place Values',
+    body: `<p>Just like decimal uses place values (units, tens, hundreds...), binary uses <strong>powers of 2</strong>:</p>
+<table class="bit-table">
+  <tr><th>Bit 8</th><th>Bit 7</th><th>Bit 6</th><th>Bit 5</th><th>Bit 4</th><th>Bit 3</th><th>Bit 2</th><th>Bit 1</th></tr>
+  <tr><td><strong>128</strong></td><td><strong>64</strong></td><td><strong>32</strong></td><td><strong>16</strong></td><td><strong>8</strong></td><td><strong>4</strong></td><td><strong>2</strong></td><td><strong>1</strong></td></tr>
+</table>
+<div class="callout">📌 <strong>The golden rule:</strong> each column is exactly double the one to its right. Starting from 1: 1, 2, 4, 8, 16, 32, 64, 128.</div>
+<div class="two-col">
+  <div class="card"><h4>Example: 0100 0001 = 65</h4><p>Bit 7 (64) = 1 ✓<br>Bit 1 (1) = 1 ✓<br>All others = 0<br><strong>64 + 1 = 65</strong><br>This is the ASCII code for "A"!</p></div>
+  <div class="card"><h4>Example: 1000 1000 = 136</h4><p>Bit 8 (128) = 1 ✓<br>Bit 4 (8) = 1 ✓<br>All others = 0<br><strong>128 + 8 = 136</strong></p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary to Decimal — Step by Step',
+    body: `<p>To convert a binary number to decimal, multiply each bit by its place value and add them up.</p>
+<div class="callout"><strong>Example: Convert 0110 1100 to decimal</strong></div>
+<table class="bit-table">
+  <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+  <tr><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td>0</td></tr>
+  <tr><td>0</td><td>64</td><td>32</td><td>0</td><td>8</td><td>4</td><td>0</td><td>0</td></tr>
+</table>
+<p style="margin-top:12px">Add the highlighted values: <strong>64 + 32 + 8 + 4 = 108</strong></p>
+<div class="callout success">✅ <strong>0110 1100 in decimal = 108</strong></div>
+<div class="card" style="margin-top:14px"><h4>Your turn — try these:</h4><p>• 0000 1001 = ?<br>• 0011 0011 = ?<br>• 1010 1010 = ?</p><p style="color:var(--text-muted);font-size:12px;margin-top:8px">Answers: 9 | 51 | 170</p></div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Decimal to Binary — Step by Step',
+    body: `<p>To convert decimal to binary, repeatedly divide by 2 and record the remainders — then read them <strong>bottom to top</strong>.</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Method: Division by 2</h4>
+    <pre>Convert 45 to binary:
+45 ÷ 2 = 22 remainder 1 ↑
+22 ÷ 2 = 11 remainder 0 ↑
+11 ÷ 2 =  5 remainder 1 ↑
+ 5 ÷ 2 =  2 remainder 1 ↑
+ 2 ÷ 2 =  1 remainder 0 ↑
+ 1 ÷ 2 =  0 remainder 1 ↑
+
+Read upward: 101101
+8-bit: 0010 1101</pre>
+  </div>
+  <div class="card">
+    <h4>Method: Subtract Place Values</h4>
+    <p>Starting from 128, ask: "Does this fit?"</p>
+    <pre>Convert 100:
+128? No (too big)
+ 64? Yes → bit=1, left=36
+ 32? Yes → bit=1, left=4
+ 16? No
+  8? No
+  4? Yes → bit=1, left=0
+  2? No  1? No
+
+= 0110 0100</pre>
+  </div>
+</div>
+<div class="callout success">✅ Check: 64+32+4 = 100 ✓</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Addition',
+    body: `<p>Binary addition uses the same column-by-column method as decimal, but with only 0 and 1:</p>
+<table class="bit-table">
+  <tr><th>Rule</th><th>Result</th><th>Carry</th></tr>
+  <tr><td><code>0 + 0</code></td><td class="bit-highlight">0</td><td>0</td></tr>
+  <tr><td><code>0 + 1</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 0</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 1</code></td><td class="bit-highlight">0</td><td>1 (carry)</td></tr>
+  <tr><td><code>1 + 1 + 1</code></td><td class="bit-highlight">1</td><td>1 (carry)</td></tr>
+</table>
+<div class="callout"><strong>Example: 0001 0111 + 0000 1011 (23 + 11 = 34)</strong></div>
+<pre>  0001 0111   (23)
++ 0000 1011   (11)
+──────────────
+  0010 0010   (34)
+
+Working right to left:
+1+1=10 → write 0 carry 1
+1+1+1=11 → write 1 carry 1
+1+0+1=10 → write 0 carry 1
+0+0+1=1 → write 1
+...</pre>
+<div class="callout warn">⚠️ <strong>Overflow:</strong> If the result needs more than 8 bits, the 9th bit is lost. This is called overflow.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Why Binary? The Hardware Link',
+    body: `<p>Understanding <em>why</em> computers use binary helps everything else make sense.</p>
+<div class="three-col">
+  <div class="card"><h4>Transistors</h4><p>Modern CPUs contain <strong>billions</strong> of transistors — tiny switches. Each is either on (1) or off (0). Binary maps directly to this.</p></div>
+  <div class="card"><h4>Reliability</h4><p>Distinguishing just two states (high/low voltage) is far more reliable than ten. Less chance of errors over billions of operations.</p></div>
+  <div class="card"><h4>Logic Gates</h4><p>AND, OR, NOT — logical operations on binary values. All computing is built from combinations of these simple gates.</p></div>
+</div>
+<div class="callout">🔌 Even the Wi-Fi signal carrying this page is ultimately a stream of 0s and 1s — billions of them per second.</div>
+<div class="two-col">
+  <div class="card"><h4>Text — ASCII</h4><p>"A" = 65 = <code>0100 0001</code><br>"a" = 97 = <code>0110 0001</code><br>"0" = 48 = <code>0011 0000</code></p></div>
+  <div class="card"><h4>Colours — RGB</h4><p>Red = <code>FF 00 00</code><br>Each channel: 0–255 (8 bits)<br>24 bits per pixel total</p></div>
+</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Binary Practice',
+    body: `<p>Work through each question and type your answer. Press <strong>Check</strong> to see if you are right.</p>
+<div class="task-box">
+  <h4>📝 Task A — Binary to Decimal</h4>
+  <div class="answer-row"><label>1. Convert <code>0000 0001</code> to decimal:</label><input class="ans-input" id="t1" placeholder="?"><button class="check-btn" onclick="schk('t1','f1','1')">Check</button><span class="fb" id="f1"></span></div>
+  <div class="answer-row"><label>2. Convert <code>0000 1010</code> to decimal:</label><input class="ans-input" id="t2" placeholder="?"><button class="check-btn" onclick="schk('t2','f2','10')">Check</button><span class="fb" id="f2"></span></div>
+  <div class="answer-row"><label>3. Convert <code>0001 1000</code> to decimal:</label><input class="ans-input" id="t3" placeholder="?"><button class="check-btn" onclick="schk('t3','f3','24')">Check</button><span class="fb" id="f3"></span></div>
+  <div class="answer-row"><label>4. Convert <code>0101 0101</code> to decimal:</label><input class="ans-input" id="t4" placeholder="?"><button class="check-btn" onclick="schk('t4','f4','85')">Check</button><span class="fb" id="f4"></span></div>
+  <div class="answer-row"><label>5. Convert <code>1111 1111</code> to decimal:</label><input class="ans-input" id="t5" placeholder="?"><button class="check-btn" onclick="schk('t5','f5','255')">Check</button><span class="fb" id="f5"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Decimal to Binary (8-bit)</h4>
+  <div class="answer-row"><label>6. Convert <strong>5</strong> to 8-bit binary:</label><input class="ans-input" id="t6" placeholder="????????"><button class="check-btn" onclick="schkAny('t6','f6',['00000101','0000 0101'])">Check</button><span class="fb" id="f6"></span></div>
+  <div class="answer-row"><label>7. Convert <strong>13</strong> to 8-bit binary:</label><input class="ans-input" id="t7" placeholder="????????"><button class="check-btn" onclick="schkAny('t7','f7',['00001101','0000 1101'])">Check</button><span class="fb" id="f7"></span></div>
+  <div class="answer-row"><label>8. Convert <strong>64</strong> to 8-bit binary:</label><input class="ans-input" id="t8" placeholder="????????"><button class="check-btn" onclick="schkAny('t8','f8',['01000000','0100 0000'])">Check</button><span class="fb" id="f8"></span></div>
+  <div class="answer-row"><label>9. Convert <strong>200</strong> to 8-bit binary:</label><input class="ans-input" id="t9" placeholder="????????"><button class="check-btn" onclick="schkAny('t9','f9',['11001000','1100 1000'])">Check</button><span class="fb" id="f9"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Binary Addition</h4>
+  <div class="answer-row"><label>10. <code>0000 0011</code> + <code>0000 0101</code> =</label><input class="ans-input" id="t10" placeholder="?"><button class="check-btn" onclick="schk('t10','f10','8')">Check</button><span class="fb" id="f10"></span></div>
+  <div class="answer-row"><label>11. <code>0001 0000</code> + <code>0000 1111</code> =</label><input class="ans-input" id="t11" placeholder="?"><button class="check-btn" onclick="schk('t11','f11','31')">Check</button><span class="fb" id="f11"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Tip:</strong> Use the place value table — 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 — and add up the values where there is a 1.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'What We Covered Today',
+    body: `<ul>
+  <li>Computers use <strong>binary</strong> (0 and 1) because transistors have two states</li>
+  <li>8 bits = 1 byte; data sizes: KB → MB → GB → TB (multiply by 1,024 each time)</li>
+  <li>Binary place values: <strong>128 | 64 | 32 | 16 | 8 | 4 | 2 | 1</strong></li>
+  <li>Binary → decimal: add up place values where bit = 1</li>
+  <li>Decimal → binary: subtract place values or divide by 2</li>
+  <li>Binary addition: column by column, carry when you get 1+1</li>
+  <li>Overflow: when a result needs more bits than available</li>
+</ul>
+<div class="callout success">✅ You can now read and write in the language computers use!</div>
+<div class="callout">🏆 Now test yourself — the competition is up next!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Binary Speed Challenge',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">How fast can you convert? Score points for correct answers — faster = more points!</p>
+<div class="compete-board">
+  <h4>🏆 Binary Speed Challenge</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y7t2")||"[]"); renderLeaderboard(lb); },
+  },
+],
+    comp: [
+  { q: 'Convert binary 00001010 to decimal', answers: ['10'] },
+  { q: 'Convert binary 00001111 to decimal', answers: ['15'] },
+  { q: 'Convert decimal 8 to binary (8-bit)', answers: ['00001000','0000 1000'] },
+  { q: 'Convert binary 01000000 to decimal', answers: ['64'] },
+  { q: 'Convert decimal 255 to decimal — what is the max 8-bit value?', answers: ['255'] },
+  { q: 'How many bits in one byte?', answers: ['8'] },
+  { q: 'Convert binary 00110000 to decimal', answers: ['48'] },
+  { q: 'Convert decimal 16 to binary (just the 4 significant bits)', answers: ['00010000','0001 0000','10000'] },
+  { q: '00000011 + 00000100 = ? (decimal answer)', answers: ['7'] },
+  { q: 'Convert binary 10000000 to decimal', answers: ['128'] },
+  { q: 'How many bytes in 1 kilobyte?', answers: ['1024'] },
+  { q: 'Convert decimal 12 to binary (8-bit)', answers: ['00001100','0000 1100'] },
+],
+  },
+  "7_1": {
+    lid: 'y7t1',
+    slides: [
+  {
+    type: 'intro',
+    title: 'What is an Algorithm?',
+    body: `<p>An algorithm is a <strong>step-by-step set of instructions</strong> for solving a problem or completing a task.</p>
+    <ul>
+      <li>Every computer program is built on algorithms</li>
+      <li>Algorithms must be <strong>precise</strong>, <strong>unambiguous</strong> and <strong>finite</strong></li>
+      <li>We use them every day without realising!</li>
+    </ul>
+    <div class="callout">🧩 Think of a recipe — it's an algorithm for making food. Each step must be in the right order.</div>`
+  },
+  {
+    type: 'concept',
+    title: 'Representing Algorithms',
+    body: `<p>We can write algorithms in different ways:</p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Pseudocode</h4>
+        <p>Written in plain English-like statements. Easy to read and plan with.</p>
+        <br><code>IF score &gt; 50<br>&nbsp;&nbsp;PRINT "Pass"<br>ELSE<br>&nbsp;&nbsp;PRINT "Try again"</code>
+      </div>
+      <div class="col-card">
+        <h4>Flowcharts</h4>
+        <p>Visual diagrams using shapes to show steps, decisions and flow.</p>
+        <br><p>▭ Rectangle = Process<br>◇ Diamond = Decision<br>○ Oval = Start / End</p>
+      </div>
+    </div>`
+  },
+  {
+    type: 'concept',
+    title: 'Decomposition',
+    body: `<p><strong>Decomposition</strong> means breaking a large, complex problem into smaller, more manageable sub-problems.</p>
+    <ul>
+      <li>Each sub-problem is easier to understand and solve</li>
+      <li>Solutions to sub-problems can be combined to solve the original</li>
+      <li>Used by all professional software developers</li>
+    </ul>
+    <div class="callout">💡 Example: Building a game = graphics + sound + controls + scoring + saving. Each part can be tackled separately.</div>`
+  },
+  {
+    type: 'concept',
+    title: 'Abstraction',
+    body: `<p><strong>Abstraction</strong> means removing unnecessary detail so you can focus on what matters.</p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Real World Example</h4>
+        <p>A map is an abstraction of the real world — it shows roads and places, but leaves out trees, lamp posts and other irrelevant detail.</p>
+      </div>
+      <div class="col-card">
+        <h4>In Programming</h4>
+        <p>When you call <code>print("Hello")</code>, you don't need to know how the screen works — that detail is abstracted away.</p>
+      </div>
+    </div>`
+  },
+  {
+    type: 'activity',
+    title: 'Activity: Spot the Algorithm',
+    body: `<p>Look at the following everyday tasks. With a partner, write out the steps as an algorithm:</p>
+    <ul>
+      <li>Making a cup of tea</li>
+      <li>Crossing the road safely</li>
+      <li>Searching for a word in a dictionary</li>
+    </ul>
+    <div class="callout">Think about: <strong>What decisions need to be made? What can go wrong? What order must the steps be in?</strong><br><br>Try drawing your algorithm as a flowchart!</div>`
+  },
+  {
+    type: 'activity',
+    title: 'Activity: Write Pseudocode',
+    body: `<p>Write a pseudocode algorithm for the following problem:</p>
+    <div class="callout" style="font-size:16px;font-weight:600">A program asks the user to enter a number. If the number is greater than 10, print "Big number". Otherwise, print "Small number".</div>
+    <br>
+    <p>Your pseudocode should include:</p>
+    <ul>
+      <li>An <strong>INPUT</strong> statement</li>
+      <li>An <strong>IF / ELSE</strong> decision</li>
+      <li>Two <strong>OUTPUT</strong> statements</li>
+    </ul>`
+  },
+  {
+    type: 'summary',
+    title: 'Topic Summary',
+    body: `<p>Here is what we covered today:</p>
+    <ul>
+      <li>An <strong>algorithm</strong> is a precise, step-by-step set of instructions</li>
+      <li>Algorithms can be written as <strong>pseudocode</strong> or drawn as <strong>flowcharts</strong></li>
+      <li><strong>Decomposition</strong> breaks big problems into smaller, manageable parts</li>
+      <li><strong>Abstraction</strong> hides unnecessary detail so we can focus on what matters</li>
+      <li>All programs are built on algorithms — getting them right is the foundation of computing</li>
+    </ul>
+    <div class="callout">✅ Next lesson: Data & Binary Representation — how computers store information using only 0s and 1s.</div>`
+  },
+],
+    comp: [],
+  },
+  "8_0": {
+    lid: 'y8t2',
+    slides: [
+  {
+    type: 'intro',
+    title: 'Binary, Denary & Hexadecimal',
+    body: `<p>Year 8 builds on your binary knowledge, introducing <strong>denary</strong> (the proper name for our base-10 number system) and <strong>hexadecimal</strong> — the base-16 system used everywhere in computing.</p>
+<div class="three-col">
+  <div class="card"><h4>Binary (Base-2)</h4><p>Digits: <strong>0, 1</strong><br>Used inside computers. Place values: 1, 2, 4, 8, 16...</p></div>
+  <div class="card"><h4>Denary (Base-10)</h4><p>Digits: <strong>0–9</strong><br>What humans use every day. Place values: 1, 10, 100, 1000...</p></div>
+  <div class="card"><h4>Hexadecimal (Base-16)</h4><p>Digits: <strong>0–9, A–F</strong><br>Shorthand for binary. Used in colour codes, memory addresses, MACs.</p></div>
+</div>
+<div class="callout">🎯 <strong>Goals:</strong> Convert fluently between all three number systems, understand why hex exists, and use it in real computing contexts.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary & Denary — Recap',
+    body: `<p>A quick recap of binary conversion before we extend to hexadecimal.</p>
+<table class="bit-table">
+  <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th><th>=</th><th>Denary</th></tr>
+  <tr><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td>→</td><td><strong>106</strong></td></tr>
+  <tr><td>0</td><td>0</td><td>0</td><td class="bit-highlight">1</td><td>0</td><td>0</td><td>0</td><td class="bit-highlight">1</td><td>→</td><td><strong>17</strong></td></tr>
+  <tr><td class="bit-highlight">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>→</td><td><strong>128</strong></td></tr>
+</table>
+<div class="two-col">
+  <div class="card"><h4>Binary → Denary</h4><p>Add up place values where bit = 1.<br>Row 1: 64+32+8+2 = <strong>106</strong></p></div>
+  <div class="card"><h4>Denary → Binary</h4><p>Subtract largest fitting power of 2, work down.<br>Or: divide repeatedly by 2, read remainders upward.</p></div>
+</div>
+<div class="callout warn">⚠️ <strong>Denary vs decimal:</strong> Same thing! "Denary" (from Latin <em>denarius</em>) is the precise term for base-10. You'll see both in exam questions.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Introducing Hexadecimal',
+    body: `<p>Hexadecimal (<strong>hex</strong>) is base-16. It needs 16 distinct symbols — it uses digits 0–9 then letters A–F:</p>
+<table class="bit-table">
+  <tr><th>Denary</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr>
+  <tr><td><strong>Hex</strong></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td class="bit-highlight">A</td><td class="bit-highlight">B</td><td class="bit-highlight">C</td><td class="bit-highlight">D</td><td class="bit-highlight">E</td><td class="bit-highlight">F</td></tr>
+</table>
+<div class="callout">💡 A = 10, B = 11, C = 12, D = 13, E = 14, F = 15. Easy to remember: after 9, continue with A!</div>
+<div class="two-col">
+  <div class="card"><h4>Why does hex exist?</h4><p>Binary is unwieldy — <code>11110000</code> is hard to read. Hex is a compact shorthand. One hex digit = exactly <strong>4 binary bits</strong> (a nibble).</p></div>
+  <div class="card"><h4>Where is hex used?</h4><p>• Colour codes: <code>#FF5733</code><br>• Memory addresses: <code>0x1A2B</code><br>• MAC addresses: <code>A1:B2:C3:D4</code><br>• Error codes in computing</p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Converting Hex ↔ Denary',
+    body: `<p>Hexadecimal uses place values that are powers of 16:</p>
+<table class="bit-table">
+  <tr><th>Position</th><th>256s</th><th>16s</th><th>1s</th></tr>
+  <tr><td><strong>Place value</strong></td><td>16²= 256</td><td>16¹= 16</td><td>16⁰= 1</td></tr>
+</table>
+<div class="two-col">
+  <div class="card">
+    <h4>Hex → Denary: 3F</h4>
+    <p>3 is in the 16s column: 3 × 16 = 48<br>F (=15) is in the 1s column: 15 × 1 = 15<br><strong>48 + 15 = 63</strong></p>
+  </div>
+  <div class="card">
+    <h4>Hex → Denary: B4</h4>
+    <p>B (=11) × 16 = 176<br>4 × 1 = 4<br><strong>176 + 4 = 180</strong></p>
+  </div>
+</div>
+<div class="two-col">
+  <div class="card">
+    <h4>Denary → Hex: 200</h4>
+    <p>200 ÷ 16 = 12 remainder 8<br>12 = C in hex<br><strong>200 = C8</strong></p>
+  </div>
+  <div class="card">
+    <h4>Denary → Hex: 255</h4>
+    <p>255 ÷ 16 = 15 remainder 15<br>15 = F, 15 = F<br><strong>255 = FF</strong></p>
+  </div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary ↔ Hex — The Nibble Trick',
+    body: `<p>The most powerful shortcut in computing: <strong>every hex digit = exactly 4 binary bits</strong>.</p>
+<div class="callout">🔑 Split any binary number into groups of 4 (nibbles) from the right, then convert each nibble to one hex digit.</div>
+<table class="bit-table">
+  <tr><th>Binary Nibble</th><th>0000</th><th>0001</th><th>0010</th><th>0011</th><th>0100</th><th>0101</th><th>0110</th><th>0111</th></tr>
+  <tr><td><strong>Hex</strong></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+  <tr><th>Binary Nibble</th><th>1000</th><th>1001</th><th>1010</th><th>1011</th><th>1100</th><th>1101</th><th>1110</th><th>1111</th></tr>
+  <tr><td><strong>Hex</strong></td><td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+</table>
+<div class="two-col">
+  <div class="card">
+    <h4>Binary → Hex: 1010 1100</h4>
+    <p>Split: <code>1010</code> | <code>1100</code><br>1010 = A, 1100 = C<br><strong>= AC</strong><br>Check: 10×16+12 = 172 ✓</p>
+  </div>
+  <div class="card">
+    <h4>Hex → Binary: 5E</h4>
+    <p>5 = <code>0101</code><br>E (=14) = <code>1110</code><br><strong>= 0101 1110</strong><br>Check: 64+16+8+4+2 = 94 ✓</p>
+  </div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Hex in the Real World — Colour Codes',
+    body: `<p>The most visible use of hex in everyday life is <strong>HTML/CSS colour codes</strong>. Every colour on a screen is defined by three hex pairs: <code>#RRGGBB</code></p>
+<table class="bit-table">
+  <tr><th>Colour</th><th>Hex Code</th><th>Red (RR)</th><th>Green (GG)</th><th>Blue (BB)</th></tr>
+  <tr><td>🔴 Pure Red</td><td><code>#FF0000</code></td><td class="bit-highlight">FF = 255</td><td>00 = 0</td><td>00 = 0</td></tr>
+  <tr><td>🟢 Pure Green</td><td><code>#00FF00</code></td><td>00 = 0</td><td class="bit-highlight">FF = 255</td><td>00 = 0</td></tr>
+  <tr><td>🔵 Pure Blue</td><td><code>#0000FF</code></td><td>00 = 0</td><td>00 = 0</td><td class="bit-highlight">FF = 255</td></tr>
+  <tr><td>⚪ White</td><td><code>#FFFFFF</code></td><td>FF = 255</td><td>FF = 255</td><td>FF = 255</td></tr>
+  <tr><td>⚫ Black</td><td><code>#000000</code></td><td>00 = 0</td><td>00 = 0</td><td>00 = 0</td></tr>
+  <tr><td>🟠 Orange</td><td><code>#FF7A20</code></td><td>FF = 255</td><td>7A = 122</td><td>20 = 32</td></tr>
+</table>
+<div class="callout">🎨 Each channel (R, G, B) is 1 byte = 8 bits = 2 hex digits = values 0–255. So we get 256 × 256 × 256 = <strong>16,777,216 possible colours</strong>!</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Hex, Binary & Denary',
+    body: `<p>Work through each question and check your answer.</p>
+<div class="task-box">
+  <h4>📝 Task A — Binary to Denary</h4>
+  <div class="answer-row"><label>1. <code>0011 1100</code> to denary:</label><input class="ans-input" id="a1" placeholder="?"><button class="check-btn" onclick="schk('a1','fa1','60')">Check</button><span class="fb" id="fa1"></span></div>
+  <div class="answer-row"><label>2. <code>1001 0110</code> to denary:</label><input class="ans-input" id="a2" placeholder="?"><button class="check-btn" onclick="schk('a2','fa2','150')">Check</button><span class="fb" id="fa2"></span></div>
+  <div class="answer-row"><label>3. <code>1111 0000</code> to denary:</label><input class="ans-input" id="a3" placeholder="?"><button class="check-btn" onclick="schk('a3','fa3','240')">Check</button><span class="fb" id="fa3"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Denary to Hex</h4>
+  <div class="answer-row"><label>4. Convert denary <strong>10</strong> to hex:</label><input class="ans-input" id="b1" placeholder="?"><button class="check-btn" onclick="schkAny('b1','fb1',['A','0A','a','0a'])">Check</button><span class="fb" id="fb1"></span></div>
+  <div class="answer-row"><label>5. Convert denary <strong>15</strong> to hex:</label><input class="ans-input" id="b2" placeholder="?"><button class="check-btn" onclick="schkAny('b2','fb2',['F','0F','f','0f'])">Check</button><span class="fb" id="fb2"></span></div>
+  <div class="answer-row"><label>6. Convert denary <strong>255</strong> to hex:</label><input class="ans-input" id="b3" placeholder="?"><button class="check-btn" onclick="schkAny('b3','fb3',['FF','ff'])">Check</button><span class="fb" id="fb3"></span></div>
+  <div class="answer-row"><label>7. Convert denary <strong>200</strong> to hex:</label><input class="ans-input" id="b4" placeholder="?"><button class="check-btn" onclick="schkAny('b4','fb4',['C8','c8'])">Check</button><span class="fb" id="fb4"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Hex to Denary</h4>
+  <div class="answer-row"><label>8. Convert hex <strong>1A</strong> to denary:</label><input class="ans-input" id="c1" placeholder="?"><button class="check-btn" onclick="schk('c1','fc1','26')">Check</button><span class="fb" id="fc1"></span></div>
+  <div class="answer-row"><label>9. Convert hex <strong>3F</strong> to denary:</label><input class="ans-input" id="c2" placeholder="?"><button class="check-btn" onclick="schk('c2','fc2','63')">Check</button><span class="fb" id="fc2"></span></div>
+  <div class="answer-row"><label>10. Convert hex <strong>B4</strong> to denary:</label><input class="ans-input" id="c3" placeholder="?"><button class="check-btn" onclick="schk('c3','fc3','180')">Check</button><span class="fb" id="fc3"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task D — Binary to Hex</h4>
+  <div class="answer-row"><label>11. <code>1010 1010</code> to hex:</label><input class="ans-input" id="d1" placeholder="?"><button class="check-btn" onclick="schkAny('d1','fd1',['AA','aa'])">Check</button><span class="fb" id="fd1"></span></div>
+  <div class="answer-row"><label>12. <code>1111 0000</code> to hex:</label><input class="ans-input" id="d2" placeholder="?"><button class="check-btn" onclick="schkAny('d2','fd2',['F0','f0'])">Check</button><span class="fb" id="fd2"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Shortcut:</strong> Split binary into nibbles (4 bits) and convert each nibble to one hex digit.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'Summary — Three Number Systems',
+    body: `<table class="bit-table">
+  <tr><th>System</th><th>Base</th><th>Digits</th><th>Place values</th><th>Used for</th></tr>
+  <tr><td><strong>Denary</strong></td><td>10</td><td>0–9</td><td>1, 10, 100...</td><td>Human mathematics</td></tr>
+  <tr><td><strong>Binary</strong></td><td>2</td><td>0, 1</td><td>1, 2, 4, 8...</td><td>Inside computers</td></tr>
+  <tr><td><strong>Hex</strong></td><td>16</td><td>0–9, A–F</td><td>1, 16, 256...</td><td>Colours, memory, MACs</td></tr>
+</table>
+<ul style="margin-top:14px">
+  <li>1 hex digit = 4 binary bits (a nibble) — the most useful conversion shortcut</li>
+  <li>FF in hex = 255 in denary = 1111 1111 in binary (maximum 8-bit value)</li>
+  <li>Colour codes: <code>#RRGGBB</code> — each pair is one byte (0–255)</li>
+  <li>Denary → hex: divide by 16, use A–F for remainders 10–15</li>
+</ul>
+<div class="callout success">✅ You can now navigate fluently between all three number systems used in computing!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Hex, Binary & Denary Speed Round',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">Convert between binary, hex and denary as fast as you can!</p>
+<div class="compete-board">
+  <h4>🏆 Number Systems Speed Round</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y8t2")||"[]"); renderLeaderboard(lb); },
+  },
+],
+    comp: [
+  { q: 'What is hex A in denary?', answers: ['10'] },
+  { q: 'What is hex F in denary?', answers: ['15'] },
+  { q: 'Convert denary 255 to hex', answers: ['FF','ff'] },
+  { q: 'Convert binary 1111 to hex', answers: ['F','f'] },
+  { q: 'Convert binary 1010 1010 to hex', answers: ['AA','aa'] },
+  { q: 'What is hex FF in denary?', answers: ['255'] },
+  { q: 'Convert hex 1A to denary', answers: ['26'] },
+  { q: 'How many bits does one hex digit represent?', answers: ['4'] },
+  { q: 'Convert denary 16 to hex', answers: ['10'] },
+  { q: 'What colour does #FF0000 represent?', answers: ['red'] },
+  { q: 'Convert hex C to denary', answers: ['12'] },
+  { q: 'Convert binary 0000 1111 to hex', answers: ['F','0F','0f','f'] },
+  { q: 'Convert denary 32 to hex', answers: ['20'] },
+  { q: 'What is hex B in denary?', answers: ['11'] },
+],
+  },
+  "9_0": {
+    lid: 'y9t6',
+    slides: [
+  {
+    type: 'intro',
+    title: 'Pseudocode — Designing Before Coding',
+    body: `<p><strong>Pseudocode</strong> is a way of describing an algorithm using structured English that resembles code, but can be understood by anyone — regardless of the programming language they know.</p>
+<div class="two-col">
+  <div class="card"><h4>Why use pseudocode?</h4><ul><li>Plan logic before writing real code</li><li>Communicate algorithms clearly</li><li>Language-independent — works for Python, Java, C#...</li><li>Essential in GCSE and A-Level exams</li></ul></div>
+  <div class="card"><h4>Pseudocode vs Code</h4><p><strong>Python:</strong></p><pre style="font-size:12px">if score >= 50:
+    print("Pass")</pre><p><strong>Pseudocode:</strong></p><pre style="font-size:12px">IF score >= 50 THEN
+    OUTPUT "Pass"
+ENDIF</pre></div>
+</div>
+<div class="callout">🎯 <strong>Goals:</strong> Read and write pseudocode fluently using variables, input/output, selection, loops, and subroutines.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Variables, Assignment & Data Types',
+    body: `<p>A <strong>variable</strong> is a named location in memory that stores a value. In pseudocode, we use the <code>←</code> arrow for assignment:</p>
+<pre>name ← "Alice"
+age  ← 17
+score ← 95.5
+passed ← TRUE</pre>
+<table class="bit-table">
+  <tr><th>Data Type</th><th>Description</th><th>Example</th></tr>
+  <tr><td><strong>Integer</strong></td><td>Whole number</td><td><code>score ← 42</code></td></tr>
+  <tr><td><strong>Real</strong></td><td>Decimal number</td><td><code>pi ← 3.14159</code></td></tr>
+  <tr><td><strong>String</strong></td><td>Text (in quotes)</td><td><code>name ← "Bob"</code></td></tr>
+  <tr><td><strong>Boolean</strong></td><td>True or False</td><td><code>logged ← TRUE</code></td></tr>
+  <tr><td><strong>Char</strong></td><td>Single character</td><td><code>grade ← 'A'</code></td></tr>
+</table>
+<div class="callout warn">⚠️ <strong>= vs ←</strong> In pseudocode, <code>←</code> means assignment (store this value). <code>=</code> means comparison (are these equal?). Never mix them up!</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Input & Output',
+    body: `<p>Programs communicate with users through <strong>INPUT</strong> and <strong>OUTPUT</strong>:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>INPUT — Read from user</h4>
+    <pre>name ← INPUT("Enter name: ")
+age  ← INPUT("Enter age: ")</pre>
+    <p>The value typed by the user is stored in the variable.</p>
+  </div>
+  <div class="card">
+    <h4>OUTPUT — Display to screen</h4>
+    <pre>OUTPUT "Hello, " + name
+OUTPUT "You are " + age
+OUTPUT score * 2</pre>
+    <p>Can output text, variables, or expressions.</p>
+  </div>
+</div>
+<div class="callout">
+  <strong>Full example:</strong>
+  <pre>name ← INPUT("What is your name? ")
+OUTPUT "Welcome, " + name + "!"</pre>
+</div>
+<div class="two-col">
+  <div class="card"><h4>String Concatenation</h4><p>Join strings with <code>+</code>:<br><pre>"Hello, " + name</pre></p></div>
+  <div class="card"><h4>Type Conversion</h4><p>Convert types when needed:<br><pre>INT("42") → 42
+STR(42) → "42"</pre></p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Selection — IF, ELSE IF, ELSE',
+    body: `<p>Selection lets a program make decisions and follow different paths:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Simple IF</h4>
+    <pre>IF age >= 18 THEN
+    OUTPUT "Adult"
+ENDIF</pre>
+  </div>
+  <div class="card">
+    <h4>IF...ELSE</h4>
+    <pre>IF age >= 18 THEN
+    OUTPUT "Adult"
+ELSE
+    OUTPUT "Minor"
+ENDIF</pre>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <h4>IF...ELSE IF...ELSE (multiple branches)</h4>
+  <pre>IF score >= 70 THEN
+    OUTPUT "Distinction"
+ELSE IF score >= 50 THEN
+    OUTPUT "Pass"
+ELSE IF score >= 30 THEN
+    OUTPUT "Near miss"
+ELSE
+    OUTPUT "Fail"
+ENDIF</pre>
+</div>
+<div class="callout warn">⚠️ Always end with <code>ENDIF</code>. Indentation shows what is inside the block — this is critical for readability.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Iteration — FOR and WHILE Loops',
+    body: `<p><strong>Iteration</strong> repeats a block of code. There are two main types:</p>
+<div class="two-col">
+  <div class="card">
+    <h4>FOR loop — count-controlled</h4>
+    <p>Use when you know how many times to repeat.</p>
+    <pre>FOR i ← 1 TO 5
+    OUTPUT i
+ENDFOR
+
+FOR i ← 1 TO 10 STEP 2
+    OUTPUT i
+ENDFOR</pre>
+    <p style="font-size:12px;color:var(--text-muted)">Outputs: 1 3 5 7 9 (odd numbers)</p>
+  </div>
+  <div class="card">
+    <h4>WHILE loop — condition-controlled</h4>
+    <p>Use when you repeat until a condition is false.</p>
+    <pre>count ← 0
+WHILE count < 5
+    OUTPUT count
+    count ← count + 1
+ENDWHILE
+
+password ← INPUT("Password: ")
+WHILE password ≠ "secret"
+    OUTPUT "Wrong!"
+    password ← INPUT("Try again: ")
+ENDWHILE</pre>
+  </div>
+</div>
+<div class="callout">🔑 <strong>Key difference:</strong> FOR is for definite iteration (known count); WHILE is for indefinite iteration (unknown count).</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Subroutines — Procedures & Functions',
+    body: `<p><strong>Subroutines</strong> are named, reusable blocks of code. They help us avoid repeating ourselves (the DRY principle — Don't Repeat Yourself).</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Procedure (no return value)</h4>
+    <pre>PROCEDURE greet(name)
+    OUTPUT "Hello, " + name
+    OUTPUT "Welcome back!"
+ENDPROCEDURE
+
+CALL greet("Alice")
+CALL greet("Bob")</pre>
+  </div>
+  <div class="card">
+    <h4>Function (returns a value)</h4>
+    <pre>FUNCTION square(n)
+    RETURN n * n
+ENDFUNCTION
+
+result ← square(5)
+OUTPUT result    # outputs 25
+
+OUTPUT square(7) # outputs 49</pre>
+  </div>
+</div>
+<div class="callout">💡 <strong>Parameters</strong> are the inputs to a subroutine (e.g. <code>name</code>, <code>n</code>). Functions use <code>RETURN</code> to send a value back. Procedures do not.</div>
+<div class="callout warn">⚠️ <strong>Scope:</strong> Variables declared inside a subroutine are <em>local</em> — they only exist within that subroutine.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Arrays in Pseudocode',
+    body: `<p>An <strong>array</strong> stores multiple values under one name, accessed by index (position).</p>
+<pre># Declare and initialise
+scores ← [85, 72, 91, 60, 78]
+
+# Access by index (starts at 0)
+OUTPUT scores[0]    # 85
+OUTPUT scores[2]    # 91
+
+# Set a value
+scores[1] ← 99
+
+# Loop through an array
+FOR i ← 0 TO LEN(scores) - 1
+    OUTPUT scores[i]
+ENDFOR</pre>
+<div class="two-col">
+  <div class="card"><h4>Useful Array Functions</h4><p><code>LEN(array)</code> — number of items<br><code>array[i]</code> — access item at index i<br><code>array[i] ← value</code> — set item</p></div>
+  <div class="card"><h4>Common Pattern: Find Max</h4><pre>max ← scores[0]
+FOR i ← 1 TO LEN(scores)-1
+    IF scores[i] > max THEN
+        max ← scores[i]
+    ENDIF
+ENDFOR
+OUTPUT max</pre></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Putting It Together — Full Algorithm Examples',
+    body: `<p>Let's see complete algorithms that combine everything we've covered.</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Example 1: Grade Calculator</h4>
+    <pre>PROCEDURE getGrade(score)
+    IF score >= 70 THEN
+        OUTPUT "A"
+    ELSE IF score >= 60 THEN
+        OUTPUT "B"
+    ELSE IF score >= 50 THEN
+        OUTPUT "C"
+    ELSE
+        OUTPUT "U"
+    ENDIF
+ENDPROCEDURE
+
+total ← 0
+FOR i ← 1 TO 5
+    s ← INPUT("Score: ")
+    total ← total + INT(s)
+ENDFOR
+avg ← total / 5
+OUTPUT "Average: " + STR(avg)
+CALL getGrade(avg)</pre>
+  </div>
+  <div class="card">
+    <h4>Example 2: Number Guessing Game</h4>
+    <pre>secret ← 42
+guess ← 0
+attempts ← 0
+
+WHILE guess ≠ secret
+    guess ← INT(INPUT("Guess: "))
+    attempts ← attempts + 1
+    IF guess < secret THEN
+        OUTPUT "Too low!"
+    ELSE IF guess > secret THEN
+        OUTPUT "Too high!"
+    ENDIF
+ENDWHILE
+
+OUTPUT "Correct!"
+OUTPUT "Attempts: " + STR(attempts)</pre>
+  </div>
+</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Pseudocode Practice',
+    body: `<p>Write pseudocode for each problem. Type your answer and check key terms.</p>
+<div class="task-box">
+  <h4>📝 Task A — Concepts Check</h4>
+  <div class="answer-row"><label>1. What keyword starts a loop that repeats a set number of times?</label><input class="ans-input" id="p1" placeholder="keyword"><button class="check-btn" onclick="schkAny('p1','fp1',['FOR','for'])">Check</button><span class="fb" id="fp1"></span></div>
+  <div class="answer-row"><label>2. What keyword starts a conditional block?</label><input class="ans-input" id="p2" placeholder="keyword"><button class="check-btn" onclick="schkAny('p2','fp2',['IF','if'])">Check</button><span class="fb" id="fp2"></span></div>
+  <div class="answer-row"><label>3. What keyword outputs to the screen?</label><input class="ans-input" id="p3" placeholder="keyword"><button class="check-btn" onclick="schkAny('p3','fp3',['OUTPUT','output','PRINT','print'])">Check</button><span class="fb" id="fp3"></span></div>
+  <div class="answer-row"><label>4. What keyword reads input from a user?</label><input class="ans-input" id="p4" placeholder="keyword"><button class="check-btn" onclick="schkAny('p4','fp4',['INPUT','input'])">Check</button><span class="fb" id="fp4"></span></div>
+  <div class="answer-row"><label>5. What symbol assigns a value to a variable?</label><input class="ans-input" id="p5" placeholder="symbol"><button class="check-btn" onclick="schk('p5','fp5','←')">Check</button><span class="fb" id="fp5"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Trace the Code</h4>
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Given this pseudocode — what does it output?</p>
+  <pre>x ← 5
+y ← 3
+z ← x * y + 2
+OUTPUT z</pre>
+  <div class="answer-row"><label>6. What does the pseudocode above output?</label><input class="ans-input" id="p6" placeholder="?"><button class="check-btn" onclick="schk('p6','fp6','17')">Check</button><span class="fb" id="fp6"></span></div>
+  <pre>FOR i ← 1 TO 3
+    OUTPUT i * 2
+ENDFOR</pre>
+  <div class="answer-row"><label>7. How many lines does this loop print?</label><input class="ans-input" id="p7" placeholder="?"><button class="check-btn" onclick="schk('p7','fp7','3')">Check</button><span class="fb" id="fp7"></span></div>
+  <div class="answer-row"><label>8. What is the last value printed?</label><input class="ans-input" id="p8" placeholder="?"><button class="check-btn" onclick="schk('p8','fp8','6')">Check</button><span class="fb" id="fp8"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Spot the Error</h4>
+  <pre>score ← INPUT("Enter score: ")
+IF score >= 50
+    OUTPUT "Pass"
+ELSE
+    OUTPUT "Fail"</pre>
+  <div class="answer-row"><label>9. What is missing from the IF line?</label><input class="ans-input" id="p9" placeholder="keyword"><button class="check-btn" onclick="schkAny('p9','fp9',['THEN','then'])">Check</button><span class="fb" id="fp9"></span></div>
+  <div class="answer-row"><label>10. What keyword is missing at the end?</label><input class="ans-input" id="p10" placeholder="keyword"><button class="check-btn" onclick="schkAny('p10','fp10',['ENDIF','endif'])">Check</button><span class="fb" id="fp10"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Remember:</strong> Every IF needs THEN and ENDIF. Every FOR needs ENDFOR. Every WHILE needs ENDWHILE.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'Pseudocode — Key Reference',
+    body: `<table class="bit-table">
+  <tr><th>Construct</th><th>Syntax</th><th>Used for</th></tr>
+  <tr><td><strong>Assignment</strong></td><td><code>x ← value</code></td><td>Storing a value in a variable</td></tr>
+  <tr><td><strong>Input</strong></td><td><code>x ← INPUT("prompt")</code></td><td>Reading from user</td></tr>
+  <tr><td><strong>Output</strong></td><td><code>OUTPUT value</code></td><td>Displaying to screen</td></tr>
+  <tr><td><strong>Selection</strong></td><td><code>IF...THEN...ELSE...ENDIF</code></td><td>Making decisions</td></tr>
+  <tr><td><strong>FOR loop</strong></td><td><code>FOR i ← 1 TO n...ENDFOR</code></td><td>Definite iteration</td></tr>
+  <tr><td><strong>WHILE loop</strong></td><td><code>WHILE cond...ENDWHILE</code></td><td>Indefinite iteration</td></tr>
+  <tr><td><strong>Procedure</strong></td><td><code>PROCEDURE name(params)...ENDPROCEDURE</code></td><td>Reusable block, no return</td></tr>
+  <tr><td><strong>Function</strong></td><td><code>FUNCTION name(params)...RETURN...ENDFUNCTION</code></td><td>Reusable block, returns value</td></tr>
+  <tr><td><strong>Array</strong></td><td><code>arr ← [v1, v2, v3]</code> / <code>arr[i]</code></td><td>Storing multiple values</td></tr>
+</table>
+<div class="callout success">✅ Pseudocode is your planning tool — write it before every program and exam answer!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Pseudocode Lightning Round',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">Test your pseudocode knowledge! Keywords, traces, and logic — as fast as you can!</p>
+<div class="compete-board">
+  <h4>🏆 Pseudocode Lightning Round</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y9t6")||"[]"); renderLeaderboard(lb); },
+  },
+],
+    comp: [
+  { q: 'What symbol is used for assignment in pseudocode?', answers: ['←','<-'] },
+  { q: 'What keyword displays output to the screen?', answers: ['OUTPUT','output'] },
+  { q: 'What keyword reads input from a user?', answers: ['INPUT','input'] },
+  { q: 'What keyword ends an IF block?', answers: ['ENDIF','endif'] },
+  { q: 'What keyword ends a FOR loop?', answers: ['ENDFOR','endfor'] },
+  { q: 'What keyword ends a WHILE loop?', answers: ['ENDWHILE','endwhile'] },
+  { q: 'What keyword sends a value back from a function?', answers: ['RETURN','return'] },
+  { q: 'FOR i ← 1 TO 5 — how many times does the loop run?', answers: ['5'] },
+  { q: 'What data type stores True or False?', answers: ['Boolean','boolean'] },
+  { q: 'x ← 4, y ← 3 — what is x * y + 1?', answers: ['13'] },
+  { q: 'What does LEN(array) return?', answers: ['the number of items','length','number of items','size'] },
+  { q: 'FOR loops are used for which type of iteration?', answers: ['definite','count-controlled'] },
+  { q: 'What is the index of the FIRST element in an array?', answers: ['0'] },
+  { q: 'A subroutine that returns a value is called a...', answers: ['function','Function'] },
+],
+  },
+};
+const YEAR_META = {
+  7: { title:'Year 7 — Foundations',  desc:'Algorithms, data, networks, Python basics and spreadsheets.', color:'var(--accent-y7)' },
+  8: { title:'Year 8 — Development',  desc:'Python warm-up, binary/hex, hardware, cybersecurity and databases.', color:'var(--accent-y8)' },
+  9: { title:'Year 9 — Mastery',      desc:'OOP, algorithms, AI ethics, spreadsheets and web development.', color:'var(--accent-y9)' },
+};
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let ST = { user:null, year:0, lessonKey:'', lessonTitle:'', comp:{score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:''} };
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+window.onload = () => {
+  applyFilters();
+  const saved = localStorage.getItem('ks3_user');
+  if (saved) {
+    const u = JSON.parse(saved);
+    if (u.year === 0) { localStorage.removeItem('ks3_user'); showOverlay('reg-overlay'); return; }
+    ST.user = u; showHome();
+  } else { showOverlay('reg-overlay'); }
+};
+
+// ═══════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════
+function showOverlay(id) {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function register() {
+  const name  = document.getElementById('r-name').value.trim();
+  const year  = document.getElementById('r-year').value;
+  const cls   = document.getElementById('r-class').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const err   = document.getElementById('r-err');
+  if (!name||!year||!cls||!email){err.style.display='block';err.textContent='Please fill in all fields.';return;}
+  if (!email.includes('@')){err.style.display='block';err.textContent='Please enter a valid email.';return;}
+  err.style.display='none';
+  const u = {name,year:parseInt(year),cls,email,joinedAt:new Date().toISOString()};
+  ST.user = u;
+  localStorage.setItem('ks3_user',JSON.stringify(u));
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  if (!students.find(s=>s.email===email)) { students.push({...u,lessonsOpened:0}); localStorage.setItem('ks3_students',JSON.stringify(students)); }
+  showHome();
+}
+
+function logout() {
+  ST.user=null;
+  localStorage.removeItem('ks3_user');
+  ['home-page','task-view','proof-view'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('task-view').classList.remove('visible');
+  document.getElementById('proof-view').classList.remove('visible');
+  showOverlay('reg-overlay');
+}
+
+// ═══════════════════════════════════════════════════
+//  RELEASE SYSTEM
+// ═══════════════════════════════════════════════════
+function getReleased() {
+  const s = localStorage.getItem('ks3_released');
+  return s ? JSON.parse(s) : {7:[0],8:[0],9:[0]};
+}
+function isReleased(year,idx) { return (getReleased()[year]||[]).includes(idx); }
+
+// ═══════════════════════════════════════════════════
+//  HOME — LESSON CARDS
+// ═══════════════════════════════════════════════════
+function showHome() {
+  document.querySelectorAll('.overlay').forEach(o=>o.classList.add('hidden'));
+  document.getElementById('task-view').classList.remove('visible');
+  document.getElementById('proof-view').classList.remove('visible');
+  document.getElementById('home-page').classList.remove('hidden');
+  document.getElementById('user-name').textContent = ST.user.name;
+  document.getElementById('user-year').textContent = 'Year '+ST.user.year;
+  renderLessonCards();
+}
+
+function renderLessonCards() {
+  const yr       = ST.user.year;
+  const lessons  = LESSONS[yr];
+  const meta     = YEAR_META[yr];
+  const released = getReleased();
+  const colors   = {7:'var(--ay7)',8:'var(--ay8)',9:'var(--ay9)'};
+  const col      = colors[yr];
+  const container = document.getElementById('lesson-grid');
+  container.innerHTML = '';
+
+  // Year header
+  const hdr = document.createElement('div');
+  hdr.className = 'year-section';
+  const yhdr = document.createElement('div');
+  yhdr.className = 'year-header';
+  yhdr.innerHTML = '<div class="year-pip" style="background:color-mix(in srgb,'+col+' 20%,transparent);color:'+col+';border:1px solid color-mix(in srgb,'+col+' 40%,transparent)">'+yr+'</div><span class="year-label">'+meta.title+'</span>';
+  hdr.appendChild(yhdr);
+
+  const grid = document.createElement('div');
+  grid.className = 'lesson-cards';
+
+  lessons.forEach((l, i) => {
+    const rel     = isReleased(yr, i);
+    const key     = yr+'_'+i;
+    const score   = getLessonScore(key);
+    const done    = getLessonDone(key);
+    const card    = document.createElement('div');
+    card.className = 'lesson-card'+(rel?'':' locked');
+    card.style.setProperty('--card-color', col);
+
+    const pct = done ? Math.round((score.correct/(score.total||1))*100) : 0;
+    card.innerHTML =
+      '<div class="lc-top"><span class="lc-num">Lesson 0'+(i+1)+'</span><span class="lc-status">'+(rel?(done?'✓':'▶'):'🔒')+'</span></div>'+
+      '<div class="lc-title">'+l.title+'</div>'+
+      '<div class="lc-meta">'+(rel?(done?'Completed · '+score.correct+'/'+score.total+' correct':'Ready to start'):'Not yet released by teacher')+'</div>'+
+      '<div class="lc-bar"><div class="lc-bar-fill" style="width:'+pct+'%"></div></div>';
+
+    if (rel) {
+      card.addEventListener('click', () => openLesson(yr, i));
+    } else {
+      card.addEventListener('click', () => toast('🔒 This lesson has not been released yet','err'));
+    }
+    grid.appendChild(card);
+  });
+
+  hdr.appendChild(grid);
+  container.appendChild(hdr);
+
+  // Proof button only shows if any lesson done
+  const anyDone = lessons.some((_,i) => getLessonDone(yr+'_'+i));
+  document.getElementById('proof-btn').style.display = anyDone ? 'flex' : 'none';
+}
+
+// ═══════════════════════════════════════════════════
+//  LESSON TASK VIEW
+// ═══════════════════════════════════════════════════
+function openLesson(year, idx) {
+  const lesson = LESSONS[year][idx];
+  const key    = year+'_'+idx;
+  const data   = LESSON_DATA[key];
+  ST.lessonKey   = key;
+  ST.lessonTitle = lesson.title;
+  ST.comp = {score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:ST.user.name};
+  // Track lesson opened in student record
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  const si = students.findIndex(s=>s.email===ST.user.email);
+  if (si !== -1) {
+    const openedKey = 'ks3_opened_'+ST.user.email+'_'+year+'_'+idx;
+    if (!localStorage.getItem(openedKey)) {
+      students[si].lessonsOpened = (students[si].lessonsOpened||0) + 1;
+      localStorage.setItem(openedKey, '1');
+      localStorage.setItem('ks3_students', JSON.stringify(students));
+    }
+  }
+  document.getElementById('home-page').classList.add('hidden');
+  const tv = document.getElementById('task-view');
+  tv.classList.add('visible');
+  document.getElementById('tv-title').textContent = lesson.title;
+  document.getElementById('tv-year').textContent  = 'Year '+year;
+
+  const body = document.getElementById('task-body');
+  if (!data) {
+    body.innerHTML = '<div style="text-align:center;padding:48px"><div style="font-size:48px;margin-bottom:16px">🔧</div><h3>Coming Soon</h3><p style="color:var(--muted);margin-top:8px">This lesson is being prepared.</p></div>';
+    return;
+  }
+
+  let html = '';
+  // Quiz questions from slides
+  const quizSlides = data.slides.filter(s => s.type==='activity' || s.type==='concept');
+
+  // Section: Quiz tasks
+  const quizHtml = buildQuizSection(data, key);
+  if (quizHtml) html += '<div class="task-section"><div class="task-section-head">📝 Knowledge Check</div>'+quizHtml+'</div>';
+
+  // Section: Competition
+  html += '<div class="task-section"><div class="task-section-head">🏆 Speed Challenge</div>'+buildCompSection(data, key)+'</div>';
+
+  body.innerHTML = html;
+  wireTaskHandlers();
+  updateFooter(key);
+}
+
+function buildQuizSection(data, key) {
+  // Extract quiz questions from embedded task bodies in slides
+  // Look for slides with task-box content
+  let html = '';
+  data.slides.forEach((s,si) => {
+    if (!s.body) return;
+    const hasTask = s.body.includes('task-box') || s.body.includes('ans-input');
+    if (hasTask) {
+      html += '<div class="task-card"><div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">'+s.title+'</div>'+s.body+'</div>';
+    }
+  });
+
+  // Also build MCQ from comp questions as a practice quiz
+  if (data.comp && data.comp.length > 0) {
+    const subset = data.comp.slice(0, Math.min(5, data.comp.length));
+    let qhtml = '<div class="task-card"><div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">Practice Questions</div>';
+    subset.forEach((q,qi) => {
+      const qkey = key+'_pq_'+qi;
+      const saved = localStorage.getItem(qkey);
+      qhtml += '<div style="margin-bottom:20px">';
+      qhtml += '<div class="qtext">Q'+(qi+1)+': '+q.q+'</div>';
+      qhtml += '<div><input class="written-input" style="min-height:44px" placeholder="Type your answer..." id="pq_'+qkey+'" value="'+(saved||'')+'">';
+      qhtml += '<button class="btn btn-secondary" style="margin-top:6px;font-size:12px;padding:6px 14px" data-qkey="'+qkey+'" data-answers="'+encodeURIComponent(JSON.stringify(q.answers))+'">Check Answer</button>';
+      qhtml += '<div class="qfb" id="pfb_'+qkey+'"></div></div></div>';
+    });
+    qhtml += '</div>';
+    html += qhtml;
+  }
+  return html;
+}
+
+function buildCompSection(data, key) {
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_'+data.lid)||'[]');
+  const medals = ['🥇','🥈','🥉'];
+  const lbHtml = lb.length===0
+    ? '<li style="color:var(--muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+
+  return '<div class="compete-box">'+
+    '<h4>🏆 Speed Challenge — '+data.comp.length+' questions, 15 seconds each</h4>'+
+    '<div id="cs-start">'+
+      '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Faster correct answers = more points. Your score is saved to the leaderboard.</p>'+
+      '<button class="comp-btn" id="cs-start-btn">🚀 Start Challenge!</button>'+
+      '<div style="margin-top:14px"><p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Leaderboard</p>'+
+      '<ul class="lb" id="cs-lb">'+lbHtml+'</ul></div>'+
+    '</div>'+
+    '<div id="cs-game" style="display:none">'+
+      '<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px">'+
+        '<span id="cs-qnum">1/10</span><span id="cs-tl" style="color:var(--warn)">15s</span></div>'+
+      '<div class="timer-bar"><div class="timer-fill" id="cs-tfill" style="width:100%"></div></div>'+
+      '<div class="comp-q" id="cs-q"></div>'+
+      '<input class="comp-input" id="cs-ans" placeholder="Type answer..." autocomplete="off">'+
+      '<button class="comp-btn" id="cs-sub-btn">Submit ↵</button>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:8px">'+
+        '<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warn);font-family:var(--mono)" id="cs-score">0</strong></span>'+
+        '<span id="cs-fb" style="font-size:13px;font-weight:700"></span></div>'+
+    '</div>'+
+    '<div id="cs-end" style="display:none;text-align:center">'+
+      '<div style="font-size:36px;margin-bottom:8px">🎉</div>'+
+      '<p style="font-size:17px;font-weight:700;margin-bottom:4px">Great work, <span id="cs-ename"></span>!</p>'+
+      '<p style="color:var(--muted);font-size:13px;margin-bottom:6px">Final score</p>'+
+      '<div class="score-big" id="cs-escore">0</div>'+
+      '<button class="comp-btn" style="margin-top:10px" id="cs-again-btn">🔄 Play Again</button>'+
+      '<div style="margin-top:14px;text-align:left"><p style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Top Scores</p>'+
+      '<ul class="lb" id="cs-lb2"></ul></div>'+
+    '</div>'+
+  '</div>';
+}
+
+function wireTaskHandlers() {
+  // check-btn onclick attributes
+  document.querySelectorAll('#task-body .check-btn').forEach(btn => {
+    const oc = btn.getAttribute('onclick');
+    if (oc) { btn.removeAttribute('onclick'); btn.addEventListener('click', ()=>eval(oc.replace(/lchk\(/g,'schk(').replace(/lchkAny\(/g,'schkAny(').replace(/(?<!s)chk\(/g,'schk(').replace(/(?<!s)chkAny\(/g,'schkAny('))); }
+  });
+  // answer inputs — save on change
+  document.querySelectorAll('#task-body .ans-input, #task-body .written-input').forEach(inp => {
+    const saved = localStorage.getItem('st_ans_'+ST.lessonKey+'_'+inp.id);
+    if (saved) inp.value = saved;
+    inp.addEventListener('change', () => {
+      localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inp.id, inp.value);
+      updateFooter(ST.lessonKey);
+    });
+  });
+  // Competition
+  const startBtn = document.getElementById('cs-start-btn');
+  if (startBtn) startBtn.addEventListener('click', startComp);
+  const subBtn = document.getElementById('cs-sub-btn');
+  if (subBtn) subBtn.addEventListener('click', submitComp);
+  const ansIn = document.getElementById('cs-ans');
+  if (ansIn) ansIn.addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault();submitComp();}});
+  const againBtn = document.getElementById('cs-again-btn');
+  if (againBtn) againBtn.addEventListener('click', resetComp);
+  // Practice check buttons (data-attribute approach)
+  document.querySelectorAll('#task-body [data-qkey]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qkey    = this.getAttribute('data-qkey');
+      const answers = JSON.parse(decodeURIComponent(this.getAttribute('data-answers')));
+      checkPractice(qkey, answers);
+    });
+  });
+  // Drag-drop for match tasks
+  initDragDrop();
+}
+
+// ── Task check helpers (scoped) ─────────────────────────────
+function schk(inputId, fbId, correct) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = val === String(correct).toLowerCase().replace(/\s+/g,'');
+  fb.className='qfb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ Correct!':'✗ Try again — answer: '+correct;
+  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
+  localStorage.setItem('st_fb_'+ST.lessonKey+'_'+inputId, ok?'1':'0');
+  updateFooter(ST.lessonKey);
+  updateStudentScore();
+}
+function schkAny(inputId, fbId, answers) {
+  const inp = document.getElementById(inputId);
+  const fb  = document.getElementById(fbId);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  fb.className='qfb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ Correct!':'✗ Try again — answer: '+answers[0];
+  localStorage.setItem('st_ans_'+ST.lessonKey+'_'+inputId, inp.value);
+  localStorage.setItem('st_fb_'+ST.lessonKey+'_'+inputId, ok?'1':'0');
+  updateFooter(ST.lessonKey);
+  updateStudentScore();
+}
+function checkPractice(qkey, answers) {
+  const inp = document.getElementById('pq_'+qkey);
+  const fb  = document.getElementById('pfb_'+qkey);
+  if (!inp||!fb) return;
+  const val = inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  fb.className='qfb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ Correct!':'✗ Answer: '+answers[0];
+  localStorage.setItem(qkey, inp.value);
+  localStorage.setItem(qkey+'_ok', ok?'1':'0');
+  updateFooter(ST.lessonKey);
+}
+
+// ── Drag-drop ───────────────────────────────────────────────
+function initDragDrop() {
+  document.querySelectorAll('.match-term').forEach(t => {
+    t.addEventListener('dragstart', e=>{e.dataTransfer.setData('text/plain',t.id);t.style.opacity='.5';});
+    t.addEventListener('dragend', ()=>t.style.opacity='1');
+  });
+  document.querySelectorAll('.match-zone').forEach(z => {
+    z.addEventListener('dragover', e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave', ()=>z.classList.remove('over'));
+    z.addEventListener('drop', e=>{
+      e.preventDefault();z.classList.remove('over');
+      const t = document.getElementById(e.dataTransfer.getData('text/plain'));
+      if(!t) return;
+      z.textContent = decodeURIComponent(t.getAttribute('data-term')||t.textContent);
+      z.setAttribute('data-dropped', t.getAttribute('data-term')||encodeURIComponent(t.textContent));
+      z.classList.add('filled');
+    });
+  });
+  document.querySelectorAll('[onclick^="checkMatch"]').forEach(btn=>{
+    const oc=btn.getAttribute('onclick');
+    btn.removeAttribute('onclick');
+    btn.addEventListener('click',()=>eval(oc));
+  });
+}
+function checkMatch(id, len) {
+  let correct=0;
+  document.querySelectorAll('[id^="mzone_'+id+'_"]').forEach(z=>{
+    const d=z.getAttribute('data-dropped'), e=z.getAttribute('data-correct');
+    if(d&&d===e){z.classList.add('correct');correct++;}
+    else if(d){z.classList.add('wrong');}
+  });
+  toast(correct===len?'✓ Perfect! All '+len+' correct!':correct+'/'+len+' correct','ok');
+}
+
+// ── Score / progress tracking ───────────────────────────────
+function getLessonScore(key) {
+  const checks = Object.keys(localStorage).filter(k=>k.startsWith('st_fb_'+key)||k.startsWith(key+'_pq_')&&k.endsWith('_ok'));
+  const correct = checks.filter(k=>localStorage.getItem(k)==='1').length;
+  return { correct, total: checks.length };
+}
+function getLessonDone(key) {
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_'+key)||'[]');
+  const hasComp = lb.some(e=>e.name===ST.user?.name);
+  const sc = getLessonScore(key);
+  return hasComp || sc.total > 0;
+}
+function updateFooter(key) {
+  const sc = getLessonScore(key);
+  const lbl = document.getElementById('footer-score');
+  if (lbl) lbl.innerHTML = 'Your progress: <strong>'+sc.correct+' / '+sc.total+'</strong> questions correct';
+}
+
+function updateStudentScore() {
+  if (!ST.user) return;
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  const si = students.findIndex(s=>s.email===ST.user.email);
+  if (si === -1) return;
+  // Count total correct across all lessons
+  const allKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_fb_'));
+  const totalCorrect = allKeys.filter(k=>localStorage.getItem(k)==='1').length;
+  const totalAnswered = allKeys.length;
+  students[si].totalCorrect  = totalCorrect;
+  students[si].totalAnswered = totalAnswered;
+  localStorage.setItem('ks3_students', JSON.stringify(students));
+}
+
+function closeLesson() {
+  clearInterval(ST.comp.timer);
+  document.getElementById('task-view').classList.remove('visible');
+  showHome();
+}
+
+// ═══════════════════════════════════════════════════
+//  COMPETITION (student-scoped)
+// ═══════════════════════════════════════════════════
+function getCompData() { return LESSON_DATA[ST.lessonKey]?.comp || []; }
+
+function startComp() {
+  ST.comp = {score:0,qIdx:0,timer:null,timeLeft:15,active:true,name:ST.user.name};
+  document.getElementById('cs-start').style.display='none';
+  document.getElementById('cs-game').style.display='block';
+  nextCompQ();
+}
+function nextCompQ() {
+  const qs = getCompData();
+  if(ST.comp.qIdx>=qs.length){endComp();return;}
+  clearInterval(ST.comp.timer);
+  ST.comp.timeLeft=15;
+  const q=qs[ST.comp.qIdx];
+  document.getElementById('cs-q').textContent=q.q;
+  document.getElementById('cs-ans').value='';
+  document.getElementById('cs-ans').focus();
+  document.getElementById('cs-score').textContent=ST.comp.score;
+  document.getElementById('cs-qnum').textContent=(ST.comp.qIdx+1)+'/'+qs.length;
+  document.getElementById('cs-fb').textContent='';
+  updateCompTimer();
+  ST.comp.timer=setInterval(()=>{ST.comp.timeLeft--;updateCompTimer();if(ST.comp.timeLeft<=0){clearInterval(ST.comp.timer);autoWrongComp();}},1000);
+}
+function updateCompTimer(){
+  const pct=ST.comp.timeLeft/15*100;
+  document.getElementById('cs-tfill').style.width=pct+'%';
+  document.getElementById('cs-tl').textContent=ST.comp.timeLeft+'s';
+}
+function submitComp(){
+  if(!ST.comp.active)return;
+  clearInterval(ST.comp.timer);
+  const q=getCompData()[ST.comp.qIdx];
+  const val=document.getElementById('cs-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok=q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb=document.getElementById('cs-fb');
+  if(ok){const pts=Math.max(1,ST.comp.timeLeft);ST.comp.score+=pts;fb.style.color='var(--success)';fb.textContent='✓ +'+pts;}
+  else{fb.style.color='var(--danger)';fb.textContent='✗ '+q.answers[0];}
+  ST.comp.qIdx++;
+  setTimeout(nextCompQ,1200);
+}
+function autoWrongComp(){
+  const q=getCompData()[ST.comp.qIdx];
+  document.getElementById('cs-fb').style.color='var(--danger)';
+  document.getElementById('cs-fb').textContent='⏱ '+q.answers[0];
+  ST.comp.qIdx++;setTimeout(nextCompQ,1400);
+}
+function endComp(){
+  clearInterval(ST.comp.timer);ST.comp.active=false;
+  document.getElementById('cs-game').style.display='none';
+  document.getElementById('cs-end').style.display='block';
+  document.getElementById('cs-escore').textContent=ST.comp.score;
+  document.getElementById('cs-ename').textContent=ST.comp.name;
+  const lid=LESSON_DATA[ST.lessonKey]?.lid||ST.lessonKey;
+  const lb=JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+  lb.push({name:ST.comp.name,score:ST.comp.score,date:new Date().toLocaleDateString()});
+  lb.sort((a,b)=>b.score-a.score);
+  const top=lb.slice(0,10);
+  localStorage.setItem('ks3_lb_'+lid,JSON.stringify(top));
+  const medals=['🥇','🥈','🥉'];
+  const lbHtml=top.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+  document.getElementById('cs-lb2').innerHTML=lbHtml;
+  updateFooter(ST.lessonKey);
+  renderLessonCards();
+}
+function resetComp(){
+  clearInterval(ST.comp.timer);
+  ST.comp={score:0,qIdx:0,timer:null,timeLeft:15,active:false,name:ST.user.name};
+  document.getElementById('cs-start').style.display='block';
+  document.getElementById('cs-game').style.display='none';
+  document.getElementById('cs-end').style.display='none';
+  const lid=LESSON_DATA[ST.lessonKey]?.lid||ST.lessonKey;
+  const lb=JSON.parse(localStorage.getItem('ks3_lb_'+lid)||'[]');
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('cs-lb').innerHTML=lb.length===0?'<li style="color:var(--muted);font-size:13px">No scores yet</li>':lb.map((e,i)=>'<li><span class="lb-pos">'+(medals[i]||'#'+(i+1))+'</span><span class="lb-name">'+e.name+'</span><span class="lb-pts">'+e.score+' pts</span></li>').join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  PROOF OF LEARNING
+// ═══════════════════════════════════════════════════
+function openProof() {
+  document.getElementById('home-page').classList.add('hidden');
+  document.getElementById('proof-view').classList.add('visible');
+  buildProof();
+}
+function closeProof() {
+  document.getElementById('proof-view').classList.remove('visible');
+  showHome();
+}
+
+function buildProof() {
+  const u   = ST.user;
+  const yr  = u.year;
+  const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  const body = document.getElementById('proof-body');
+  let html = '<div class="proof-header">'+
+    '<h2>📄 Proof of Learning</h2>'+
+    '<p>Generated '+now+' &nbsp;·&nbsp; This is a record of your work on the KS3 Computer Science platform.</p>'+
+  '</div>';
+
+  // Student info
+  html += '<div class="proof-section">'+
+    '<div class="proof-section-head"><span>👤 Student Details</span></div>'+
+    '<div class="proof-rows">'+
+      '<div class="proof-row"><span class="pr-label">Name</span><span class="pr-val">'+u.name+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Year Group</span><span class="pr-val">Year '+u.year+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Class</span><span class="pr-val">'+u.cls+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Email</span><span class="pr-val">'+u.email+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Registered</span><span class="pr-val">'+(u.joinedAt||'').split('T')[0]+'</span></div>'+
+    '</div></div>';
+
+  // Per-lesson results
+  const lessons = LESSONS[yr];
+  lessons.forEach((l, i) => {
+    const key  = yr+'_'+i;
+    const data = LESSON_DATA[key];
+    if (!data) return;
+
+    // Collect all answers for this lesson
+    const ansKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key)||k.startsWith('st_fb_'+key)||k.startsWith(key+'_pq_'));
+    if (ansKeys.length === 0) {
+      const lb = JSON.parse(localStorage.getItem('ks3_lb_'+data.lid)||'[]');
+      const myScore = lb.find(e=>e.name===u.name);
+      if (!myScore) return; // skip lessons not started
+    }
+
+    const sc = getLessonScore(key);
+    const lb = JSON.parse(localStorage.getItem('ks3_lb_'+(data.lid||key))||'[]');
+    const myComp = lb.find(e=>e.name===u.name);
+
+    html += '<div class="proof-section">'+
+      '<div class="proof-section-head">'+
+        '<span>📖 '+l.title+'</span>'+
+        '<span class="pr-badge pr-ok">'+sc.correct+'/'+sc.total+' correct</span>'+
+      '</div><div class="proof-rows">';
+
+    // Written answers
+    const writtenKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key));
+    if (writtenKeys.length > 0) {
+      writtenKeys.forEach(wk => {
+        const inputId = wk.replace('st_ans_'+key+'_','');
+        const val     = localStorage.getItem(wk)||'';
+        const fbKey   = 'st_fb_'+key+'_'+inputId;
+        const correct = localStorage.getItem(fbKey);
+        if (!val) return;
+        html += '<div class="proof-row">'+
+          '<span class="pr-label" style="font-family:var(--mono);font-size:11px">'+inputId+'</span>'+
+          '<span class="pr-val">'+val+'</span>'+
+          (correct!==null?'<span class="pr-badge '+(correct==='1'?'pr-ok':'pr-no')+'">'+(correct==='1'?'✓':'✗')+'</span>':'')+
+        '</div>';
+      });
+    }
+
+    // Practice question answers
+    const pqKeys = Object.keys(localStorage).filter(k=>k.startsWith(key+'_pq_')&&!k.endsWith('_ok'));
+    pqKeys.forEach(pk=>{
+      const val = localStorage.getItem(pk)||'';
+      const ok  = localStorage.getItem(pk+'_ok');
+      if (!val) return;
+      const qIdx = parseInt(pk.split('_pq_')[1]);
+      const qText = data.comp[qIdx]?.q||'Question';
+      html += '<div class="proof-row">'+
+        '<span class="pr-label" style="font-size:12px">'+qText.substring(0,40)+'…</span>'+
+        '<span class="pr-val">'+val+'</span>'+
+        (ok!==null?'<span class="pr-badge '+(ok==='1'?'pr-ok':'pr-no')+'">'+(ok==='1'?'✓':'✗')+'</span>':'')+
+      '</div>';
+    });
+
+    // Competition score
+    if (myComp) {
+      html += '<div class="proof-row">'+
+        '<span class="pr-label">🏆 Speed Challenge</span>'+
+        '<span class="pr-val">'+myComp.score+' points ('+myComp.date+')</span>'+
+        '<span class="pr-badge pr-pts">🏆</span>'+
+      '</div>';
+    }
+
+    html += '</div></div>';
+  });
+
+  // Summary
+  const totalCorrect = lessons.reduce((a,_,i)=>{const s=getLessonScore(yr+'_'+i);return a+s.correct;},0);
+  const totalQs      = lessons.reduce((a,_,i)=>{const s=getLessonScore(yr+'_'+i);return a+s.total;},0);
+  html += '<div class="proof-section">'+
+    '<div class="proof-section-head">📊 Summary</div>'+
+    '<div class="proof-rows">'+
+      '<div class="proof-row"><span class="pr-label">Total Questions</span><span class="pr-val">'+totalQs+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Total Correct</span><span class="pr-val">'+totalCorrect+' / '+totalQs+'</span></div>'+
+      '<div class="proof-row"><span class="pr-label">Overall Score</span><span class="pr-val">'+(totalQs>0?Math.round(totalCorrect/totalQs*100):0)+'%</span></div>'+
+    '</div></div>';
+
+  body.innerHTML = html;
+}
+
+function downloadProof() {
+  buildProof();
+  const u    = ST.user;
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Proof of Learning — '+u.name+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#111;}'+
+    'h2{font-size:22px;margin-bottom:4px;}p{color:#555;font-size:14px;margin-bottom:20px;}'+
+    '.section{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:16px;}'+
+    '.sec-head{background:#f5f5f5;padding:12px 16px;font-weight:700;font-size:13px;display:flex;justify-content:space-between;}'+
+    '.row{display:flex;gap:12px;padding:9px 16px;border-top:1px solid #eee;font-size:13px;}'+
+    '.lbl{color:#777;min-width:160px;}.val{flex:1;}'+
+    '.ok{color:green;font-weight:700;}.no{color:red;font-weight:700;}.pts{color:#b8860b;font-weight:700;}'+
+    '@media print{button{display:none!important;}}</style></head><body>'+
+    '<h2>📄 Proof of Learning — '+u.name+'</h2>'+
+    '<p>Generated '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+
+    ' &nbsp;·&nbsp; Year '+u.year+' &nbsp;·&nbsp; '+u.cls+'</p>'+
+    document.getElementById('proof-body').innerHTML+
+    '</body></html>';
+  const a = document.createElement('a');
+  a.href = 'data:text/html;charset=utf-8,'+encodeURIComponent(html);
+  a.download = 'proof_of_learning_'+u.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().split('T')[0]+'.html';
+  a.click();
+  toast('📄 Proof of learning downloaded!','ok');
+}
+
+// ═══════════════════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════════════════
+function toggleFilter(type) {
+  if(type==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}
+  else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}
+  syncFilters();
+}
+function applyFilters(){
+  if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');
+  if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');
+  syncFilters();
+}
+function syncFilters(){
+  const ng=document.body.classList.contains('nature-green');
+  const sp=document.body.classList.contains('superpower');
+  document.querySelectorAll('.ng-btn').forEach(b=>{b.classList.toggle('on-ng',ng);});
+  document.querySelectorAll('.sp-btn').forEach(b=>{b.classList.toggle('on-sp',sp);});
+}
+
+// ═══════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════
+let _tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+type;
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

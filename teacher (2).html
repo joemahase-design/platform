@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KS3 CS — Teacher Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#00f0ff;--ay7:#00f0ff;--ay8:#bf5fff;--ay9:#ff7a20;
+  --text:#f0f0ff;--muted:#9090c0;--success:#2ecc71;--warn:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono','Courier New',monospace;
+  --sans:'DM Sans','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,240,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+.hidden{display:none!important;}
+/* Overlay / modal */
+.overlay{position:fixed;inset:0;background:rgba(15,17,30,0.75);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.modal{background:#1e2235;border:1px solid #3a3f60;border-radius:16px;
+  padding:28px 32px;width:100%;max-width:380px;
+  box-shadow:0 0 80px rgba(0,240,255,.18);animation:mIn .3s ease;text-align:center;}
+@keyframes mIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:none;}}
+.modal-logo{font-family:var(--mono);font-size:10px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;}
+.modal-icon{font-size:40px;margin-bottom:12px;}
+.modal h2{font-size:20px;font-weight:700;margin-bottom:8px;}
+.modal p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5;}
+.fg{margin-bottom:11px;text-align:left;}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.fg input{width:100%;padding:9px 12px;background:var(--surface2);
+  border:1px solid #454870;border-radius:8px;color:#f0f0ff;
+  font-family:var(--mono);font-size:18px;text-align:center;transition:border-color .2s;}
+.fg input:focus{outline:none;border-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;
+  border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:var(--accent);color:#000;width:100%;justify-content:center;}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);}
+.btn-danger:hover{background:rgba(231,76,60,.3);}
+.btn-ghost{background:transparent;color:var(--muted);font-size:12px;padding:5px 0;}
+.btn-ghost:hover{color:var(--text);}
+.err{color:var(--danger);font-size:12px;margin-top:6px;}
+/* Topbar */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;
+  border-bottom:1px solid var(--border);background:var(--surface);
+  position:sticky;top:0;z-index:50;}
+.tlogo{font-family:var(--mono);font-size:12px;color:var(--muted);}
+.tlogo span{color:var(--accent);}
+.tright{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+/* Nav tabs */
+.nav-tabs{display:flex;gap:4px;background:var(--surface2);
+  border-radius:10px;padding:4px;border:1px solid var(--border);}
+.nav-tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:600;
+  cursor:pointer;color:var(--muted);background:transparent;border:none;
+  font-family:var(--sans);transition:all .2s;}
+.nav-tab.active{background:var(--surface);color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,.3);}
+/* Pages */
+.tpage{display:none;min-height:calc(100vh - 65px);position:relative;z-index:1;}
+.tpage.visible{display:block;}
+/* ── PRESENT PAGE ── */
+.present-intro{padding:32px 24px 0;max-width:1000px;margin:0 auto;}
+.present-intro h2{font-size:20px;font-weight:700;margin-bottom:6px;}
+.present-intro p{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.year-group{margin-bottom:32px;padding:0 24px;max-width:1000px;margin-left:auto;margin-right:auto;}
+.yg-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.yg-pip{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700;}
+.yg-label{font-size:15px;font-weight:700;}
+.lesson-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:18px;position:relative;overflow:hidden;}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--pc);opacity:0;transition:opacity .2s;}
+.pcard:hover::before{opacity:1;}
+.pcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.pcard-num{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.pcard-rel{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600;}
+.rel-yes{background:rgba(46,204,113,.15);color:var(--success);}
+.rel-no{background:rgba(100,100,120,.2);color:var(--muted);}
+.pcard-title{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.3;}
+.pcard-actions{display:flex;gap:7px;flex-wrap:wrap;}
+.open-btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;
+  cursor:pointer;border:none;font-family:var(--sans);transition:all .2s;}
+.ob-present{background:var(--pc);color:#000;}
+.ob-present:hover{filter:brightness(1.15);}
+.ob-lock{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.ob-lock:hover{border-color:var(--pc);color:var(--pc);}
+.pcard.locked-card{opacity:.5;}
+.pcard.locked-card .ob-present{background:var(--surface2);color:var(--muted);cursor:not-allowed;}
+/* ── STUDENTS PAGE ── */
+.students-body{padding:24px;max-width:1000px;margin:0 auto;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.stat-val{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--accent);}
+.stat-lbl{color:var(--muted);font-size:12px;margin-top:4px;}
+.stable-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.stab-head{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);}
+.stab-head h3{font-size:14px;font-weight:700;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:11px 16px;text-align:left;font-size:10px;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);}
+td{padding:11px 16px;border-bottom:1px solid rgba(53,58,92,.4);}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;}
+.b-green{background:rgba(46,204,113,.15);color:var(--success);}
+.b-orange{background:rgba(255,122,32,.15);color:var(--ay9);}
+.b-blue{background:rgba(0,240,255,.15);color:var(--ay7);}
+.pbar{display:flex;align-items:center;gap:7px;}
+.pbar-bg{flex:1;height:4px;background:var(--border);border-radius:2px;}
+.pbar-fill{height:100%;background:var(--accent);border-radius:2px;}
+.pbar-pct{font-family:var(--mono);font-size:10px;color:var(--muted);}
+/* ── RELEASE PAGE ── */
+.release-body{padding:24px;max-width:1000px;margin:0 auto;}
+.release-intro{margin-bottom:20px;}
+.release-intro h2{font-size:18px;font-weight:700;margin-bottom:6px;}
+.release-intro p{color:var(--muted);font-size:14px;}
+.release-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.rcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.rcard-head{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);
+  font-size:13px;font-weight:700;}
+.rc-count{color:var(--muted);font-weight:400;font-size:12px;}
+.rrow{display:flex;align-items:center;padding:9px 16px;
+  border-bottom:1px solid rgba(53,58,92,.35);gap:10px;font-size:13px;}
+.rrow:last-child{border-bottom:none;}
+.rr-num{font-family:var(--mono);font-size:10px;color:var(--muted);width:22px;flex-shrink:0;}
+.rr-title{flex:1;}
+.rr-file{font-size:10px;color:var(--muted);font-family:var(--mono);}
+.toggle-sw{position:relative;width:40px;height:21px;flex-shrink:0;}
+.toggle-sw input{opacity:0;width:0;height:0;}
+.t-track{position:absolute;inset:0;border-radius:21px;background:var(--border);cursor:pointer;transition:.2s;}
+.t-track::before{content:'';position:absolute;width:15px;height:15px;border-radius:50%;
+  left:3px;top:3px;background:var(--muted);transition:.2s;}
+input:checked+.t-track{background:var(--success);}
+input:checked+.t-track::before{background:#fff;transform:translateX(19px);}
+.rall-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 16px 10px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--muted);}
+.ydot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;padding:11px 16px;border-radius:10px;
+  font-size:13px;font-weight:600;z-index:9999;display:none;}
+.toast.show{display:flex;align-items:center;gap:8px;animation:tIn .3s ease;}
+.toast.ok{background:rgba(46,204,113,.15);border:1px solid var(--success);color:var(--success);}
+.toast.err{background:rgba(231,76,60,.15);border:1px solid var(--danger);color:var(--danger);}
+@keyframes tIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+@media(max-width:640px){.nav-tabs{gap:2px;}.nav-tab{padding:6px 10px;font-size:12px;}.lesson-cards{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- PIN LOGIN -->
+<div class="overlay" id="pin-overlay">
+  <div class="modal">
+    <div class="modal-logo">🔐 Teacher Access</div>
+    <div class="modal-icon">👩‍🏫</div>
+    <h2>Teacher Portal</h2>
+    <p>Enter your PIN to access presentations, student progress and lesson release controls.</p>
+    <div class="fg"><label>Teacher PIN</label>
+      <input type="password" id="pin-input" placeholder="••••" maxlength="4"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+        onkeydown="if(event.key==='Enter')teacherLogin()">
+    </div>
+    <p class="err hidden" id="pin-err">Incorrect PIN — try again.</p>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="teacherLogin()">Enter Portal →</button>
+    <div style="margin-top:12px">
+      <button class="btn btn-ghost" onclick="window.location.href='index.html'">← Student Portal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden" style="position:relative;z-index:1;">
+  <div class="topbar">
+    <div class="tlogo">🔐 <span>CBA</span> — Teacher Portal</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tab-present" onclick="showTab('present')">📽 Present</button>
+      <button class="nav-tab" id="tab-students" onclick="showTab('students')">👥 Students</button>
+      <button class="nav-tab" id="tab-release" onclick="showTab('release')">🔓 Release</button>
+    </div>
+    <div class="tright">
+      <button class="btn btn-secondary" style="font-size:12px;padding:7px 14px" onclick="window.location.href='index.html'">← Student View</button>
+      <button class="btn btn-secondary" style="font-size:12px;padding:7px 14px" onclick="logoutTeacher()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- PRESENT TAB -->
+  <div class="tpage visible" id="page-present">
+    <div class="present-intro">
+      <h2>📽 Lesson Presentations</h2>
+      <p>Click <strong>Open Presentation</strong> to launch a lesson in a new tab — keep this dashboard open alongside it. Only released lessons are shown to students.</p>
+    </div>
+    <div id="present-years"></div>
+  </div>
+
+  <!-- STUDENTS TAB -->
+  <div class="tpage" id="page-students">
+    <div class="students-body">
+      <div class="stats-row" id="stats-row"></div>
+      <div class="stable-wrap">
+        <div class="stab-head">
+          <h3>Student Register</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px" onclick="renderStudents()">🔄 Refresh</button>
+            <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="btn btn-danger" style="font-size:12px;padding:6px 12px" onclick="confirmClear()">🗑 Clear</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Year</th><th>Class</th><th>Email</th><th>Answers</th><th>Score %</th><th>Status</th></tr></thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELEASE TAB -->
+  <div class="tpage" id="page-release">
+    <div class="release-body">
+      <div class="release-intro">
+        <h2>🔓 Lesson Release Controls</h2>
+        <p>Toggle lessons on to make them visible to students. Changes take effect immediately — students see updates when they next load their portal.</p>
+      </div>
+      <div class="release-grid" id="release-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CLEAR CONFIRM -->
+<div class="overlay hidden" id="clear-overlay">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <h2>Clear Student Data?</h2>
+    <p>This permanently deletes all student registrations from this browser. <strong>Export CSV first</strong> to keep a record.<br><br>Lesson release settings are kept.</p>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-secondary" style="flex:1" onclick="hideClear()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="clearStudents()">Yes, Clear All</button>
+    </div>
+    <div style="margin-top:10px">
+      <button class="btn btn-ghost" onclick="exportThenClear()">⬇ Export first, then clear</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  LESSON REGISTRY  (must match index.html)
+// ═══════════════════════════════════════════════════
+const LESSONS = {
+  7: [
+    { id:'y7t2', title:'Binary — Introduction & Number Systems',    file:'lessons/y7t2.html' },
+    { id:'y7t1', title:'Algorithms & Problem Solving',              file:'lessons/y7t1.html' },
+    { id:'y7t3', title:'Networks & the Internet',                   file:'lessons/y7t3.html' },
+    { id:'y7t4', title:'Introduction to Programming',               file:'lessons/y7t4.html' },
+    { id:'y7t5', title:'7.5.1 — Spreadsheet Modelling',            file:'lessons/y7t5.html' },
+  ],
+  8: [
+    { id:'y8t2', title:'Binary, Hexadecimal & Denary',              file:'lessons/y8t2.html' },
+    { id:'y8t1', title:'8.5.1 — Python Warm Up',                   file:'lessons/y8t1.html' },
+    { id:'y8t3', title:'Computer Hardware & FDE',                   file:'lessons/y8t3.html' },
+    { id:'y8t4', title:'Cybersecurity',                             file:'lessons/y8t4.html' },
+    { id:'y8t5', title:'Databases & SQL',                           file:'lessons/y8t5.html' },
+  ],
+  9: [
+    { id:'y9t6', title:'Pseudocode — Introduction & Practice',      file:'lessons/y9t6.html' },
+    { id:'y9t1', title:'Object-Oriented Programming',               file:'lessons/y9t1.html' },
+    { id:'y9t2', title:'Searching & Sorting Algorithms',            file:'lessons/y9t2.html' },
+    { id:'y9t3', title:'AI & Machine Learning Ethics',              file:'lessons/y9t3.html' },
+    { id:'y9t4', title:'9.4.1 — Software: Spreadsheets',           file:'lessons/y9t4.html' },
+    { id:'y9t5', title:'Web Development & Ethics',                  file:'lessons/y9t5.html' },
+  ],
+};
+
+const YEAR_COLORS = { 7:'#00f0ff', 8:'#bf5fff', 9:'#ff7a20' };
+
+// ═══════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════
+window.onload = () => {
+  const saved = sessionStorage.getItem('ks3_teacher');
+  if (saved === '1') showApp();
+  else document.getElementById('pin-overlay').classList.remove('hidden');
+};
+
+function teacherLogin() {
+  const pin = document.getElementById('pin-input').value;
+  if (pin !== '1984') {
+    document.getElementById('pin-err').classList.remove('hidden');
+    document.getElementById('pin-input').style.borderColor = 'var(--danger)';
+    return;
+  }
+  sessionStorage.setItem('ks3_teacher','1');
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('pin-overlay').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  renderPresent();
+  renderStudents();
+  renderRelease();
+}
+
+function logoutTeacher() {
+  sessionStorage.removeItem('ks3_teacher');
+  window.location.reload();
+}
+
+// ═══════════════════════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════════════════════
+function showTab(tab) {
+  ['present','students','release'].forEach(t => {
+    document.getElementById('page-'+t).classList.remove('visible');
+    document.getElementById('tab-'+t).classList.remove('active');
+  });
+  document.getElementById('page-'+tab).classList.add('visible');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab === 'students') renderStudents();
+  if (tab === 'release')  renderRelease();
+}
+
+// ═══════════════════════════════════════════════════
+//  RELEASE SYSTEM
+// ═══════════════════════════════════════════════════
+function getReleased() {
+  const s = localStorage.getItem('ks3_released');
+  return s ? JSON.parse(s) : {7:[0],8:[0],9:[0]};
+}
+function setReleased(r) { localStorage.setItem('ks3_released', JSON.stringify(r)); }
+function isReleased(year, idx) { return (getReleased()[year]||[]).includes(idx); }
+
+function toggleLesson(year, idx, on) {
+  const r = getReleased();
+  if (!r[year]) r[year] = [];
+  if (on && !r[year].includes(idx)) { r[year].push(idx); r[year].sort((a,b)=>a-b); }
+  else if (!on) r[year] = r[year].filter(i=>i!==idx);
+  setReleased(r);
+  renderRelease();
+  renderPresent();
+  toast('Year '+year+' Lesson '+(idx+1)+' '+(on?'released 🔓':'locked 🔒'),'ok');
+}
+
+function toggleAll(year, on) {
+  const r = getReleased();
+  r[year] = on ? LESSONS[year].map((_,i)=>i) : [];
+  setReleased(r);
+  renderRelease();
+  renderPresent();
+  toast('Year '+year+': all '+(on?'released 🔓':'locked 🔒'),'ok');
+}
+
+// ═══════════════════════════════════════════════════
+//  PRESENT TAB
+// ═══════════════════════════════════════════════════
+function renderPresent() {
+  const container = document.getElementById('present-years');
+  container.innerHTML = '';
+  [7,8,9].forEach(year => {
+    const lessons  = LESSONS[year];
+    const col      = YEAR_COLORS[year];
+    const released = getReleased()[year]||[];
+    const yDiv     = document.createElement('div');
+    yDiv.className = 'year-group';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'yg-header';
+    hdr.innerHTML = '<div class="yg-pip" style="background:color-mix(in srgb,'+col+' 20%,transparent);color:'+col+';border:1px solid color-mix(in srgb,'+col+' 40%,transparent)">'+year+'</div><span class="yg-label">Year '+year+' Lessons</span>';
+    yDiv.appendChild(hdr);
+
+    const grid = document.createElement('div');
+    grid.className = 'lesson-cards';
+
+    lessons.forEach((l, i) => {
+      const rel   = released.includes(i);
+      const card  = document.createElement('div');
+      card.className = 'pcard'+(rel?'':' locked-card');
+      card.style.setProperty('--pc', col);
+
+      const relBadge = rel
+        ? '<span class="pcard-rel rel-yes">Released</span>'
+        : '<span class="pcard-rel rel-no">Locked</span>';
+
+      card.innerHTML =
+        '<div class="pcard-top"><span class="pcard-num">Lesson 0'+(i+1)+'</span>'+relBadge+'</div>'+
+        '<div class="pcard-title">'+l.title+'</div>'+
+        '<div class="pcard-actions">'+
+          '<button class="open-btn ob-present" '+(rel?'':'disabled')+' data-file="'+l.file+'">▶ Open Presentation</button>'+
+          '<button class="open-btn ob-lock" data-year="'+year+'" data-idx="'+i+'" data-rel="'+(rel?'1':'0')+'">'+(rel?'🔒 Lock':'🔓 Release')+'</button>'+
+        '</div>';
+
+      // Open presentation in new tab
+      const presentBtn = card.querySelector('.ob-present');
+      if (rel) {
+        presentBtn.addEventListener('click', () => {
+          window.open(l.file, '_blank');
+          toast('Opening '+l.title+' in new tab...','ok');
+        });
+      }
+
+      // Toggle lock/release
+      const lockBtn = card.querySelector('.ob-lock');
+      lockBtn.addEventListener('click', (function(y,idx,wasRel){
+        return function() { toggleLesson(y, idx, !wasRel); };
+      })(year, i, rel));
+
+      grid.appendChild(card);
+    });
+
+    yDiv.appendChild(grid);
+    container.appendChild(yDiv);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  STUDENTS TAB
+// ═══════════════════════════════════════════════════
+function renderStudents() {
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  const totalLessons = 15;
+
+  // Stats
+  const stats = document.getElementById('stats-row');
+  stats.innerHTML =
+    '<div class="stat"><div class="stat-val">'+students.length+'</div><div class="stat-lbl">Students</div></div>'+
+    '<div class="stat"><div class="stat-val">'+students.filter(s=>s.year===7).length+'</div><div class="stat-lbl">Year 7</div></div>'+
+    '<div class="stat"><div class="stat-val">'+students.filter(s=>s.year===8).length+'</div><div class="stat-lbl">Year 8</div></div>'+
+    '<div class="stat"><div class="stat-val">'+students.filter(s=>s.year===9).length+'</div><div class="stat-lbl">Year 9</div></div>'+
+    '<div class="stat"><div class="stat-val" style="color:var(--warn)">'+Object.values(getReleased()).reduce((a,b)=>a+b.length,0)+'</div><div class="stat-lbl">Lessons Released</div></div>';
+
+  const tbody = document.getElementById('students-tbody');
+  if (!students.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No students registered yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = students.map((s,i) => {
+    const pct = s.totalAnswered
+    ? Math.round((s.totalCorrect||0)/(s.totalAnswered)*100)
+    : Math.round(((s.lessonsOpened||0)/totalLessons)*100);
+    const bar = '<div class="pbar"><div class="pbar-bg"><div class="pbar-fill" style="width:'+pct+'%"></div></div><span class="pbar-pct">'+pct+'%</span></div>';
+    const status = pct===100?'<span class="badge b-green">Complete</span>':pct>0?'<span class="badge b-orange">Active</span>':'<span class="badge b-blue">Registered</span>';
+    return '<tr><td>'+(i+1)+'</td><td><strong>'+s.name+'</strong></td><td>Yr '+s.year+'</td><td>'+(s.cls||'—')+'</td><td style="font-size:12px;color:var(--muted)">'+(s.email||'—')+'</td><td>'+bar+'</td><td>'+status+'</td></tr>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  RELEASE TAB
+// ═══════════════════════════════════════════════════
+function renderRelease() {
+  const grid     = document.getElementById('release-grid');
+  const released = getReleased();
+  grid.innerHTML = '';
+
+  [7,8,9].forEach(year => {
+    const lessons = LESSONS[year];
+    const rel     = released[year]||[];
+    const allOn   = rel.length === lessons.length;
+    const col     = YEAR_COLORS[year];
+
+    const card = document.createElement('div');
+    card.className = 'rcard';
+
+    const head = document.createElement('div');
+    head.className = 'rcard-head';
+    head.innerHTML = '<span style="display:flex;align-items:center;gap:8px"><span class="ydot" style="background:'+col+'"></span>Year '+year+'</span><span class="rc-count">'+rel.length+'/'+lessons.length+' released</span>';
+    card.appendChild(head);
+
+    lessons.forEach((l, i) => {
+      const on  = rel.includes(i);
+      const row = document.createElement('div');
+      row.className = 'rrow';
+
+      const num = document.createElement('span');
+      num.className = 'rr-num';
+      num.textContent = '0'+(i+1);
+
+      const title = document.createElement('span');
+      title.className = 'rr-title';
+      title.textContent = l.title;
+
+      const fileSpan = document.createElement('span');
+      fileSpan.className = 'rr-file';
+      fileSpan.textContent = l.file.replace('lessons/','');
+
+      const lbl = document.createElement('label');
+      lbl.className = 'toggle-sw';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = on;
+      cb.addEventListener('change', (function(y,idx){ return function(){ toggleLesson(y,idx,this.checked); }; })(year,i));
+      const track = document.createElement('span');
+      track.className = 't-track';
+      lbl.appendChild(cb);
+      lbl.appendChild(track);
+
+      row.appendChild(num);
+      row.appendChild(title);
+      row.appendChild(fileSpan);
+      row.appendChild(lbl);
+      card.appendChild(row);
+    });
+
+    // Release all row
+    const allRow = document.createElement('div');
+    allRow.className = 'rall-row';
+    const allLbl = document.createElement('span');
+    allLbl.textContent = 'Release all Year '+year;
+    const allTog = document.createElement('label');
+    allTog.className = 'toggle-sw';
+    const allCb = document.createElement('input');
+    allCb.type = 'checkbox';
+    allCb.checked = allOn;
+    allCb.addEventListener('change', (function(y){ return function(){ toggleAll(y,this.checked); }; })(year));
+    const allTrack = document.createElement('span');
+    allTrack.className = 't-track';
+    allTog.appendChild(allCb);
+    allTog.appendChild(allTrack);
+    allRow.appendChild(allLbl);
+    allRow.appendChild(allTog);
+    card.appendChild(allRow);
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  EXPORT / CLEAR
+// ═══════════════════════════════════════════════════
+function exportCSV() {
+  const students = JSON.parse(localStorage.getItem('ks3_students')||'[]');
+  const rows = [['Name','Year','Class','Email','Lessons Opened','Joined']];
+  students.forEach(s => rows.push([s.name,s.year,s.cls,s.email,s.lessonsOpened||0,(s.joinedAt||'').split('T')[0]]));
+  const csv = rows.map(r=>r.map(v=>'"'+v+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download = 'ks3_students_'+new Date().toISOString().split('T')[0]+'.csv';
+  a.click();
+  toast('CSV exported ✓','ok');
+}
+
+function confirmClear() { document.getElementById('clear-overlay').classList.remove('hidden'); }
+function hideClear()    { document.getElementById('clear-overlay').classList.add('hidden'); }
+function clearStudents() {
+  localStorage.removeItem('ks3_students');
+  hideClear();
+  renderStudents();
+  toast('Student data cleared ✓','ok');
+}
+function exportThenClear() { exportCSV(); setTimeout(clearStudents, 600); }
+
+// ═══════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════
+let _tt;
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show '+type;
+  clearTimeout(_tt); _tt = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
