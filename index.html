@@ -35,23 +35,24 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
   word-spacing:.18em;line-height:1.9!important;}
 .hidden{display:none!important;}
 /* Modal */
-.overlay{position:fixed;inset:0;background:rgba(15,17,30,0.75);backdrop-filter:blur(12px);
+.overlay{position:fixed;inset:0;background:rgba(10,12,24,0.55);backdrop-filter:blur(16px);
   display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-.modal{background:#1e2235;border:1px solid #3a3f60;border-radius:16px;
+.modal{background:#2a2f4a;border:1px solid #4a5070;border-radius:16px;
   padding:28px 32px;width:100%;max-width:400px;
-  box-shadow:0 0 80px rgba(0,240,255,.18);animation:mIn .3s ease;}
+  box-shadow:0 0 100px rgba(0,240,255,.22);animation:mIn .3s ease;}
 @keyframes mIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:none;}}
 .modal-logo{font-family:var(--mono);font-size:10px;color:var(--muted);
   text-transform:uppercase;letter-spacing:3px;margin-bottom:14px;}
-.modal h2{font-size:20px;font-weight:700;margin-bottom:4px;}
-.modal p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5;}
+.modal h2{font-size:20px;font-weight:700;margin-bottom:4px;color:#ffffff;}
+.modal p{color:#9098c0;font-size:13px;margin-bottom:18px;line-height:1.5;}
 .fg{margin-bottom:11px;}
-.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);
+.fg label{display:block;font-size:11px;font-weight:600;color:#b0b8e0;
   text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-.fg input,.fg select{width:100%;padding:9px 12px;background:#262a42;border:1px solid #454870;border-radius:8px;color:#f0f0ff;
+.fg input,.fg select{width:100%;padding:9px 12px;background:#323660;border:1px solid #5560a0;border-radius:8px;color:#ffffff;
   font-family:var(--sans);font-size:14px;transition:border-color .2s;}
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--accent);}
-.fg select option{background:var(--surface2);}
+.fg select option{background:#2a2f4a;color:#ffffff;}
+.fg select{color:#ffffff;}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
   border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:600;
   cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
