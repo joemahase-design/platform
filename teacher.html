@@ -159,6 +159,10 @@ input:checked+.t-track::before{background:#fff;transform:translateX(19px);}
 @keyframes tIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 @media(max-width:640px){.nav-tabs{gap:2px;}.nav-tab{padding:6px 10px;font-size:12px;}.lesson-cards{grid-template-columns:1fr;}}
 #pres-overlay{display:none;}#pres-overlay:not(.hidden){display:flex;}
+#pres-slide.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
+#pres-slide.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+#pres-slide.nature-green code,#pres-slide.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+#pres-slide.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
 
 /* ── Task elements (used in slide bodies) ── */
 .task-box{background:var(--surface2);border:1px solid var(--border);
@@ -2804,6 +2808,32 @@ function schkAny(inputId, fbId, answers) {
   fb.textContent = ok?'✓ Correct!':'Answer: '+answers[0];
 }
 
+
+function presFilter(type) {
+  const slide = document.getElementById('pres-slide');
+  const ngBtn = document.getElementById('pres-ng-btn');
+  const spBtn = document.getElementById('pres-sp-btn');
+  if (type === 'ng') {
+    slide.classList.remove('superpower');
+    const on = slide.classList.toggle('nature-green');
+    ngBtn.style.background = on ? '#e8f5e0' : 'var(--surface2)';
+    ngBtn.style.borderColor = on ? '#6a9a4a' : 'var(--border)';
+    ngBtn.style.color = on ? '#2a4a1a' : 'var(--muted)';
+    spBtn.style.background = 'var(--surface2)';
+    spBtn.style.borderColor = 'var(--border)';
+    spBtn.style.color = 'var(--muted)';
+  } else {
+    slide.classList.remove('nature-green');
+    const on = slide.classList.toggle('superpower');
+    spBtn.style.background = on ? '#fff3cd' : 'var(--surface2)';
+    spBtn.style.borderColor = on ? '#c8b97a' : 'var(--border)';
+    spBtn.style.color = on ? '#5a4e20' : 'var(--muted)';
+    ngBtn.style.background = 'var(--surface2)';
+    ngBtn.style.borderColor = 'var(--border)';
+    ngBtn.style.color = 'var(--muted)';
+  }
+}
+
 </script>
 
 <!-- PRESENTER OVERLAY -->
@@ -2811,6 +2841,8 @@ function schkAny(inputId, fbId, answers) {
   <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
     <button onclick="closePresenter()" style="width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">←</button>
     <span id="pres-title" style="font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;"></span>
+    <button onclick="presFilter('ng')" id="pres-ng-btn" style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;">🌿 Green</button>
+    <button onclick="presFilter('sp')" id="pres-sp-btn" style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;">⚡ Superpower</button>
     <button id="pres-newtab-btn" style="padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--sans);">⧉ New Tab</button>
   </div>
   <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;">
