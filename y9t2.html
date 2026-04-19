@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y9 — Searching & Sorting Algorithms</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#ff7a20;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+</style></head>
+<body>
+<div class="presentation">
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1 / 1</div>
+    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID = `y9t2`;
+const SLIDES = [
+  { type:`intro`, title:`Why Study Algorithms?`, body:`<p>Algorithms are step-by-step solutions to problems. <strong>Searching</strong> and <strong>sorting</strong> are the most fundamental algorithms in computer science — they underpin nearly every application.</p>
+<div class="two-col">
+<div class="card"><h4>Real Uses</h4><ul><li>Search engines finding web pages</li><li>Databases looking up records</li><li>Spreadsheets sorting data</li><li>Games pathfinding</li></ul></div>
+<div class="card"><h4>Why Efficiency Matters</h4><p>With millions of records, a slow algorithm takes hours. An efficient one takes milliseconds. We measure efficiency with <strong>Big O notation</strong>.</p></div></div>
+<div class="callout">🎯 Today: linear search, binary search, bubble sort, merge sort — and how to compare their efficiency.</div>` },
+  { type:`concept`, title:`Linear Search`, body:`<p><strong>Linear search</strong> checks each item one by one from start to finish:</p>
+<pre>def linear_search(data, target):
+    for i in range(len(data)):
+        if data[i] == target:
+            return i        # found at index i
+    return -1               # not found
+
+scores = [45, 82, 17, 63, 91, 28]
+print(linear_search(scores, 63))  # Returns 3</pre>
+<div class="two-col">
+<div class="card"><h4>✅ Advantages</h4><ul><li>Works on unsorted data</li><li>Simple to implement</li><li>Good for small lists</li></ul></div>
+<div class="card"><h4>❌ Disadvantages</h4><ul><li>Slow on large lists</li><li>Worst case: checks every item</li><li>O(n) — linear time</li></ul></div></div>` },
+  { type:`concept`, title:`Binary Search`, body:`<p><strong>Binary search</strong> works on <em>sorted</em> data — repeatedly halves the search space:</p>
+<pre>def binary_search(data, target):
+    low, high = 0, len(data) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if data[mid] == target:
+            return mid
+        elif data[mid] < target:
+            low = mid + 1     # search right half
+        else:
+            high = mid - 1    # search left half
+    return -1
+
+sorted_list = [10, 23, 35, 47, 58, 69, 74]
+print(binary_search(sorted_list, 47))  # Returns 3</pre>
+<div class="callout success">✅ Binary search on 1 million items takes at most 20 comparisons. Linear search could take 1,000,000!</div>` },
+  { type:`concept`, title:`Bubble Sort`, body:`<p><strong>Bubble sort</strong> repeatedly swaps adjacent items that are in the wrong order, until the list is sorted:</p>
+<pre>def bubble_sort(data):
+    n = len(data)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if data[j] > data[j+1]:
+                data[j], data[j+1] = data[j+1], data[j]
+    return data
+
+nums = [64, 34, 25, 12, 22, 11, 90]
+print(bubble_sort(nums))
+# [11, 12, 22, 25, 34, 64, 90]</pre>
+<div class="two-col">
+<div class="card"><h4>Trace: [5, 3, 8, 1]</h4><p>Pass 1: [3,5,8,1] → [3,5,8,1] → [3,5,1,8]<br>Pass 2: [3,5,1,8] → [3,1,5,8]<br>Pass 3: [1,3,5,8] ✓</p></div>
+<div class="card"><h4>Efficiency</h4><p>O(n²) — quadratic time. Fine for small lists. Very slow for large datasets. Simple to understand and implement.</p></div></div>` },
+  { type:`concept`, title:`Merge Sort`, body:`<p><strong>Merge sort</strong> uses divide and conquer — splits the list in half recursively, then merges sorted halves:</p>
+<pre>def merge_sort(data):
+    if len(data) <= 1:
+        return data
+    mid   = len(data) // 2
+    left  = merge_sort(data[:mid])
+    right = merge_sort(data[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j  = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    result += left[i:] + right[j:]
+    return result</pre>
+<div class="callout success">✅ Merge sort: O(n log n) — much faster than bubble sort on large data. Used in Python's own <code>sorted()</code> function.</div>` },
+  { type:`activity`, title:`Guided Tasks — Algorithms`, body:`<p>Test your searching and sorting knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Search Algorithms</h4>
+<div class="answer-row"><label>1. Which search requires sorted data?</label><input class="ans-input" id="al1" placeholder="..."><button class="check-btn" onclick="schkAny('al1','fal1',['binary search','binary','Binary Search'])">Check</button><span class="fb" id="fal1"></span></div>
+<div class="answer-row"><label>2. What is the worst case complexity of linear search?</label><input class="ans-input" id="al2" placeholder="..."><button class="check-btn" onclick="schkAny('al2','fal2',['o(n)','O(n)','linear'])">Check</button><span class="fb" id="fal2"></span></div>
+<div class="answer-row"><label>3. Binary search on 1024 items — max comparisons?</label><input class="ans-input" id="al3" placeholder="..."><button class="check-btn" onclick="schk('al3','fal3','10')">Check</button><span class="fb" id="fal3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Sorting</h4>
+<div class="answer-row"><label>4. What is the time complexity of bubble sort?</label><input class="ans-input" id="al4" placeholder="..."><button class="check-btn" onclick="schkAny('al4','fal4',['o(n2)','O(n²)','o(n^2)','quadratic'])">Check</button><span class="fb" id="fal4"></span></div>
+<div class="answer-row"><label>5. What strategy does merge sort use?</label><input class="ans-input" id="al5" placeholder="..."><button class="check-btn" onclick="schkAny('al5','fal5',['divide and conquer','divide and conquer'])">Check</button><span class="fb" id="fal5"></span></div>
+<div class="answer-row"><label>6. Which sort is more efficient on large data — bubble or merge?</label><input class="ans-input" id="al6" placeholder="..."><button class="check-btn" onclick="schkAny('al6','fal6',['merge','merge sort','Merge Sort'])">Check</button><span class="fb" id="fal6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>Linear search</strong>: checks each item — O(n), works on unsorted data</li>
+<li><strong>Binary search</strong>: halves search space each step — O(log n), requires sorted data</li>
+<li><strong>Bubble sort</strong>: swaps adjacent pairs — O(n²), simple but slow on large data</li>
+<li><strong>Merge sort</strong>: divide and conquer — O(n log n), much faster for large datasets</li>
+<li>Big O notation describes worst-case time complexity as data grows</li>
+</ul><div class="callout success">✅ Next: AI &amp; Machine Learning Ethics</div>` },
+  { type:`compete`, title:`🏆 Algorithms Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Searching & Sorting Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+];
+
+const COMP_Qs = [
+  { q:`Which search algorithm requires sorted data?`, answers:[`binary search`,`Binary Search`] },
+  { q:`What is the complexity of linear search?`, answers:[`O(n)`] },
+  { q:`What is the complexity of binary search?`, answers:[`O(log n)`] },
+  { q:`What is the complexity of bubble sort?`, answers:[`O(n²)`,`O(n2)`] },
+  { q:`What strategy does merge sort use?`, answers:[`divide and conquer`] },
+  { q:`Which is faster on large data — bubble or merge sort?`, answers:[`merge sort`,`merge`] },
+  { q:`What does binary search do when the target is less than the midpoint?`, answers:[`search left half`,`go left`,`search lower half`] },
+  { q:`How many comparisons does binary search need for 1024 items (worst case)?`, answers:[`10`] },
+  { q:`What does O(n) mean?`, answers:[`linear time`,`grows linearly`] },
+  { q:`What does bubble sort compare?`, answers:[`adjacent items`,`adjacent elements`,`neighbouring items`] },
+  { q:`What value does a search return if the item is not found?`, answers:[`−1`,`-1`] },
+  { q:`What is O(n log n) an example of?`, answers:[`merge sort complexity`,`efficient sorting`] },
+];
+
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+</script></body></html>
