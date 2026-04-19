@@ -3123,15 +3123,39 @@ function buildProof() {
   const u   = ST.user;
   const yr  = u.year;
   const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
-  let html  =
+
+  // Build question label map from all lesson slide bodies
+  function getQuestionLabels(key) {
+    const data = LESSON_DATA[key];
+    if (!data) return {};
+    const map = {};
+    data.slides.forEach(s => {
+      if (!s.body) return;
+      // Match label text + associated input id from answer-row divs
+      const rows = s.body.match(/<div class[^>]*answer-row[^>]*>.*?<\/div>/gs) || [];
+      rows.forEach(row => {
+        const labelM = row.match(/<label[^>]*>(.*?)<\/label>/s);
+        const inputM = row.match(/id=["']([^"' ]+)["']/);
+        if (labelM && inputM) {
+          // Strip HTML tags from label
+          const txt = labelM[1].replace(/<[^>]+>/g,'').trim();
+          map[inputM[1]] = txt.length > 60 ? txt.substring(0,60)+'…' : txt;
+        }
+      });
+    });
+    return map;
+  }
+
+  let html =
     '<div class="proof-header">'+
       '<h2>📄 Proof of Learning</h2>'+
-      '<p>Generated '+now+' &nbsp;·&nbsp; Corby Business Academy</p>'+
+      '<p>Generated '+now+' &nbsp;·&nbsp; Corby Business Academy &nbsp;·&nbsp; KS3 Computer Science</p>'+
     '</div>'+
+
     '<div class="proof-section">'+
       '<div class="proof-section-head"><span>👤 Student Details</span></div>'+
       '<div class="proof-rows">'+
-        '<div class="proof-row"><span class="pr-label">Name</span><span class="pr-val">'+u.name+'</span></div>'+
+        '<div class="proof-row"><span class="pr-label">Name</span><span class="pr-val"><strong>'+u.name+'</strong></span></div>'+
         '<div class="proof-row"><span class="pr-label">Year Group</span><span class="pr-val">Year '+u.year+'</span></div>'+
         '<div class="proof-row"><span class="pr-label">Class</span><span class="pr-val">'+u.cls+'</span></div>'+
         '<div class="proof-row"><span class="pr-label">Email</span><span class="pr-val">'+u.email+'</span></div>'+
@@ -3139,61 +3163,122 @@ function buildProof() {
     '</div>';
 
   const lessons = LESSONS[yr];
+  let grandCorrect = 0, grandTotal = 0, lessonsStarted = 0;
+  const lessonRows = [];
+
   lessons.forEach((l,i) => {
-    const key  = yr+'_'+i;
-    const data = LESSON_DATA[key];
+    const key   = yr+'_'+i;
+    const data  = LESSON_DATA[key];
     if (!data) return;
-    const sc   = getLessonScore(key);
-    const lb   = JSON.parse(localStorage.getItem('ks3_lb_'+(data.lid||key))||'[]');
-    const mine = lb.find(e=>e.name===u.name);
+    const sc    = getLessonScore(key);
+    const lb    = JSON.parse(localStorage.getItem('ks3_lb_'+(data.lid||key))||'[]');
+    const mine  = lb.find(e=>e.name===u.name);
     const ansKeys = Object.keys(localStorage).filter(k=>k.startsWith('st_ans_'+key));
     if (sc.total===0 && !mine) return;
 
-    html +=
-      '<div class="proof-section">'+
-        '<div class="proof-section-head">'+
-          '<span>📖 '+l.title+'</span>'+
-          '<span class="pr-badge pr-ok">'+sc.correct+'/'+sc.total+' correct</span>'+
-        '</div><div class="proof-rows">';
+    lessonsStarted++;
+    grandCorrect += sc.correct;
+    grandTotal   += sc.total;
 
+    const pct    = sc.total > 0 ? Math.round(sc.correct/sc.total*100) : 0;
+    const labels = getQuestionLabels(key);
+
+    // Lesson section
+    let lessonHtml =
+      '<div class="proof-section">'+
+        '<div class="proof-section-head" style="flex-direction:column;align-items:flex-start;gap:6px">'+
+          '<div style="display:flex;align-items:center;justify-content:space-between;width:100%">'+
+            '<span>📖 '+l.title+'</span>'+
+            '<span class="pr-badge '+(pct>=70?'pr-ok':pct>=40?'pr-pts':'pr-no')+'">'+sc.correct+'/'+sc.total+' correct &nbsp;·&nbsp; '+pct+'%</span>'+
+          '</div>'+
+          '<div style="width:100%;height:6px;background:rgba(0,0,0,.1);border-radius:3px;overflow:hidden">'+
+            '<div style="height:100%;width:'+pct+'%;background:'+(pct>=70?'#2ecc71':pct>=40?'#f1c40f':'#e74c3c')+';border-radius:3px;transition:width .4s"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="proof-rows">';
+
+    // Task answers with labels
     ansKeys.forEach(ak => {
       const inputId = ak.replace('st_ans_'+key+'_','');
       const val     = localStorage.getItem(ak)||'';
       const fb      = localStorage.getItem('st_fb_'+key+'_'+inputId);
       if (!val) return;
-      html +=
+      const label = labels[inputId] || inputId;
+      lessonHtml +=
         '<div class="proof-row">'+
-          '<span class="pr-label" style="font-family:var(--mono);font-size:11px">'+inputId+'</span>'+
-          '<span class="pr-val">'+val+'</span>'+
-          (fb!==null?'<span class="pr-badge '+(fb==='1'?'pr-ok':'pr-no')+'">'+(fb==='1'?'✓':'✗')+'</span>':'')+
+          '<span class="pr-label" style="font-size:12px;line-height:1.4">'+label+'</span>'+
+          '<span class="pr-val" style="font-family:var(--mono);font-size:13px">'+val+'</span>'+
+          (fb!==null?'<span class="pr-badge '+(fb==='1'?'pr-ok':'pr-no')+'">'+(fb==='1'?'✓ Correct':'✗ Wrong')+'</span>':'')+
         '</div>';
     });
 
+    // Competition score
     if (mine) {
-      html +=
-        '<div class="proof-row">'+
+      const rank = lb.findIndex(e=>e.name===u.name)+1;
+      const medals = ['🥇','🥈','🥉'];
+      lessonHtml +=
+        '<div class="proof-row" style="background:rgba(241,196,15,.05)">'+
           '<span class="pr-label">🏆 Speed Challenge</span>'+
-          '<span class="pr-val">'+mine.score+' points ('+mine.date+')</span>'+
-          '<span class="pr-badge pr-pts">🏆</span>'+
+          '<span class="pr-val"><strong>'+mine.score+' points</strong> &nbsp;·&nbsp; '+mine.date+'</span>'+
+          '<span class="pr-badge pr-pts">'+(medals[rank-1]||'#'+rank)+' Rank '+rank+'</span>'+
         '</div>';
     }
-    html += '</div></div>';
+
+    lessonHtml += '</div></div>';
+    lessonRows.push({ title:l.title, correct:sc.correct, total:sc.total, pct, compScore:mine?mine.score:null });
+    html += lessonHtml;
   });
 
-  const totalCorrect  = lessons.reduce((a,_,i)=>{ const s=getLessonScore(yr+'_'+i); return a+s.correct; },0);
-  const totalAnswered = lessons.reduce((a,_,i)=>{ const s=getLessonScore(yr+'_'+i); return a+s.total;   },0);
+  // Summary section
+  const overallPct = grandTotal > 0 ? Math.round(grandCorrect/grandTotal*100) : 0;
   html +=
     '<div class="proof-section">'+
-      '<div class="proof-section-head">📊 Summary</div>'+
+      '<div class="proof-section-head">📊 Overall Summary</div>'+
       '<div class="proof-rows">'+
-        '<div class="proof-row"><span class="pr-label">Total Correct</span><span class="pr-val">'+totalCorrect+' / '+totalAnswered+'</span></div>'+
-        '<div class="proof-row"><span class="pr-label">Score</span><span class="pr-val">'+(totalAnswered>0?Math.round(totalCorrect/totalAnswered*100):0)+'%</span></div>'+
+        '<div class="proof-row">'+
+          '<span class="pr-label">Lessons Attempted</span>'+
+          '<span class="pr-val">'+lessonsStarted+' / '+lessons.length+'</span>'+
+          '<span class="pr-badge '+(lessonsStarted===lessons.length?'pr-ok':'pr-pts')+'">'+
+            (lessonsStarted===lessons.length?'All complete':lessonsStarted+' done')+
+          '</span>'+
+        '</div>'+
+        '<div class="proof-row">'+
+          '<span class="pr-label">Total Questions</span>'+
+          '<span class="pr-val">'+grandCorrect+' correct out of '+grandTotal+'</span>'+
+          '<span class="pr-badge '+(overallPct>=70?'pr-ok':overallPct>=40?'pr-pts':'pr-no')+'">'+overallPct+'%</span>'+
+        '</div>'+
+        '<div class="proof-row" style="display:block;padding:10px 18px">'+
+          '<div style="height:10px;background:rgba(0,0,0,.08);border-radius:5px;overflow:hidden;margin-top:4px">'+
+            '<div style="height:100%;width:'+overallPct+'%;background:'+(overallPct>=70?'#2ecc71':overallPct>=40?'#f1c40f':'#e74c3c')+';border-radius:5px;transition:width .5s"></div>'+
+          '</div>'+
+        '</div>'+
       '</div>'+
+      // Per-lesson summary table
+      (lessonRows.length > 0 ?
+        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin:0">'+
+          '<thead><tr style="background:rgba(0,0,0,.04)">'+
+            '<th style="padding:9px 16px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border)">Lesson</th>'+
+            '<th style="padding:9px 16px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border)">Score</th>'+
+            '<th style="padding:9px 16px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border)">%</th>'+
+            '<th style="padding:9px 16px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border)">Competition</th>'+
+          '</tr></thead>'+
+          '<tbody>'+
+          lessonRows.map(r =>
+            '<tr>'+
+              '<td style="padding:9px 16px;border-bottom:1px solid rgba(0,0,0,.05)">'+r.title+'</td>'+
+              '<td style="padding:9px 16px;text-align:center;font-family:var(--mono);border-bottom:1px solid rgba(0,0,0,.05)">'+r.correct+'/'+r.total+'</td>'+
+              '<td style="padding:9px 16px;text-align:center;border-bottom:1px solid rgba(0,0,0,.05)">'+
+                '<span style="padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;background:'+(r.pct>=70?'rgba(46,204,113,.15)':r.pct>=40?'rgba(241,196,15,.15)':'rgba(231,76,60,.15)')+';color:'+(r.pct>=70?'#2ecc71':r.pct>=40?'#f1c40f':'#e74c3c')+'">'+r.pct+'%</span>'+
+              '</td>'+
+              '<td style="padding:9px 16px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);border-bottom:1px solid rgba(0,0,0,.05)">'+(r.compScore!==null?'🏆 '+r.compScore+' pts':'—')+'</td>'+
+            '</tr>'
+          ).join('')+
+          '</tbody></table>'
+      : '')+
     '</div>';
 
   document.getElementById('proof-body').innerHTML = html;
 }
-
 function downloadProof() {
   buildProof();
   const u    = ST.user;
