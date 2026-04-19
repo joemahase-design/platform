@@ -595,7 +595,7 @@ function toast(msg, type='ok') {
 //  EMBEDDED PRESENTATION ENGINE
 // ═══════════════════════════════════════════════════
 const TEACHER_LESSON_DATA = {
-  "7_0": { lid:'y7t2', slides:[
+  "7_0": { lid:`y7t2`, slides:[
   {
     type: 'intro',
     title: 'Binary — The Language of Computers',
@@ -826,7 +826,7 @@ Working right to left:
   { q: 'How many bytes in 1 kilobyte?', answers: ['1024'] },
   { q: 'Convert decimal 12 to binary (8-bit)', answers: ['00001100','0000 1100'] },
 ] },
-  "7_1": { lid:'y7t1', slides:[
+  "7_1": { lid:`y7t1`, slides:[
   {
     type: 'intro',
     title: 'What is an Algorithm?',
@@ -919,7 +919,284 @@ Working right to left:
     <div class="callout">✅ Next lesson: Data & Binary Representation — how computers store information using only 0s and 1s.</div>`
   },
 ], comp:[] },
-  "8_0": { lid:'y8t2', slides:[
+  "7_2": { lid:`y7t3`, slides:[
+  { type:`intro`, title:`What is a Network?`, body:`<p>A <strong>network</strong> is two or more computers connected to share data and resources. Networks are everywhere — your school, home broadband, the internet itself.</p>
+<div class="two-col"><div class="card"><h4>LAN</h4><p><strong>Local Area Network</strong> — covers a small area like a school building or home. Usually connected by cables or Wi-Fi.</p></div>
+<div class="card"><h4>WAN</h4><p><strong>Wide Area Network</strong> — spans large areas (cities, countries). The Internet is the world's largest WAN.</p></div></div>
+<div class="callout">🎯 Learning goals: understand network types, hardware, protocols, and how the internet works.</div>` },
+  { type:`concept`, title:`Network Hardware`, body:`<p>Networks use specialist hardware to connect devices and route data:</p>
+<div class="two-col"><div class="card"><h4>Router</h4><p>Connects different networks together (e.g. your home network to the internet). Directs data packets to the right destination.</p></div>
+<div class="card"><h4>Switch</h4><p>Connects devices within a LAN. Unlike a hub, it sends data only to the intended device — more efficient.</p></div></div>
+<div class="two-col"><div class="card"><h4>NIC</h4><p>Network Interface Card — hardware built into your device that lets it connect to a network. Has a unique MAC address.</p></div>
+<div class="card"><h4>WAP</h4><p>Wireless Access Point — transmits Wi-Fi signals so devices can join a network wirelessly.</p></div></div>` },
+  { type:`concept`, title:`IP & MAC Addresses`, body:`<p>Every device on a network needs a unique identifier:</p>
+<table class="bit-table"><tr><th>Type</th><th>Example</th><th>Assigned by</th><th>Changes?</th></tr>
+<tr><td><strong>IP Address</strong></td><td><code>192.168.1.42</code></td><td>Network (DHCP)</td><td>Yes — can change</td></tr>
+<tr><td><strong>MAC Address</strong></td><td><code>A1:B2:C3:D4:E5:F6</code></td><td>Manufacturer</td><td>No — permanent</td></tr></table>
+<div class="callout">💡 Think of IP as your postcode (changes if you move) and MAC as your fingerprint (always yours).</div>
+<div class="two-col"><div class="card"><h4>IPv4</h4><p>Four groups of numbers: <code>192.168.0.1</code><br>About 4 billion addresses — nearly full!</p></div>
+<div class="card"><h4>IPv6</h4><p>Eight groups of hex: <code>2001:0db8::1</code><br>340 undecillion addresses — effectively unlimited.</p></div></div>` },
+  { type:`concept`, title:`Network Protocols`, body:`<p>A <strong>protocol</strong> is an agreed set of rules for communication. Without protocols, devices from different manufacturers could not communicate.</p>
+<table class="bit-table"><tr><th>Protocol</th><th>Purpose</th></tr>
+<tr><td><strong>HTTP/HTTPS</strong></td><td>Transfer web pages. HTTPS adds encryption.</td></tr>
+<tr><td><strong>TCP/IP</strong></td><td>Core internet protocols — splits data into packets and routes them.</td></tr>
+<tr><td><strong>DNS</strong></td><td>Domain Name System — translates domain names to IP addresses.</td></tr>
+<tr><td><strong>FTP</strong></td><td>File Transfer Protocol — transfers files between computers.</td></tr>
+<tr><td><strong>SMTP/IMAP</strong></td><td>Sending and receiving email.</td></tr></table>` },
+  { type:`concept`, title:`The Internet & World Wide Web`, body:`<p>People often confuse these — they are different things:</p>
+<div class="two-col"><div class="card"><h4>The Internet</h4><p>The global physical <strong>infrastructure</strong> — cables, routers, servers connecting billions of devices worldwide. It carries all kinds of data.</p></div>
+<div class="card"><h4>The World Wide Web</h4><p>A <strong>service</strong> that runs on the internet. Consists of web pages (HTML files) accessed via HTTP. One of many internet services.</p></div></div>
+<div class="callout">🌐 Other internet services: email (SMTP), video calls (VOIP), online gaming, file sharing (FTP). The web is just one of them.</div>
+<div class="two-col"><div class="card"><h4>URL</h4><p><code>https://bbc.co.uk/news</code><br>Protocol + domain + path</p></div>
+<div class="card"><h4>DNS</h4><p>Translates <code>bbc.co.uk</code> to an IP address so your browser can find the server.</p></div></div>` },
+  { type:`concept`, title:`Packet Switching`, body:`<p>Data on the internet travels as <strong>packets</strong> — small chunks that may take different routes and are reassembled at the destination.</p>
+<ul><li>Each packet contains: data, source IP, destination IP, sequence number</li>
+<li>Packets can travel via different routes and arrive out of order</li>
+<li><strong>TCP</strong> ensures all packets arrive and reassembles them in order</li>
+<li>Lost packets are re-requested automatically</li></ul>
+<div class="callout">📦 Sending a photo: it gets split into hundreds of packets, each finds its own route across the internet, then they are reassembled on the other side. All in milliseconds!</div>` },
+  { type:`activity`, title:`Guided Tasks — Networks`, body:`<p>Work through each question and check your answer.</p>
+<div class="task-box"><h4>📝 Task A — Key Terms</h4>
+<div class="answer-row"><label>1. What does LAN stand for?</label><input class="ans-input" id="n1" placeholder="..."><button class="check-btn" onclick="schkAny('n1','fn1',['local area network','Local Area Network'])">Check</button><span class="fb" id="fn1"></span></div>
+<div class="answer-row"><label>2. What device connects a home to the internet?</label><input class="ans-input" id="n2" placeholder="..."><button class="check-btn" onclick="schkAny('n2','fn2',['router','Router'])">Check</button><span class="fb" id="fn2"></span></div>
+<div class="answer-row"><label>3. What protocol translates domain names to IP addresses?</label><input class="ans-input" id="n3" placeholder="..."><button class="check-btn" onclick="schkAny('n3','fn3',['dns','DNS'])">Check</button><span class="fb" id="fn3"></span></div>
+<div class="answer-row"><label>4. What does HTTP stand for?</label><input class="ans-input" id="n4" placeholder="..."><button class="check-btn" onclick="schkAny('n4','fn4',['hypertext transfer protocol','HyperText Transfer Protocol'])">Check</button><span class="fb" id="fn4"></span></div>
+<div class="answer-row"><label>5. A MAC address is permanent. True or False?</label><input class="ans-input" id="n5" placeholder="..."><button class="check-btn" onclick="schkAny('n5','fn5',['true','True'])">Check</button><span class="fb" id="fn5"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Hardware Match</h4>
+<div class="answer-row"><label>6. Which hardware allows wireless connections?</label><input class="ans-input" id="n6" placeholder="..."><button class="check-btn" onclick="schkAny('n6','fn6',['wap','WAP','wireless access point'])">Check</button><span class="fb" id="fn6"></span></div>
+<div class="answer-row"><label>7. What splits data into packets for transmission?</label><input class="ans-input" id="n7" placeholder="..."><button class="check-btn" onclick="schkAny('n7','fn7',['tcp','TCP','tcp/ip'])">Check</button><span class="fb" id="fn7"></span></div>
+<div class="answer-row"><label>8. What connects devices within a LAN efficiently?</label><input class="ans-input" id="n8" placeholder="..."><button class="check-btn" onclick="schkAny('n8','fn8',['switch','Switch'])">Check</button><span class="fb" id="fn8"></span></div>
+</div>
+<div class="callout warn">💡 Remember: the Internet is the infrastructure; the World Wide Web is a service that runs on it.</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>LAN</strong> is local; a <strong>WAN</strong> spans large distances (the internet is a WAN)</li>
+<li>Key hardware: Router (connects networks), Switch (connects devices in LAN), NIC, WAP</li>
+<li><strong>IP address</strong> — logical, can change. <strong>MAC address</strong> — physical, permanent</li>
+<li>Protocols: HTTP/S (web), TCP/IP (core internet), DNS (name lookup), SMTP (email)</li>
+<li>Data travels as <strong>packets</strong> that may take different routes and are reassembled</li>
+<li>The Internet ≠ the Web — the web is one service running on the internet</li>
+</ul><div class="callout success">✅ Next: Introduction to Programming with Python</div>` },
+  { type:`compete`, title:`🏆 Networks Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Networks Speed Challenge</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does LAN stand for?`, answers:[`Local Area Network`] },
+  { q:`What device connects your home network to the internet?`, answers:[`router`,`Router`] },
+  { q:`What protocol translates domain names to IP addresses?`, answers:[`DNS`] },
+  { q:`Is a MAC address permanent or temporary?`, answers:[`permanent`] },
+  { q:`What does HTTP stand for?`, answers:[`HyperText Transfer Protocol`,`hypertext transfer protocol`] },
+  { q:`What connects devices within a LAN efficiently?`, answers:[`switch`,`Switch`] },
+  { q:`What splits internet data into smaller chunks for transmission?`, answers:[`packets`,`Packets`] },
+  { q:`What is the difference between the Internet and the Web?`, answers:[`infrastructure vs service`,`the web is a service`] },
+  { q:`What does HTTPS add to HTTP?`, answers:[`encryption`,`Encryption`] },
+  { q:`What type of address is built into network hardware permanently?`, answers:[`MAC`,`mac address`,`MAC address`] },
+  { q:`What does DNS stand for?`, answers:[`Domain Name System`] },
+  { q:`Which IP version provides virtually unlimited addresses?`, answers:[`IPv6`] },
+] },
+  "7_3": { lid:`y7t4`, slides:[
+  { type:`intro`, title:`What is Programming?`, body:`<p>Programming is writing instructions that a computer can follow to solve a problem or complete a task. Every app, game and website is built from code.</p>
+<div class="two-col"><div class="card"><h4>Why Python?</h4><p>Python is one of the world's most popular languages. It reads almost like English, making it perfect for beginners — and it is used by Google, NASA and Netflix.</p></div>
+<div class="card"><h4>What is a Program?</h4><p>A sequence of instructions written in a programming language. The computer executes them one by one, top to bottom (unless told otherwise).</p></div></div>
+<div class="callout">🎯 Goals today: variables, data types, input/output, and writing your first Python programs.</div>` },
+  { type:`concept`, title:`Variables & Data Types`, body:`<p>A <strong>variable</strong> is a named box in memory that stores a value your program can use and change.</p>
+<pre>name = "Alice"     # String — text in quotes
+age  = 14          # Integer — whole number
+score = 9.5        # Float — decimal number
+passed = True      # Boolean — True or False</pre>
+<table class="bit-table"><tr><th>Type</th><th>Example</th><th>Used for</th></tr>
+<tr><td><strong>String</strong></td><td><code>"Hello"</code></td><td>Text, names, messages</td></tr>
+<tr><td><strong>Integer</strong></td><td><code>42</code></td><td>Whole numbers, counts</td></tr>
+<tr><td><strong>Float</strong></td><td><code>3.14</code></td><td>Decimals, measurements</td></tr>
+<tr><td><strong>Boolean</strong></td><td><code>True</code></td><td>Yes/No decisions</td></tr></table>
+<div class="callout warn">⚠️ Python is case-sensitive: <code>Name</code> and <code>name</code> are different variables!</div>` },
+  { type:`concept`, title:`Input & Output`, body:`<p>Programs communicate with users via <strong>input</strong> (reading) and <strong>output</strong> (displaying):</p>
+<pre># OUTPUT — display to screen
+print("Hello, World!")
+print("Your score is:", score)
+
+# INPUT — read from keyboard
+name = input("What is your name? ")
+age  = int(input("How old are you? "))</pre>
+<div class="callout warn">⚠️ <code>input()</code> always returns a <strong>string</strong>. To use it as a number, convert it:<br><code>age = int(input("Age: "))</code> or <code>price = float(input("Price: "))</code></div>
+<div class="card" style="margin-top:14px"><h4>String Concatenation</h4>
+<pre>name = "Alex"
+print("Hello, " + name + "!")  # Hello, Alex!</pre></div>` },
+  { type:`concept`, title:`Selection — IF Statements`, body:`<p><strong>Selection</strong> lets your program make decisions and follow different paths:</p>
+<pre>score = int(input("Enter your score: "))
+
+if score >= 70:
+    print("Distinction!")
+elif score >= 50:
+    print("Pass")
+else:
+    print("Try again")
+
+print("Program finished")</pre>
+<div class="two-col"><div class="card"><h4>Comparison Operators</h4><p><code>==</code> equal to<br><code>!=</code> not equal<br><code>&gt;</code> greater than<br><code>&lt;</code> less than<br><code>&gt;=</code> greater or equal<br><code>&lt;=</code> less or equal</p></div>
+<div class="card"><h4>Key Rules</h4><p>• Colon <code>:</code> after every condition<br>• Indent with 4 spaces inside blocks<br>• <code>elif</code> = else if<br>• Only ONE branch runs</p></div></div>` },
+  { type:`concept`, title:`Iteration — Loops`, body:`<p><strong>Iteration</strong> repeats a block of code. Python has two main loop types:</p>
+<div class="two-col"><div class="card"><h4>FOR Loop — count controlled</h4>
+<pre>for i in range(5):
+    print(i)
+# Prints: 0 1 2 3 4
+
+for i in range(1, 6):
+    print(i)
+# Prints: 1 2 3 4 5</pre></div>
+<div class="card"><h4>WHILE Loop — condition controlled</h4>
+<pre>count = 0
+while count < 5:
+    print(count)
+    count = count + 1
+# Prints: 0 1 2 3 4</pre></div></div>
+<div class="callout">🔑 Use <strong>FOR</strong> when you know how many times. Use <strong>WHILE</strong> when you repeat until something happens.</div>` },
+  { type:`activity`, title:`Guided Tasks — Python Basics`, body:`<p>Answer each question about Python programming.</p>
+<div class="task-box"><h4>📝 Task A — Variables & Types</h4>
+<div class="answer-row"><label>1. What data type is <code>"Hello"</code>?</label><input class="ans-input" id="p1" placeholder="..."><button class="check-btn" onclick="schkAny('p1','fp1',['string','String'])">Check</button><span class="fb" id="fp1"></span></div>
+<div class="answer-row"><label>2. What data type is <code>42</code>?</label><input class="ans-input" id="p2" placeholder="..."><button class="check-btn" onclick="schkAny('p2','fp2',['integer','Integer','int'])">Check</button><span class="fb" id="fp2"></span></div>
+<div class="answer-row"><label>3. What does <code>input()</code> always return?</label><input class="ans-input" id="p3" placeholder="..."><button class="check-btn" onclick="schkAny('p3','fp3',['string','String','a string'])">Check</button><span class="fb" id="fp3"></span></div>
+<div class="answer-row"><label>4. What symbol checks equality in Python?</label><input class="ans-input" id="p4" placeholder="..."><button class="check-btn" onclick="schk('p4','fp4','==')">Check</button><span class="fb" id="fp4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Reading Code</h4>
+<p style="font-size:13px;color:var(--muted);margin-bottom:10px">What does this code print?<br><code>x = 10<br>if x > 5:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Big")<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Small")</code></p>
+<div class="answer-row"><label>5. What is printed?</label><input class="ans-input" id="p5" placeholder="..."><button class="check-btn" onclick="schkAny('p5','fp5',['big','Big'])">Check</button><span class="fb" id="fp5"></span></div>
+<div class="answer-row"><label>6. How many times does <code>for i in range(4):</code> loop?</label><input class="ans-input" id="p6" placeholder="..."><button class="check-btn" onclick="schk('p6','fp6','4')">Check</button><span class="fb" id="fp6"></span></div>
+<div class="answer-row"><label>7. Which loop is best when you don't know how many repeats?</label><input class="ans-input" id="p7" placeholder="..."><button class="check-btn" onclick="schkAny('p7','fp7',['while','while loop','WHILE'])">Check</button><span class="fb" id="fp7"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>variable</strong> stores a value: String, Integer, Float, or Boolean</li>
+<li><code>print()</code> outputs to screen; <code>input()</code> reads from keyboard (always returns a string)</li>
+<li>Convert input to numbers: <code>int(input(...))</code> or <code>float(input(...))</code></li>
+<li><strong>Selection</strong>: <code>if / elif / else</code> — always end condition with <code>:</code>, indent body 4 spaces</li>
+<li><strong>FOR loop</strong>: count-controlled, use <code>range()</code></li>
+<li><strong>WHILE loop</strong>: condition-controlled, repeats until condition is False</li>
+</ul><div class="callout success">✅ Next: Spreadsheet Modelling</div>` },
+  { type:`compete`, title:`🏆 Python Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Python Speed Challenge</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<ul class="leaderboard" id="leaderboard"></ul></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px">🎉</div><p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What Python function displays output to the screen?`, answers:[`print`,`print()`] },
+  { q:`What data type stores text in Python?`, answers:[`string`,`String`] },
+  { q:`What does int() do to an input value?`, answers:[`converts it to an integer`,`converts to integer`,`makes it a number`] },
+  { q:`What symbol is used for equality comparison in Python?`, answers:[`==`] },
+  { q:`How many times does range(5) loop?`, answers:[`5`] },
+  { q:`Which loop repeats while a condition is True?`, answers:[`while`,`while loop`,`WHILE`] },
+  { q:`What must you put at the end of an if statement line?`, answers:[`colon`,`:`] },
+  { q:`What data type is True or False?`, answers:[`boolean`,`Boolean`] },
+  { q:`What is the correct indentation in Python?`, answers:[`4 spaces`,`4`] },
+  { q:`Which loop uses range()?`, answers:[`for`,`for loop`,`FOR`] },
+  { q:`What does print("Hi" + " " + "Joe") output?`, answers:[`Hi Joe`] },
+  { q:`What keyword follows if to add another condition?`, answers:[`elif`] },
+] },
+  "7_4": { lid:`y7t5`, slides:[
+  { type:`intro`, title:`What is a Spreadsheet?`, body:`<p>A spreadsheet is a grid of <strong>cells</strong> organised in rows and columns. It is one of the most widely used software tools in the world — from schools and hospitals to banks and space agencies.</p>
+<div class="two-col"><div class="card"><h4>Why Use Spreadsheets?</h4><ul><li>Store and organise large amounts of data</li><li>Automatically recalculate when data changes</li><li>Create charts and visualisations</li><li>Sort, filter and analyse data quickly</li></ul></div>
+<div class="card"><h4>Real World Uses</h4><ul><li>School: tracking student grades and attendance</li><li>Business: budgets, payroll, stock</li><li>Science: recording and analysing results</li><li>Sport: player statistics and league tables</li></ul></div></div>
+<div class="callout">🎯 Today: cells, references, formulas, formatting and data analysis using the 2016 Olympic medal table.</div>` },
+  { type:`concept`, title:`Cells, Rows & Columns`, body:`<p>Every piece of data in a spreadsheet lives in a <strong>cell</strong>:</p>
+<table class="bit-table"><tr><th>Term</th><th>Description</th><th>Example</th></tr>
+<tr><td><strong>Column</strong></td><td>Vertical — labelled A, B, C…</td><td>Column C</td></tr>
+<tr><td><strong>Row</strong></td><td>Horizontal — numbered 1, 2, 3…</td><td>Row 5</td></tr>
+<tr><td><strong>Cell</strong></td><td>One box — column letter + row number</td><td><code>C5</code></td></tr>
+<tr><td><strong>Range</strong></td><td>Group of cells from corner to corner</td><td><code>A1:D10</code></td></tr></table>
+<div class="callout">💡 After column Z comes AA, AB, AC… Spreadsheets can have thousands of columns and over a million rows!</div>
+<div class="two-col"><div class="card"><h4>Selecting Ranges</h4><p>Click and drag, or type the range into a formula. <code>B2:B8</code> means all cells from B2 to B8.</p></div>
+<div class="card"><h4>Absolute vs Relative</h4><p><code>B2</code> — relative (changes when copied)<br><code>$B$2</code> — absolute (stays fixed)</p></div></div>` },
+  { type:`concept`, title:`Formulas & Functions`, body:`<p>Every formula starts with <code>=</code>. Functions are built-in formulas:</p>
+<table class="bit-table"><tr><th>Function</th><th>What it does</th><th>Example</th></tr>
+<tr><td><code>=SUM()</code></td><td>Adds values in a range</td><td><code>=SUM(B2:B8)</code></td></tr>
+<tr><td><code>=AVERAGE()</code></td><td>Calculates the mean</td><td><code>=AVERAGE(C2:C8)</code></td></tr>
+<tr><td><code>=MAX()</code></td><td>Finds the largest value</td><td><code>=MAX(D2:D8)</code></td></tr>
+<tr><td><code>=MIN()</code></td><td>Finds the smallest value</td><td><code>=MIN(D2:D8)</code></td></tr>
+<tr><td><code>=COUNT()</code></td><td>Counts numeric cells</td><td><code>=COUNT(A1:A20)</code></td></tr>
+<tr><td><code>=IF()</code></td><td>Returns different values based on condition</td><td><code>=IF(B2>50,"Pass","Fail")</code></td></tr></table>
+<div class="callout warn">⚠️ If you see <code>#VALUE!</code> or <code>#REF!</code> — you have a formula error. Check your cell references and data types.</div>` },
+  { type:`activity`, title:`Olympic Medal Investigation`, body:`<p>You are a journalist analysing the 2016 Summer Olympics. Use the data below to answer the questions.</p>
+<table class="bit-table"><tr><th>Country</th><th>Gold 🥇</th><th>Silver 🥈</th><th>Bronze 🥉</th></tr>
+<tr><td>United States</td><td>46</td><td>37</td><td>38</td></tr>
+<tr><td>Great Britain</td><td>27</td><td>23</td><td>17</td></tr>
+<tr><td>China</td><td>26</td><td>18</td><td>26</td></tr>
+<tr><td>Russia</td><td>19</td><td>17</td><td>20</td></tr>
+<tr><td>Germany</td><td>17</td><td>10</td><td>15</td></tr></table>
+<div class="task-box"><h4>📝 Questions — write the formula</h4>
+<div class="answer-row"><label>1. Formula to total medals for USA (B2+C2+D2):</label><input class="ans-input" id="sp1" placeholder="=..."><button class="check-btn" onclick="schkAny('sp1','fsp1',['=b2+c2+d2','=B2+C2+D2','=sum(b2:d2)','=SUM(B2:D2)'])">Check</button><span class="fb" id="fsp1"></span></div>
+<div class="answer-row"><label>2. Which function finds the highest value?</label><input class="ans-input" id="sp2" placeholder="..."><button class="check-btn" onclick="schkAny('sp2','fsp2',['max','MAX','=MAX()'])">Check</button><span class="fb" id="fsp2"></span></div>
+<div class="answer-row"><label>3. Cell reference for column C, row 4?</label><input class="ans-input" id="sp3" placeholder="..."><button class="check-btn" onclick="schkAny('sp3','fsp3',['c4','C4'])">Check</button><span class="fb" id="fsp3"></span></div>
+<div class="answer-row"><label>4. What does = always start?</label><input class="ans-input" id="sp4" placeholder="..."><button class="check-btn" onclick="schkAny('sp4','fsp4',['formula','a formula'])">Check</button><span class="fb" id="fsp4"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A spreadsheet stores data in <strong>cells</strong> identified by column letter + row number (e.g. <code>C5</code>)</li>
+<li>A <strong>range</strong> covers multiple cells: <code>A1:D10</code></li>
+<li>All formulas start with <code>=</code></li>
+<li>Key functions: <code>SUM</code>, <code>AVERAGE</code>, <code>MAX</code>, <code>MIN</code>, <code>IF</code></li>
+<li>Relative references change when copied; absolute references (<code>$A$1</code>) stay fixed</li>
+<li>Spreadsheets recalculate automatically when data changes — use formulas, not typed answers</li>
+</ul><div class="callout success">✅ Year 7 complete! Well done!</div>` },
+  { type:`compete`, title:`🏆 Spreadsheet Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Spreadsheet Speed Challenge</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<ul class="leaderboard" id="leaderboard"></ul></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px">🎉</div><p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does every formula in Excel start with?`, answers:[`=`] },
+  { q:`What is the cell reference for column B, row 3?`, answers:[`B3`] },
+  { q:`Which function adds all values in a range?`, answers:[`SUM`,`=SUM`] },
+  { q:`What does =AVERAGE(B2:B8) calculate?`, answers:[`the mean`,`average`,`the average`] },
+  { q:`What is the range from A1 to D4 written as?`, answers:[`A1:D4`] },
+  { q:`Which function finds the largest value?`, answers:[`MAX`,`=MAX`] },
+  { q:`What does =IF(A1>10,"Yes","No") return if A1 is 15?`, answers:[`Yes`] },
+  { q:`What does $B$2 mean in a formula?`, answers:[`absolute reference`,`fixed reference`] },
+  { q:`What error appears when a formula references a deleted cell?`, answers:[`#REF!`,`REF`] },
+  { q:`How many rows does the range B2:B6 cover?`, answers:[`5`] },
+  { q:`Which function counts numeric cells?`, answers:[`COUNT`,`=COUNT`] },
+  { q:`What direction do columns run?`, answers:[`vertical`,`up and down`] },
+] },
+  "8_0": { lid:`y8t2`, slides:[
   {
     type: 'intro',
     title: 'Binary, Denary & Hexadecimal',
@@ -1135,7 +1412,422 @@ Working right to left:
   { q: 'Convert denary 32 to hex', answers: ['20'] },
   { q: 'What is hex B in denary?', answers: ['11'] },
 ] },
-  "9_0": { lid:'y9t6', slides:[
+  "8_1": { lid:`y8t1`, slides:[
+  { type:`intro`, title:`Python Warm Up — Year 8`, body:`<p>This lesson refreshes your Python skills from Year 7 and extends them with <strong>functions</strong>, <strong>lists</strong>, and more complex programs.</p>
+<div class="two-col">
+<div class="card"><h4>Year 7 Recap</h4><ul><li>Variables and data types</li><li>print() and input()</li><li>if / elif / else</li><li>for and while loops</li></ul></div>
+<div class="card"><h4>Year 8 Extensions</h4><ul><li>Functions (def)</li><li>Lists</li><li>String methods</li><li>More complex programs</li></ul></div></div>
+<div class="callout">🎯 By the end: write functions, work with lists, and build longer, well-structured programs.</div>` },
+  { type:`concept`, title:`Recap — Variables & Selection`, body:`<p>Quick recap of Year 7 essentials before extending:</p>
+<pre># Variables
+name  = "Alice"
+score = 85
+grade = "A" if score >= 70 else "B" if score >= 60 else "C"
+
+# Input
+age = int(input("Enter your age: "))
+
+# Selection
+if age >= 18:
+    print("Adult")
+elif age >= 13:
+    print("Teenager")
+else:
+    print("Child")</pre>
+<div class="callout warn">⚠️ Remember: <code>input()</code> always returns a string — use <code>int()</code> or <code>float()</code> to convert for calculations.</div>` },
+  { type:`concept`, title:`Functions`, body:`<p>A <strong>function</strong> is a named, reusable block of code. Use <code>def</code> to define it:</p>
+<pre># Define a function
+def greet(name):
+    message = "Hello, " + name + "!"
+    return message
+
+# Call the function
+result = greet("Alice")
+print(result)         # Hello, Alice!
+print(greet("Bob"))   # Hello, Bob!</pre>
+<div class="two-col">
+<div class="card"><h4>Parameters</h4><p>Inputs to a function. Defined in brackets. Can have multiple:<br><code>def add(a, b):</code></p></div>
+<div class="card"><h4>Return</h4><p><code>return</code> sends a value back. Without it, function returns <code>None</code>.</p></div></div>
+<div class="callout">💡 Functions help avoid repeating code (DRY — Don't Repeat Yourself). Write once, use many times.</div>` },
+  { type:`concept`, title:`Lists`, body:`<p>A <strong>list</strong> stores multiple values in one variable, in order:</p>
+<pre>scores = [85, 72, 91, 60, 78]
+
+# Access by index (starts at 0)
+print(scores[0])     # 85
+print(scores[-1])    # 78 (last item)
+
+# Modify
+scores[1] = 99       # Change item
+scores.append(88)    # Add to end
+scores.remove(60)    # Remove value
+
+# Loop through
+for score in scores:
+    print(score)
+
+# Useful functions
+print(len(scores))   # Length
+print(max(scores))   # Highest
+print(min(scores))   # Lowest
+print(sum(scores))   # Total</pre>` },
+  { type:`concept`, title:`String Methods`, body:`<p>Strings have built-in methods (functions) to manipulate text:</p>
+<pre>name = "  Alice Smith  "
+
+print(name.upper())       # "  ALICE SMITH  "
+print(name.lower())       # "  alice smith  "
+print(name.strip())       # "Alice Smith"  (removes spaces)
+print(name.replace("Alice","Bob"))  # "  Bob Smith  "
+print(len(name))          # 15
+
+sentence = "Python is great"
+print(sentence.split())   # ["Python","is","great"]
+print(sentence.count("i"))# 2
+
+# Check content
+print("Alice" in name)    # True
+print(name.startswith(" ")) # True</pre>
+<div class="callout">💡 Methods use dot notation: <code>variable.method()</code>. They don't change the original string — they return a new one.</div>` },
+  { type:`activity`, title:`Guided Tasks — Python Warm Up`, body:`<p>Answer these Python questions.</p>
+<div class="task-box"><h4>📝 Task A — Functions & Lists</h4>
+<div class="answer-row"><label>1. What keyword defines a function?</label><input class="ans-input" id="pw1" placeholder="..."><button class="check-btn" onclick="schkAny('pw1','fpw1',['def','DEF'])">Check</button><span class="fb" id="fpw1"></span></div>
+<div class="answer-row"><label>2. What keyword sends a value back from a function?</label><input class="ans-input" id="pw2" placeholder="..."><button class="check-btn" onclick="schkAny('pw2','fpw2',['return','RETURN'])">Check</button><span class="fb" id="fpw2"></span></div>
+<div class="answer-row"><label>3. What index is the first item in a list?</label><input class="ans-input" id="pw3" placeholder="..."><button class="check-btn" onclick="schk('pw3','fpw3','0')">Check</button><span class="fb" id="fpw3"></span></div>
+<div class="answer-row"><label>4. What method adds an item to the end of a list?</label><input class="ans-input" id="pw4" placeholder="..."><button class="check-btn" onclick="schkAny('pw4','fpw4',['append','.append()','append()'])">Check</button><span class="fb" id="fpw4"></span></div>
+<div class="answer-row"><label>5. What does <code>"hello".upper()</code> return?</label><input class="ans-input" id="pw5" placeholder="..."><button class="check-btn" onclick="schkAny('pw5','fpw5',['hello','HELLO'])">Check</button><span class="fb" id="fpw5"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Trace the Code</h4>
+<p style="font-size:13px;color:var(--muted);margin-bottom:8px">Given: <code>nums = [3, 7, 2, 9, 4]</code></p>
+<div class="answer-row"><label>6. What does <code>nums[2]</code> return?</label><input class="ans-input" id="pw6" placeholder="..."><button class="check-btn" onclick="schk('pw6','fpw6','2')">Check</button><span class="fb" id="fpw6"></span></div>
+<div class="answer-row"><label>7. What does <code>len(nums)</code> return?</label><input class="ans-input" id="pw7" placeholder="..."><button class="check-btn" onclick="schk('pw7','fpw7','5')">Check</button><span class="fb" id="fpw7"></span></div>
+<div class="answer-row"><label>8. What does <code>max(nums)</code> return?</label><input class="ans-input" id="pw8" placeholder="..."><button class="check-btn" onclick="schk('pw8','fpw8','9')">Check</button><span class="fb" id="fpw8"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>Functions</strong>: defined with <code>def</code>, take parameters, return values with <code>return</code></li>
+<li><strong>Lists</strong>: ordered, mutable, index from 0. Use <code>append()</code>, <code>remove()</code>, <code>len()</code></li>
+<li><strong>String methods</strong>: <code>upper()</code>, <code>lower()</code>, <code>strip()</code>, <code>replace()</code>, <code>split()</code></li>
+<li>Functions prevent code repetition — write once, call many times</li>
+<li>Negative indices count from the end: <code>list[-1]</code> is the last item</li>
+</ul><div class="callout success">✅ Next: Computer Hardware &amp; the FDE Cycle</div>` },
+  { type:`compete`, title:`🏆 Python Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Python Warm Up Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What keyword defines a function in Python?`, answers:[`def`] },
+  { q:`What index is the first element of a list?`, answers:[`0`] },
+  { q:`What method adds an item to the end of a list?`, answers:[`append`,`.append()`] },
+  { q:`What does len([1,2,3,4]) return?`, answers:[`4`] },
+  { q:`What does "hello".upper() return?`, answers:[`HELLO`] },
+  { q:`What keyword returns a value from a function?`, answers:[`return`] },
+  { q:`What does list[-1] access?`, answers:[`last item`,`the last item`,`last element`] },
+  { q:`What does "Python".replace("P","J") return?`, answers:[`Jython`] },
+  { q:`What does input() always return?`, answers:[`string`,`a string`] },
+  { q:`What does max([3,1,4,1,5]) return?`, answers:[`5`] },
+  { q:`How do you call a function named greet?`, answers:[`greet()`,`greet()`] },
+  { q:`What does "a b c".split() return?`, answers:[`['a', 'b', 'c']`,`a list`] },
+] },
+  "8_2": { lid:`y8t3`, slides:[
+  { type:`intro`, title:`Inside a Computer`, body:`<p>Every computer — from a phone to a supercomputer — has the same fundamental components. Understanding hardware helps you understand how software actually runs.</p>
+<div class="three-col">
+<div class="card"><h4>Input</h4><p>Devices that send data IN to the computer: keyboard, mouse, microphone, camera, scanner.</p></div>
+<div class="card"><h4>Process</h4><p>The CPU performs calculations and controls everything. Supported by RAM for working memory.</p></div>
+<div class="card"><h4>Output</h4><p>Devices that send data OUT: monitor, speakers, printer, projector.</p></div></div>
+<div class="callout">🎯 Today: CPU components, the FDE cycle, memory types (RAM vs ROM), and storage.</div>` },
+  { type:`concept`, title:`The CPU`, body:`<p>The <strong>CPU (Central Processing Unit)</strong> is the brain of the computer — it executes all instructions:</p>
+<table class="bit-table"><tr><th>Component</th><th>Role</th></tr>
+<tr><td><strong>ALU</strong></td><td>Arithmetic Logic Unit — performs calculations (+, −, ×, ÷) and logical comparisons</td></tr>
+<tr><td><strong>CU</strong></td><td>Control Unit — directs all CPU operations, manages FDE cycle</td></tr>
+<tr><td><strong>Registers</strong></td><td>Tiny, ultra-fast storage inside the CPU (e.g. PC, MAR, MDR, Accumulator)</td></tr>
+<tr><td><strong>Cache</strong></td><td>Small, very fast memory inside or near CPU — stores frequently used data</td></tr></table>
+<div class="two-col">
+<div class="card"><h4>Clock Speed</h4><p>Measured in GHz (billion cycles/second). Higher = faster. A 3.5 GHz CPU performs 3.5 billion operations per second.</p></div>
+<div class="card"><h4>Cores</h4><p>Modern CPUs have multiple cores — each can process independently. 8-core = 8 tasks simultaneously.</p></div></div>` },
+  { type:`concept`, title:`The Fetch-Decode-Execute Cycle`, body:`<p>Every instruction a program runs goes through the <strong>FDE Cycle</strong>:</p>
+<div class="three-col">
+<div class="card"><h4>1. Fetch</h4><p>The CU reads the next instruction from RAM into the CPU using the <strong>PC</strong> (Program Counter) register. PC increments to point to the next instruction.</p></div>
+<div class="card"><h4>2. Decode</h4><p>The CU decodes the instruction — works out what operation is needed and what data it involves.</p></div>
+<div class="card"><h4>3. Execute</h4><p>The ALU carries out the instruction (add, compare, move data etc.). Result is stored in the Accumulator or back to RAM.</p></div></div>
+<div class="callout">🔁 This cycle repeats billions of times per second. Every line of code you write eventually becomes millions of FDE cycles.</div>` },
+  { type:`concept`, title:`Memory — RAM & ROM`, body:`<p>Computers have two main types of primary memory:</p>
+<table class="bit-table"><tr><th></th><th>RAM</th><th>ROM</th></tr>
+<tr><td><strong>Full name</strong></td><td>Random Access Memory</td><td>Read Only Memory</td></tr>
+<tr><td><strong>Volatile?</strong></td><td>Yes — data lost on power off</td><td>No — permanent</td></tr>
+<tr><td><strong>Read/Write?</strong></td><td>Both</td><td>Read only</td></tr>
+<tr><td><strong>Used for</strong></td><td>Running programs, open files</td><td>BIOS / firmware</td></tr>
+<tr><td><strong>Speed</strong></td><td>Very fast</td><td>Fast</td></tr></table>
+<div class="callout warn">⚠️ More RAM = more programs can run at once. Low RAM causes slowdown because the OS uses slower storage as virtual memory.</div>` },
+  { type:`concept`, title:`Storage Devices`, body:`<p>Storage holds data permanently (even when powered off). Unlike RAM, it is non-volatile:</p>
+<table class="bit-table"><tr><th>Type</th><th>Technology</th><th>Speed</th><th>Best for</th></tr>
+<tr><td><strong>HDD</strong></td><td>Magnetic spinning disks</td><td>Slower</td><td>Large cheap storage</td></tr>
+<tr><td><strong>SSD</strong></td><td>Flash memory chips</td><td>Much faster</td><td>OS and programs</td></tr>
+<tr><td><strong>USB Flash</strong></td><td>Flash memory</td><td>Medium</td><td>Portable data transfer</td></tr>
+<tr><td><strong>Optical (CD/DVD)</strong></td><td>Laser-read pits</td><td>Slow</td><td>Media distribution</td></tr>
+<tr><td><strong>Cloud</strong></td><td>Remote servers</td><td>Network dependent</td><td>Backup, sharing</td></tr></table>` },
+  { type:`activity`, title:`Guided Tasks — Hardware & FDE`, body:`<p>Test your hardware knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Components</h4>
+<div class="answer-row"><label>1. What does CPU stand for?</label><input class="ans-input" id="hw1" placeholder="..."><button class="check-btn" onclick="schkAny('hw1','fhw1',['central processing unit','Central Processing Unit'])">Check</button><span class="fb" id="fhw1"></span></div>
+<div class="answer-row"><label>2. Which part of the CPU does calculations?</label><input class="ans-input" id="hw2" placeholder="..."><button class="check-btn" onclick="schkAny('hw2','fhw2',['alu','ALU','arithmetic logic unit'])">Check</button><span class="fb" id="fhw2"></span></div>
+<div class="answer-row"><label>3. What are the 3 stages of the FDE cycle?</label><input class="ans-input" id="hw3" placeholder="..."><button class="check-btn" onclick="schkAny('hw3','fhw3',['fetch decode execute','fetch, decode, execute'])">Check</button><span class="fb" id="fhw3"></span></div>
+<div class="answer-row"><label>4. Is RAM volatile or non-volatile?</label><input class="ans-input" id="hw4" placeholder="..."><button class="check-btn" onclick="schkAny('hw4','fhw4',['volatile','Volatile'])">Check</button><span class="fb" id="fhw4"></span></div>
+<div class="answer-row"><label>5. Which storage type is fastest — HDD or SSD?</label><input class="ans-input" id="hw5" placeholder="..."><button class="check-btn" onclick="schkAny('hw5','fhw5',['ssd','SSD'])">Check</button><span class="fb" id="fhw5"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — FDE Detail</h4>
+<div class="answer-row"><label>6. Which register holds the address of the next instruction?</label><input class="ans-input" id="hw6" placeholder="..."><button class="check-btn" onclick="schkAny('hw6','fhw6',['pc','PC','program counter'])">Check</button><span class="fb" id="fhw6"></span></div>
+<div class="answer-row"><label>7. What does ROM store?</label><input class="ans-input" id="hw7" placeholder="..."><button class="check-btn" onclick="schkAny('hw7','fhw7',['bios','BIOS','firmware','boot instructions'])">Check</button><span class="fb" id="fhw7"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>CPU = <strong>ALU</strong> (calculations) + <strong>CU</strong> (control) + <strong>Registers</strong> + Cache</li>
+<li><strong>FDE Cycle</strong>: Fetch (read instruction) → Decode (interpret) → Execute (run)</li>
+<li><strong>RAM</strong>: fast, volatile, stores running programs. More RAM = better multitasking</li>
+<li><strong>ROM</strong>: permanent, read-only, stores BIOS/firmware</li>
+<li><strong>SSD</strong> faster than <strong>HDD</strong>; both are non-volatile secondary storage</li>
+<li>CPU performance: clock speed (GHz), number of cores, cache size</li>
+</ul><div class="callout success">✅ Next: Cybersecurity</div>` },
+  { type:`compete`, title:`🏆 Hardware Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Hardware & FDE Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does CPU stand for?`, answers:[`Central Processing Unit`] },
+  { q:`What does the ALU do?`, answers:[`performs calculations`,`arithmetic and logic`,`calculations`] },
+  { q:`What are the 3 stages of the FDE cycle?`, answers:[`Fetch Decode Execute`,`fetch decode execute`] },
+  { q:`Is RAM volatile or non-volatile?`, answers:[`volatile`] },
+  { q:`Which is faster — HDD or SSD?`, answers:[`SSD`] },
+  { q:`What does ROM stand for?`, answers:[`Read Only Memory`] },
+  { q:`Which register holds the next instruction address?`, answers:[`PC`,`Program Counter`] },
+  { q:`What does cache do?`, answers:[`stores frequently used data`,`speeds up CPU access`,`temporary fast storage`] },
+  { q:`What unit measures CPU clock speed?`, answers:[`GHz`,`gigahertz`] },
+  { q:`What is the purpose of RAM?`, answers:[`stores running programs`,`working memory`,`temporary storage`] },
+  { q:`What does the Control Unit do?`, answers:[`manages the FDE cycle`,`directs operations`,`controls the CPU`] },
+  { q:`What type of storage is a USB flash drive?`, answers:[`flash memory`,`flash`,`non-volatile`] },
+] },
+  "8_3": { lid:`y8t4`, slides:[
+  { type:`intro`, title:`Why Cybersecurity Matters`, body:`<p><strong>Cybersecurity</strong> protects computer systems, networks, and data from digital attacks, theft, and damage. As more of our lives move online, it becomes increasingly critical.</p>
+<div class="two-col">
+<div class="card"><h4>Scale of the Problem</h4><p>Billions of attacks happen every day. A cyberattack occurs somewhere in the world every 39 seconds. Cybercrime costs the global economy over $6 trillion per year.</p></div>
+<div class="card"><h4>Who is at Risk?</h4><p>Everyone — individuals, schools, hospitals, banks, governments. No system is completely safe; the goal is to make attacks as difficult as possible.</p></div></div>
+<div class="callout">🎯 Today: common threats (malware, phishing, social engineering), and key defences.</div>` },
+  { type:`concept`, title:`Types of Malware`, body:`<p><strong>Malware</strong> (malicious software) is software designed to damage, disrupt, or gain unauthorised access:</p>
+<table class="bit-table"><tr><th>Type</th><th>How it works</th><th>Example effect</th></tr>
+<tr><td><strong>Virus</strong></td><td>Attaches to files, spreads when opened</td><td>Corrupts files</td></tr>
+<tr><td><strong>Worm</strong></td><td>Self-replicates across networks without user action</td><td>Slows networks</td></tr>
+<tr><td><strong>Trojan</strong></td><td>Disguised as legitimate software</td><td>Opens backdoor</td></tr>
+<tr><td><strong>Ransomware</strong></td><td>Encrypts your files, demands payment</td><td>Data locked</td></tr>
+<tr><td><strong>Spyware</strong></td><td>Secretly monitors activity</td><td>Steals passwords</td></tr>
+<tr><td><strong>Adware</strong></td><td>Displays unwanted adverts</td><td>System slowdown</td></tr></table>` },
+  { type:`concept`, title:`Social Engineering & Phishing`, body:`<p><strong>Social engineering</strong> manipulates people rather than attacking systems directly — it exploits human psychology:</p>
+<div class="two-col">
+<div class="card"><h4>Phishing</h4><p>Fake emails/messages pretending to be trusted organisations (banks, HMRC, Amazon) to steal login credentials or install malware.</p><p style="margin-top:8px;font-size:12px;color:var(--muted)">Signs: urgency, spelling errors, suspicious links, generic greetings.</p></div>
+<div class="card"><h4>Other Techniques</h4><p><strong>Pretexting</strong> — inventing a scenario to extract info<br><strong>Baiting</strong> — leaving infected USB drives where people will plug them in<br><strong>Vishing</strong> — voice phishing (phone calls)</p></div></div>
+<div class="callout warn">⚠️ Over 90% of successful cyberattacks begin with a phishing email. The human is often the weakest link.</div>` },
+  { type:`concept`, title:`Defending Against Attacks`, body:`<p>Defence requires multiple layers — no single measure is enough:</p>
+<table class="bit-table"><tr><th>Defence</th><th>What it does</th></tr>
+<tr><td><strong>Strong Passwords</strong></td><td>Long, unique, mixed characters. Use a password manager.</td></tr>
+<tr><td><strong>Multi-Factor Auth</strong></td><td>Requires a second proof (e.g. phone code) even if password stolen.</td></tr>
+<tr><td><strong>Anti-malware</strong></td><td>Detects and removes malicious software.</td></tr>
+<tr><td><strong>Firewall</strong></td><td>Monitors network traffic, blocks unauthorised access.</td></tr>
+<tr><td><strong>Encryption</strong></td><td>Scrambles data so only authorised parties can read it.</td></tr>
+<tr><td><strong>Software Updates</strong></td><td>Patches security vulnerabilities — most attacks exploit old software.</td></tr>
+<tr><td><strong>Backups</strong></td><td>Regular copies of data — essential defence against ransomware.</td></tr></table>` },
+  { type:`concept`, title:`Encryption`, body:`<p><strong>Encryption</strong> converts readable data (plaintext) into unreadable data (ciphertext) using an algorithm and key:</p>
+<div class="two-col">
+<div class="card"><h4>Symmetric Encryption</h4><p>Same key to encrypt and decrypt. Fast, but key must be shared securely.<br><strong>Example:</strong> AES (used in Wi-Fi, storage)</p></div>
+<div class="card"><h4>Asymmetric Encryption</h4><p>Public key encrypts, private key decrypts. No need to share private key.<br><strong>Example:</strong> RSA (used in HTTPS, email)</p></div></div>
+<div class="callout">🔒 When you see <strong>HTTPS</strong> and a padlock in your browser, data between you and the website is encrypted using TLS — preventing eavesdropping.</div>` },
+  { type:`activity`, title:`Guided Tasks — Cybersecurity`, body:`<p>Test your cybersecurity knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Threats</h4>
+<div class="answer-row"><label>1. What type of malware encrypts your files and demands payment?</label><input class="ans-input" id="cy1" placeholder="..."><button class="check-btn" onclick="schkAny('cy1','fcy1',['ransomware','Ransomware'])">Check</button><span class="fb" id="fcy1"></span></div>
+<div class="answer-row"><label>2. What technique uses fake emails to steal credentials?</label><input class="ans-input" id="cy2" placeholder="..."><button class="check-btn" onclick="schkAny('cy2','fcy2',['phishing','Phishing'])">Check</button><span class="fb" id="fcy2"></span></div>
+<div class="answer-row"><label>3. What malware disguises itself as legitimate software?</label><input class="ans-input" id="cy3" placeholder="..."><button class="check-btn" onclick="schkAny('cy3','fcy3',['trojan','Trojan','trojan horse'])">Check</button><span class="fb" id="fcy3"></span></div>
+<div class="answer-row"><label>4. What type of malware spreads across networks without user action?</label><input class="ans-input" id="cy4" placeholder="..."><button class="check-btn" onclick="schkAny('cy4','fcy4',['worm','Worm'])">Check</button><span class="fb" id="fcy4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Defences</h4>
+<div class="answer-row"><label>5. What does a firewall do?</label><input class="ans-input" id="cy5" placeholder="..."><button class="check-btn" onclick="schkAny('cy5','fcy5',['monitors network traffic','blocks unauthorised access','monitors traffic'])">Check</button><span class="fb" id="fcy5"></span></div>
+<div class="answer-row"><label>6. What provides a second form of authentication?</label><input class="ans-input" id="cy6" placeholder="..."><button class="check-btn" onclick="schkAny('cy6','fcy6',['mfa','MFA','multi-factor authentication','two factor authentication','2fa'])">Check</button><span class="fb" id="fcy6"></span></div>
+<div class="answer-row"><label>7. Why are software updates important for security?</label><input class="ans-input" id="cy7" placeholder="..."><button class="check-btn" onclick="schkAny('cy7','fcy7',['patches vulnerabilities','fixes security holes','patches security vulnerabilities'])">Check</button><span class="fb" id="fcy7"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>Malware types</strong>: virus (spreads via files), worm (self-replicates), trojan (disguised), ransomware (encrypts data), spyware (monitors)</li>
+<li><strong>Phishing</strong>: fake emails/messages to steal credentials — most common attack vector</li>
+<li><strong>Social engineering</strong>: manipulates people rather than systems</li>
+<li>Defence layers: strong passwords, MFA, anti-malware, firewall, encryption, updates, backups</li>
+<li><strong>Encryption</strong>: symmetric (same key) vs asymmetric (public/private key pair)</li>
+<li>HTTPS uses encryption — look for the padlock</li>
+</ul><div class="callout success">✅ Next: Databases &amp; SQL</div>` },
+  { type:`compete`, title:`🏆 Cybersecurity Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Cybersecurity Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does malware stand for?`, answers:[`malicious software`] },
+  { q:`What type of malware encrypts files and demands payment?`, answers:[`ransomware`,`Ransomware`] },
+  { q:`What attack uses fake emails to steal credentials?`, answers:[`phishing`,`Phishing`] },
+  { q:`What malware disguises itself as legitimate software?`, answers:[`Trojan`,`trojan`,`trojan horse`] },
+  { q:`What does a firewall monitor?`, answers:[`network traffic`] },
+  { q:`What does MFA stand for?`, answers:[`Multi-Factor Authentication`,`multi factor authentication`] },
+  { q:`What does encryption do to data?`, answers:[`scrambles it`,`makes it unreadable`,`encodes it`] },
+  { q:`What type of malware spreads without user action?`, answers:[`worm`,`Worm`] },
+  { q:`What does HTTPS indicate?`, answers:[`encrypted connection`,`encryption`,`secure connection`] },
+  { q:`Why should you update software regularly?`, answers:[`patch vulnerabilities`,`fix security holes`] },
+  { q:`What is the best defence against ransomware?`, answers:[`backups`,`regular backups`] },
+  { q:`What manipulates people rather than systems?`, answers:[`social engineering`,`Social Engineering`] },
+] },
+  "8_4": { lid:`y8t5`, slides:[
+  { type:`intro`, title:`What is a Database?`, body:`<p>A <strong>database</strong> is an organised collection of structured data, stored electronically and managed by a <strong>DBMS</strong> (Database Management System).</p>
+<div class="two-col">
+<div class="card"><h4>Why Databases?</h4><ul><li>Store millions of records efficiently</li><li>Find specific data in milliseconds</li><li>Multiple users can access simultaneously</li><li>Reduce data duplication</li><li>Keep data consistent and accurate</li></ul></div>
+<div class="card"><h4>Real Examples</h4><ul><li>School: student records, timetables</li><li>NHS: patient records</li><li>Amazon: product catalogue, orders</li><li>DVLA: vehicle registrations</li><li>Social media: user profiles, posts</li></ul></div></div>
+<div class="callout">🎯 Today: database structure (tables, fields, records), relationships, and SQL queries.</div>` },
+  { type:`concept`, title:`Tables, Fields & Records`, body:`<p>Relational databases organise data into <strong>tables</strong>:</p>
+<table class="bit-table"><tr><th>Term</th><th>Description</th><th>Spreadsheet equivalent</th></tr>
+<tr><td><strong>Table</strong></td><td>A collection of related data</td><td>Sheet/tab</td></tr>
+<tr><td><strong>Field</strong></td><td>A category of data (a column)</td><td>Column header</td></tr>
+<tr><td><strong>Record</strong></td><td>One complete entry (a row)</td><td>Row of data</td></tr>
+<tr><td><strong>Primary Key</strong></td><td>Unique identifier for each record</td><td>—</td></tr>
+<tr><td><strong>Foreign Key</strong></td><td>Links to primary key in another table</td><td>—</td></tr></table>
+<div class="callout">💡 Example: a Students table with fields StudentID (PK), Name, Year, ClassID (FK→Classes table).</div>` },
+  { type:`concept`, title:`SQL — SELECT Queries`, body:`<p><strong>SQL</strong> (Structured Query Language) is used to interact with databases. The most common command is <strong>SELECT</strong>:</p>
+<pre>-- Get all columns, all records
+SELECT * FROM Students;
+
+-- Get specific columns
+SELECT Name, Year FROM Students;
+
+-- Filter with WHERE
+SELECT Name, Year FROM Students
+WHERE Year = 9;
+
+-- Multiple conditions
+SELECT Name FROM Students
+WHERE Year = 8 AND Class = "8A";
+
+-- Sort results
+SELECT Name, Year FROM Students
+ORDER BY Name ASC;</pre>
+<div class="callout warn">⚠️ SQL keywords are usually written in capitals (SELECT, FROM, WHERE) — this is convention, not required.</div>` },
+  { type:`concept`, title:`SQL — Filtering & Wildcards`, body:`<p>More powerful filtering options in SQL:</p>
+<pre>-- Greater/less than
+SELECT * FROM Products WHERE Price > 10;
+
+-- Range
+SELECT * FROM Students WHERE Year BETWEEN 7 AND 9;
+
+-- Pattern matching (% = any characters)
+SELECT * FROM Students WHERE Name LIKE "Sm%";
+-- Finds: Smith, Small, Smythe...
+
+-- Specific values from a list
+SELECT * FROM Students
+WHERE Year IN (7, 8, 9);
+
+-- Count records
+SELECT COUNT(*) FROM Students WHERE Year = 8;
+
+-- Calculate averages
+SELECT AVG(Score) FROM Results WHERE Subject = "Maths";</pre>` },
+  { type:`activity`, title:`Guided Tasks — Databases & SQL`, body:`<p>Test your SQL knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Database Structure</h4>
+<div class="answer-row"><label>1. What uniquely identifies each record in a table?</label><input class="ans-input" id="db1" placeholder="..."><button class="check-btn" onclick="schkAny('db1','fdb1',['primary key','Primary Key','primary key (pk)'])">Check</button><span class="fb" id="fdb1"></span></div>
+<div class="answer-row"><label>2. What is a row of data in a database table called?</label><input class="ans-input" id="db2" placeholder="..."><button class="check-btn" onclick="schkAny('db2','fdb2',['record','Record'])">Check</button><span class="fb" id="fdb2"></span></div>
+<div class="answer-row"><label>3. What does SQL stand for?</label><input class="ans-input" id="db3" placeholder="..."><button class="check-btn" onclick="schkAny('db3','fdb3',['structured query language','Structured Query Language'])">Check</button><span class="fb" id="fdb3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — SQL Queries</h4>
+<div class="answer-row"><label>4. What SQL keyword retrieves data?</label><input class="ans-input" id="db4" placeholder="..."><button class="check-btn" onclick="schkAny('db4','fdb4',['select','SELECT'])">Check</button><span class="fb" id="fdb4"></span></div>
+<div class="answer-row"><label>5. What does <code>SELECT * FROM Students</code> return?</label><input class="ans-input" id="db5" placeholder="..."><button class="check-btn" onclick="schkAny('db5','fdb5',['all columns all records','all records','everything from students'])">Check</button><span class="fb" id="fdb5"></span></div>
+<div class="answer-row"><label>6. What SQL keyword filters records?</label><input class="ans-input" id="db6" placeholder="..."><button class="check-btn" onclick="schkAny('db6','fdb6',['where','WHERE'])">Check</button><span class="fb" id="fdb6"></span></div>
+<div class="answer-row"><label>7. What wildcard character matches any sequence of characters in LIKE?</label><input class="ans-input" id="db7" placeholder="..."><button class="check-btn" onclick="schk('db7','fdb7','%')">Check</button><span class="fb" id="fdb7"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>database</strong> stores organised data managed by a DBMS</li>
+<li><strong>Table</strong> = collection of records | <strong>Field</strong> = column | <strong>Record</strong> = row</li>
+<li><strong>Primary key</strong>: unique identifier. <strong>Foreign key</strong>: links tables together</li>
+<li>SQL: <code>SELECT</code> (retrieve), <code>FROM</code> (table), <code>WHERE</code> (filter), <code>ORDER BY</code> (sort)</li>
+<li>Wildcards: <code>%</code> matches any characters in <code>LIKE</code> queries</li>
+<li>Functions: <code>COUNT()</code>, <code>AVG()</code>, <code>SUM()</code>, <code>MAX()</code>, <code>MIN()</code></li>
+</ul><div class="callout success">✅ Year 8 complete! Well done!</div>` },
+  { type:`compete`, title:`🏆 Databases Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Databases & SQL Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does SQL stand for?`, answers:[`Structured Query Language`] },
+  { q:`What uniquely identifies a record?`, answers:[`primary key`,`Primary Key`] },
+  { q:`What SQL keyword retrieves data?`, answers:[`SELECT`] },
+  { q:`What SQL keyword filters records?`, answers:[`WHERE`] },
+  { q:`What does SELECT * return?`, answers:[`all columns`,`all fields`,`everything`] },
+  { q:`What is a row of data called?`, answers:[`record`,`Record`] },
+  { q:`What wildcard matches any characters?`, answers:[`%`] },
+  { q:`What SQL keyword sorts results?`, answers:[`ORDER BY`] },
+  { q:`What links one table to another?`, answers:[`foreign key`,`Foreign Key`] },
+  { q:`What SQL function counts records?`, answers:[`COUNT`,`COUNT()`] },
+  { q:`What does DBMS stand for?`, answers:[`Database Management System`] },
+  { q:`What SQL clause is used with ORDER BY for Z to A?`, answers:[`DESC`] },
+] },
+  "9_0": { lid:`y9t6`, slides:[
   {
     type: 'intro',
     title: 'Pseudocode — Designing Before Coding',
@@ -1489,6 +2181,525 @@ ELSE
   { q: 'FOR loops are used for which type of iteration?', answers: ['definite','count-controlled'] },
   { q: 'What is the index of the FIRST element in an array?', answers: ['0'] },
   { q: 'A subroutine that returns a value is called a...', answers: ['function','Function'] },
+] },
+  "9_1": { lid:`y9t1`, slides:[
+  { type:`intro`, title:`What is OOP?`, body:`<p><strong>Object-Oriented Programming (OOP)</strong> organises code around objects — things that have data (attributes) and can do things (methods). It models the real world.</p>
+<div class="two-col">
+<div class="card"><h4>Why OOP?</h4><ul><li>Organises complex programs</li><li>Code is reusable and maintainable</li><li>Models real-world entities naturally</li><li>Used in Python, Java, C#, C++</li></ul></div>
+<div class="card"><h4>Key Concepts</h4><ul><li><strong>Class</strong> — a blueprint/template</li><li><strong>Object</strong> — an instance of a class</li><li><strong>Attribute</strong> — data stored in an object</li><li><strong>Method</strong> — a function belonging to a class</li></ul></div></div>
+<div class="callout">🎯 Today: classes, objects, attributes, methods, and the four pillars of OOP.</div>` },
+  { type:`concept`, title:`Classes & Objects`, body:`<p>A <strong>class</strong> is a blueprint. An <strong>object</strong> is a specific thing made from that blueprint:</p>
+<pre>class Dog:
+    def __init__(self, name, breed, age):
+        self.name  = name    # attribute
+        self.breed = breed   # attribute
+        self.age   = age     # attribute
+
+    def bark(self):          # method
+        return self.name + " says: Woof!"
+
+    def birthday(self):      # method
+        self.age += 1
+
+# Create objects (instances)
+dog1 = Dog("Rex",   "Labrador", 3)
+dog2 = Dog("Bella", "Poodle",   5)
+
+print(dog1.bark())           # Rex says: Woof!
+print(dog2.name)             # Bella
+dog1.birthday()
+print(dog1.age)              # 4</pre>
+<div class="callout warn">⚠️ <code>__init__</code> is the constructor — it runs automatically when an object is created. <code>self</code> refers to the current object.</div>` },
+  { type:`concept`, title:`The Four Pillars of OOP`, body:`<p>OOP has four core principles:</p>
+<div class="two-col">
+<div class="card"><h4>1. Encapsulation</h4><p>Bundling data and methods together inside a class. Hides internal details — users interact via methods, not directly with data.</p></div>
+<div class="card"><h4>2. Inheritance</h4><p>A child class inherits attributes and methods from a parent class, and can add its own or override them.</p></div></div>
+<div class="two-col">
+<div class="card"><h4>3. Polymorphism</h4><p>Different classes can have methods with the same name that behave differently. E.g. <code>.speak()</code> works on Dog, Cat, and Bird but produces different output.</p></div>
+<div class="card"><h4>4. Abstraction</h4><p>Hiding complex implementation details. Users interact with a simple interface without needing to know how it works internally.</p></div></div>` },
+  { type:`concept`, title:`Inheritance in Python`, body:`<p><strong>Inheritance</strong> allows a class to reuse code from a parent class:</p>
+<pre>class Animal:
+    def __init__(self, name, age):
+        self.name = name
+        self.age  = age
+
+    def describe(self):
+        return self.name + " is " + str(self.age)
+
+class Dog(Animal):          # Dog inherits from Animal
+    def __init__(self, name, age, breed):
+        super().__init__(name, age)  # call parent constructor
+        self.breed = breed
+
+    def bark(self):
+        return self.name + " barks!"
+
+class Cat(Animal):
+    def speak(self):
+        return self.name + " meows!"
+
+d = Dog("Rex", 3, "Labrador")
+print(d.describe())  # Rex is 3  (inherited method)
+print(d.bark())      # Rex barks!</pre>` },
+  { type:`activity`, title:`Guided Tasks — OOP`, body:`<p>Test your OOP knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Concepts</h4>
+<div class="answer-row"><label>1. What is a class?</label><input class="ans-input" id="oo1" placeholder="..."><button class="check-btn" onclick="schkAny('oo1','foo1',['a blueprint','blueprint','a template','template'])">Check</button><span class="fb" id="foo1"></span></div>
+<div class="answer-row"><label>2. What is an instance of a class called?</label><input class="ans-input" id="oo2" placeholder="..."><button class="check-btn" onclick="schkAny('oo2','foo2',['object','Object','an object'])">Check</button><span class="fb" id="foo2"></span></div>
+<div class="answer-row"><label>3. What is the constructor method called in Python?</label><input class="ans-input" id="oo3" placeholder="..."><button class="check-btn" onclick="schkAny('oo3','foo3',['__init__','init','__init__'])">Check</button><span class="fb" id="foo3"></span></div>
+<div class="answer-row"><label>4. What does <code>self</code> refer to?</label><input class="ans-input" id="oo4" placeholder="..."><button class="check-btn" onclick="schkAny('oo4','foo4',['the current object','current object','the instance'])">Check</button><span class="fb" id="foo4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Pillars</h4>
+<div class="answer-row"><label>5. What OOP concept bundles data and methods together?</label><input class="ans-input" id="oo5" placeholder="..."><button class="check-btn" onclick="schkAny('oo5','foo5',['encapsulation','Encapsulation'])">Check</button><span class="fb" id="foo5"></span></div>
+<div class="answer-row"><label>6. What allows a class to reuse code from a parent class?</label><input class="ans-input" id="oo6" placeholder="..."><button class="check-btn" onclick="schkAny('oo6','foo6',['inheritance','Inheritance'])">Check</button><span class="fb" id="foo6"></span></div>
+<div class="answer-row"><label>7. What does <code>super().__init__()</code> do?</label><input class="ans-input" id="oo7" placeholder="..."><button class="check-btn" onclick="schkAny('oo7','foo7',['calls parent constructor','calls the parent constructor','runs parent init'])">Check</button><span class="fb" id="foo7"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>class</strong> is a blueprint; an <strong>object</strong> is an instance of that class</li>
+<li><code>__init__</code> is the constructor — runs when an object is created</li>
+<li><code>self</code> refers to the current object instance</li>
+<li><strong>Attributes</strong> store data; <strong>methods</strong> define behaviour</li>
+<li>Four pillars: <strong>Encapsulation</strong>, <strong>Inheritance</strong>, <strong>Polymorphism</strong>, <strong>Abstraction</strong></li>
+<li>Inheritance: child class uses <code>super()</code> to call parent constructor</li>
+</ul><div class="callout success">✅ Next: Searching &amp; Sorting Algorithms</div>` },
+  { type:`compete`, title:`🏆 OOP Speed Challenge`, body:`<div class="compete-board"><h4>🏆 OOP Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What is a class?`, answers:[`a blueprint`,`blueprint`,`a template`] },
+  { q:`What is an instance of a class?`, answers:[`object`,`an object`] },
+  { q:`What is the Python constructor method called?`, answers:[`__init__`] },
+  { q:`What does self refer to in a method?`, answers:[`current object`,`the current object`] },
+  { q:`What OOP pillar bundles data and methods together?`, answers:[`Encapsulation`,`encapsulation`] },
+  { q:`What allows a class to inherit from another?`, answers:[`Inheritance`,`inheritance`] },
+  { q:`What function calls the parent class constructor?`, answers:[`super()`,`super`] },
+  { q:`What are functions inside a class called?`, answers:[`methods`,`Methods`] },
+  { q:`What are variables belonging to an object called?`, answers:[`attributes`,`Attributes`] },
+  { q:`What OOP pillar hides implementation details?`, answers:[`Abstraction`,`abstraction`] },
+  { q:`What means different objects respond differently to the same method?`, answers:[`Polymorphism`,`polymorphism`] },
+  { q:`What keyword creates a class in Python?`, answers:[`class`] },
+] },
+  "9_2": { lid:`y9t2`, slides:[
+  { type:`intro`, title:`Why Study Algorithms?`, body:`<p>Algorithms are step-by-step solutions to problems. <strong>Searching</strong> and <strong>sorting</strong> are the most fundamental algorithms in computer science — they underpin nearly every application.</p>
+<div class="two-col">
+<div class="card"><h4>Real Uses</h4><ul><li>Search engines finding web pages</li><li>Databases looking up records</li><li>Spreadsheets sorting data</li><li>Games pathfinding</li></ul></div>
+<div class="card"><h4>Why Efficiency Matters</h4><p>With millions of records, a slow algorithm takes hours. An efficient one takes milliseconds. We measure efficiency with <strong>Big O notation</strong>.</p></div></div>
+<div class="callout">🎯 Today: linear search, binary search, bubble sort, merge sort — and how to compare their efficiency.</div>` },
+  { type:`concept`, title:`Linear Search`, body:`<p><strong>Linear search</strong> checks each item one by one from start to finish:</p>
+<pre>def linear_search(data, target):
+    for i in range(len(data)):
+        if data[i] == target:
+            return i        # found at index i
+    return -1               # not found
+
+scores = [45, 82, 17, 63, 91, 28]
+print(linear_search(scores, 63))  # Returns 3</pre>
+<div class="two-col">
+<div class="card"><h4>✅ Advantages</h4><ul><li>Works on unsorted data</li><li>Simple to implement</li><li>Good for small lists</li></ul></div>
+<div class="card"><h4>❌ Disadvantages</h4><ul><li>Slow on large lists</li><li>Worst case: checks every item</li><li>O(n) — linear time</li></ul></div></div>` },
+  { type:`concept`, title:`Binary Search`, body:`<p><strong>Binary search</strong> works on <em>sorted</em> data — repeatedly halves the search space:</p>
+<pre>def binary_search(data, target):
+    low, high = 0, len(data) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if data[mid] == target:
+            return mid
+        elif data[mid] < target:
+            low = mid + 1     # search right half
+        else:
+            high = mid - 1    # search left half
+    return -1
+
+sorted_list = [10, 23, 35, 47, 58, 69, 74]
+print(binary_search(sorted_list, 47))  # Returns 3</pre>
+<div class="callout success">✅ Binary search on 1 million items takes at most 20 comparisons. Linear search could take 1,000,000!</div>` },
+  { type:`concept`, title:`Bubble Sort`, body:`<p><strong>Bubble sort</strong> repeatedly swaps adjacent items that are in the wrong order, until the list is sorted:</p>
+<pre>def bubble_sort(data):
+    n = len(data)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if data[j] > data[j+1]:
+                data[j], data[j+1] = data[j+1], data[j]
+    return data
+
+nums = [64, 34, 25, 12, 22, 11, 90]
+print(bubble_sort(nums))
+# [11, 12, 22, 25, 34, 64, 90]</pre>
+<div class="two-col">
+<div class="card"><h4>Trace: [5, 3, 8, 1]</h4><p>Pass 1: [3,5,8,1] → [3,5,8,1] → [3,5,1,8]<br>Pass 2: [3,5,1,8] → [3,1,5,8]<br>Pass 3: [1,3,5,8] ✓</p></div>
+<div class="card"><h4>Efficiency</h4><p>O(n²) — quadratic time. Fine for small lists. Very slow for large datasets. Simple to understand and implement.</p></div></div>` },
+  { type:`concept`, title:`Merge Sort`, body:`<p><strong>Merge sort</strong> uses divide and conquer — splits the list in half recursively, then merges sorted halves:</p>
+<pre>def merge_sort(data):
+    if len(data) <= 1:
+        return data
+    mid   = len(data) // 2
+    left  = merge_sort(data[:mid])
+    right = merge_sort(data[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j  = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    result += left[i:] + right[j:]
+    return result</pre>
+<div class="callout success">✅ Merge sort: O(n log n) — much faster than bubble sort on large data. Used in Python's own <code>sorted()</code> function.</div>` },
+  { type:`activity`, title:`Guided Tasks — Algorithms`, body:`<p>Test your searching and sorting knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Search Algorithms</h4>
+<div class="answer-row"><label>1. Which search requires sorted data?</label><input class="ans-input" id="al1" placeholder="..."><button class="check-btn" onclick="schkAny('al1','fal1',['binary search','binary','Binary Search'])">Check</button><span class="fb" id="fal1"></span></div>
+<div class="answer-row"><label>2. What is the worst case complexity of linear search?</label><input class="ans-input" id="al2" placeholder="..."><button class="check-btn" onclick="schkAny('al2','fal2',['o(n)','O(n)','linear'])">Check</button><span class="fb" id="fal2"></span></div>
+<div class="answer-row"><label>3. Binary search on 1024 items — max comparisons?</label><input class="ans-input" id="al3" placeholder="..."><button class="check-btn" onclick="schk('al3','fal3','10')">Check</button><span class="fb" id="fal3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Sorting</h4>
+<div class="answer-row"><label>4. What is the time complexity of bubble sort?</label><input class="ans-input" id="al4" placeholder="..."><button class="check-btn" onclick="schkAny('al4','fal4',['o(n2)','O(n²)','o(n^2)','quadratic'])">Check</button><span class="fb" id="fal4"></span></div>
+<div class="answer-row"><label>5. What strategy does merge sort use?</label><input class="ans-input" id="al5" placeholder="..."><button class="check-btn" onclick="schkAny('al5','fal5',['divide and conquer','divide and conquer'])">Check</button><span class="fb" id="fal5"></span></div>
+<div class="answer-row"><label>6. Which sort is more efficient on large data — bubble or merge?</label><input class="ans-input" id="al6" placeholder="..."><button class="check-btn" onclick="schkAny('al6','fal6',['merge','merge sort','Merge Sort'])">Check</button><span class="fb" id="fal6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>Linear search</strong>: checks each item — O(n), works on unsorted data</li>
+<li><strong>Binary search</strong>: halves search space each step — O(log n), requires sorted data</li>
+<li><strong>Bubble sort</strong>: swaps adjacent pairs — O(n²), simple but slow on large data</li>
+<li><strong>Merge sort</strong>: divide and conquer — O(n log n), much faster for large datasets</li>
+<li>Big O notation describes worst-case time complexity as data grows</li>
+</ul><div class="callout success">✅ Next: AI &amp; Machine Learning Ethics</div>` },
+  { type:`compete`, title:`🏆 Algorithms Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Searching & Sorting Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`Which search algorithm requires sorted data?`, answers:[`binary search`,`Binary Search`] },
+  { q:`What is the complexity of linear search?`, answers:[`O(n)`] },
+  { q:`What is the complexity of binary search?`, answers:[`O(log n)`] },
+  { q:`What is the complexity of bubble sort?`, answers:[`O(n²)`,`O(n2)`] },
+  { q:`What strategy does merge sort use?`, answers:[`divide and conquer`] },
+  { q:`Which is faster on large data — bubble or merge sort?`, answers:[`merge sort`,`merge`] },
+  { q:`What does binary search do when the target is less than the midpoint?`, answers:[`search left half`,`go left`,`search lower half`] },
+  { q:`How many comparisons does binary search need for 1024 items (worst case)?`, answers:[`10`] },
+  { q:`What does O(n) mean?`, answers:[`linear time`,`grows linearly`] },
+  { q:`What does bubble sort compare?`, answers:[`adjacent items`,`adjacent elements`,`neighbouring items`] },
+  { q:`What value does a search return if the item is not found?`, answers:[`−1`,`-1`] },
+  { q:`What is O(n log n) an example of?`, answers:[`merge sort complexity`,`efficient sorting`] },
+] },
+  "9_3": { lid:`y9t3`, slides:[
+  { type:`intro`, title:`What is Artificial Intelligence?`, body:`<p><strong>Artificial Intelligence (AI)</strong> is the simulation of human intelligence by computer systems — including learning, reasoning, problem-solving, perception and language.</p>
+<div class="two-col">
+<div class="card"><h4>Narrow AI</h4><p>AI designed for one specific task. All current AI is narrow: chess engines, image recognition, voice assistants, recommendation systems.</p></div>
+<div class="card"><h4>General AI</h4><p>Hypothetical AI that could perform any intellectual task a human can. Does not yet exist — and may never exist.</p></div></div>
+<div class="callout">🎯 Today: how machine learning works, types of ML, real applications, and the ethical implications.</div>` },
+  { type:`concept`, title:`Machine Learning`, body:`<p><strong>Machine Learning (ML)</strong> is a branch of AI where systems learn from data rather than being explicitly programmed:</p>
+<div class="three-col">
+<div class="card"><h4>Supervised Learning</h4><p>Trained on labelled examples. Learns to predict an output from an input.<br><em>Example: email spam filter</em></p></div>
+<div class="card"><h4>Unsupervised Learning</h4><p>Finds patterns in unlabelled data without guidance.<br><em>Example: customer segmentation</em></p></div>
+<div class="card"><h4>Reinforcement Learning</h4><p>Learns through trial and error, rewarded for correct actions.<br><em>Example: game-playing AI</em></p></div></div>
+<div class="callout">💡 A traditional program follows fixed rules you write. An ML model discovers its own rules from data. Given 10,000 cat photos, it learns what cats look like — you never define "cat" explicitly.</div>` },
+  { type:`concept`, title:`Neural Networks`, body:`<p>Inspired by the human brain, <strong>neural networks</strong> are layers of connected nodes that process data:</p>
+<ul>
+<li><strong>Input layer</strong> — receives raw data (e.g. pixel values of an image)</li>
+<li><strong>Hidden layers</strong> — learn increasingly complex features (edges → shapes → faces)</li>
+<li><strong>Output layer</strong> — produces the final prediction (e.g. "cat" or "dog")</li>
+</ul>
+<div class="two-col">
+<div class="card"><h4>Training</h4><p>The network processes millions of examples, adjusting connections (weights) to minimise errors. This is called <strong>backpropagation</strong>.</p></div>
+<div class="card"><h4>Deep Learning</h4><p>Neural networks with many hidden layers. Behind image recognition, language models (like ChatGPT), and self-driving cars.</p></div></div>` },
+  { type:`concept`, title:`AI Ethics — Key Concerns`, body:`<p>As AI becomes more powerful, serious ethical questions arise:</p>
+<table class="bit-table"><tr><th>Issue</th><th>Explanation</th><th>Example</th></tr>
+<tr><td><strong>Bias</strong></td><td>AI trained on biased data reproduces and amplifies bias</td><td>Facial recognition less accurate for dark skin</td></tr>
+<tr><td><strong>Privacy</strong></td><td>AI systems collect and process vast personal data</td><td>Location tracking, browsing history</td></tr>
+<tr><td><strong>Transparency</strong></td><td>Complex models are "black boxes" — hard to explain decisions</td><td>Loan rejections with no explanation</td></tr>
+<tr><td><strong>Job Displacement</strong></td><td>Automation threatens many roles</td><td>Manufacturing, customer service, transport</td></tr>
+<tr><td><strong>Deepfakes</strong></td><td>AI-generated fake media is increasingly convincing</td><td>Fake political speeches, fraud</td></tr>
+<tr><td><strong>Autonomous Weapons</strong></td><td>AI-controlled weapons with no human oversight</td><td>Drone targeting systems</td></tr></table>` },
+  { type:`activity`, title:`Guided Tasks — AI Ethics`, body:`<p>Test your AI and ethics knowledge.</p>
+<div class="task-box"><h4>📝 Task A — AI & ML Concepts</h4>
+<div class="answer-row"><label>1. What branch of AI learns from data?</label><input class="ans-input" id="ai1" placeholder="..."><button class="check-btn" onclick="schkAny('ai1','fai1',['machine learning','Machine Learning','ml','ML'])">Check</button><span class="fb" id="fai1"></span></div>
+<div class="answer-row"><label>2. What type of ML uses labelled training data?</label><input class="ans-input" id="ai2" placeholder="..."><button class="check-btn" onclick="schkAny('ai2','fai2',['supervised learning','supervised','Supervised Learning'])">Check</button><span class="fb" id="fai2"></span></div>
+<div class="answer-row"><label>3. What type of ML learns through trial and reward?</label><input class="ans-input" id="ai3" placeholder="..."><button class="check-btn" onclick="schkAny('ai3','fai3',['reinforcement learning','reinforcement','Reinforcement Learning'])">Check</button><span class="fb" id="fai3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Ethics</h4>
+<div class="answer-row"><label>4. What ethical issue arises when AI is trained on unfair data?</label><input class="ans-input" id="ai4" placeholder="..."><button class="check-btn" onclick="schkAny('ai4','fai4',['bias','Bias','algorithmic bias'])">Check</button><span class="fb" id="fai4"></span></div>
+<div class="answer-row"><label>5. What are AI-generated fake videos or images called?</label><input class="ans-input" id="ai5" placeholder="..."><button class="check-btn" onclick="schkAny('ai5','fai5',['deepfakes','deepfake','deep fakes'])">Check</button><span class="fb" id="fai5"></span></div>
+<div class="answer-row"><label>6. What makes many AI decisions difficult to explain?</label><input class="ans-input" id="ai6" placeholder="..."><button class="check-btn" onclick="schkAny('ai6','fai6',['black box','lack of transparency','transparency'])">Check</button><span class="fb" id="fai6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>AI</strong>: systems that simulate human intelligence. All current AI is narrow (task-specific)</li>
+<li><strong>Machine Learning</strong>: learns patterns from data — supervised, unsupervised, reinforcement</li>
+<li><strong>Neural networks</strong>: layered nodes inspired by the brain; deep learning = many layers</li>
+<li>AI ethics concerns: <strong>bias</strong>, privacy, transparency, job displacement, deepfakes, autonomous weapons</li>
+<li>Bias in AI reflects bias in training data — often amplified at scale</li>
+<li>Responsible AI requires fairness, accountability, transparency and human oversight</li>
+</ul><div class="callout success">✅ Next: Spreadsheets Advanced</div>` },
+  { type:`compete`, title:`🏆 AI & Ethics Speed Challenge`, body:`<div class="compete-board"><h4>🏆 AI & ML Ethics Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does AI stand for?`, answers:[`Artificial Intelligence`] },
+  { q:`What branch of AI learns from data?`, answers:[`Machine Learning`,`ML`] },
+  { q:`What type of ML uses labelled examples?`, answers:[`supervised learning`,`supervised`] },
+  { q:`What type of ML uses trial and reward?`, answers:[`reinforcement learning`,`reinforcement`] },
+  { q:`What are AI fake videos/images called?`, answers:[`deepfakes`,`deep fakes`] },
+  { q:`What is a "black box" problem in AI?`, answers:[`lack of transparency`,`unexplainable decisions`,`transparency`] },
+  { q:`What causes AI bias?`, answers:[`biased training data`,`biased data`] },
+  { q:`What inspired neural networks?`, answers:[`the human brain`,`brain`] },
+  { q:`What are the layers of a neural network?`, answers:[`input hidden output`,`input, hidden, output`] },
+  { q:`What is deep learning?`, answers:[`neural networks with many layers`,`many hidden layers`] },
+  { q:`What does ML stand for?`, answers:[`Machine Learning`] },
+  { q:`Which current AI type exists — narrow or general?`, answers:[`narrow`,`Narrow AI`] },
+] },
+  "9_4": { lid:`y9t4`, slides:[
+  { type:`intro`, title:`Advanced Spreadsheet Skills`, body:`<p>You already know basic formulas from Year 7. Year 9 builds on this with <strong>advanced functions</strong>, <strong>data validation</strong>, <strong>charts</strong>, and <strong>spreadsheet modelling</strong> for real decision-making.</p>
+<div class="two-col">
+<div class="card"><h4>Year 7 Recap</h4><ul><li>Cell references (A1, $A$1)</li><li>SUM, AVERAGE, MAX, MIN</li><li>Basic IF function</li><li>Sorting and filtering</li></ul></div>
+<div class="card"><h4>Year 9 Extensions</h4><ul><li>VLOOKUP and nested IF</li><li>COUNTIF / SUMIF</li><li>Charts and data presentation</li><li>Data validation</li><li>What-if modelling</li></ul></div></div>
+<div class="callout">🎯 Today: advanced functions, chart types, data validation, and building decision-support models.</div>` },
+  { type:`concept`, title:`Advanced Functions`, body:`<p>Beyond basic formulas — powerful functions for real data analysis:</p>
+<pre>=COUNTIF(A2:A20,"Pass")
+   → Counts cells equal to "Pass"
+
+=SUMIF(B2:B20,">50",C2:C20)
+   → Sums column C where column B > 50
+
+=IF(B2>=70,"A",IF(B2>=60,"B",IF(B2>=50,"C","U")))
+   → Nested IF — grade calculator
+
+=VLOOKUP(E2, A2:C20, 3, FALSE)
+   → Looks up value in E2 in column A,
+     returns value from column 3</pre>
+<div class="callout warn">⚠️ VLOOKUP: the lookup column must be the <strong>leftmost</strong> column in your range. The last argument (FALSE) means exact match.</div>` },
+  { type:`concept`, title:`Charts & Data Visualisation`, body:`<p>Charts make data patterns immediately visible. Choosing the right chart type is essential:</p>
+<table class="bit-table"><tr><th>Chart Type</th><th>Best for</th><th>Example</th></tr>
+<tr><td><strong>Bar/Column</strong></td><td>Comparing categories</td><td>Medal counts by country</td></tr>
+<tr><td><strong>Line</strong></td><td>Trends over time</td><td>Temperature over months</td></tr>
+<tr><td><strong>Pie</strong></td><td>Parts of a whole (≤6 categories)</td><td>Market share percentages</td></tr>
+<tr><td><strong>Scatter</strong></td><td>Correlation between two variables</td><td>Revision hours vs exam score</td></tr>
+<tr><td><strong>Histogram</strong></td><td>Frequency distribution</td><td>Score ranges across a class</td></tr></table>
+<div class="callout">💡 A well-labelled chart needs: a title, labelled axes, a legend if multiple series, and appropriate scale.</div>` },
+  { type:`concept`, title:`Data Validation & What-If Modelling`, body:`<p><strong>Data validation</strong> restricts what can be entered in a cell — preventing errors:</p>
+<ul>
+<li>Drop-down lists — only allow specific values</li>
+<li>Number range — only allow integers between 0 and 100</li>
+<li>Custom formula — complex rules</li></ul>
+<div class="two-col">
+<div class="card"><h4>What-If Modelling</h4><p>Change input values to see how outputs change. Useful for business decisions: what if we increase price by 10%? What if we hire 2 more staff?</p></div>
+<div class="card"><h4>Goal Seek</h4><p>Work backwards — tell Excel the output you want and it calculates the input needed. E.g. "What price do I need to make £10,000 profit?"</p></div></div>
+<div class="callout">📊 Spreadsheets become decision-support tools when built well — real businesses rely on models like these.</div>` },
+  { type:`activity`, title:`Guided Tasks — Advanced Spreadsheets`, body:`<p>Test your advanced spreadsheet knowledge.</p>
+<div class="task-box"><h4>📝 Task A — Functions</h4>
+<div class="answer-row"><label>1. What function counts cells matching a criterion?</label><input class="ans-input" id="ss1" placeholder="..."><button class="check-btn" onclick="schkAny('ss1','fss1',['countif','COUNTIF'])">Check</button><span class="fb" id="fss1"></span></div>
+<div class="answer-row"><label>2. What does VLOOKUP do?</label><input class="ans-input" id="ss2" placeholder="..."><button class="check-btn" onclick="schkAny('ss2','fss2',['looks up a value','lookup','finds a value in a table'])">Check</button><span class="fb" id="fss2"></span></div>
+<div class="answer-row"><label>3. In VLOOKUP, which column must contain the lookup value?</label><input class="ans-input" id="ss3" placeholder="..."><button class="check-btn" onclick="schkAny('ss3','fss3',['leftmost','first','the first column','column 1'])">Check</button><span class="fb" id="fss3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Charts & Modelling</h4>
+<div class="answer-row"><label>4. Which chart type is best for showing trends over time?</label><input class="ans-input" id="ss4" placeholder="..."><button class="check-btn" onclick="schkAny('ss4','fss4',['line','line chart','line graph'])">Check</button><span class="fb" id="fss4"></span></div>
+<div class="answer-row"><label>5. Which chart shows correlation between two variables?</label><input class="ans-input" id="ss5" placeholder="..."><button class="check-btn" onclick="schkAny('ss5','fss5',['scatter','scatter graph','scatter chart','scattergraph'])">Check</button><span class="fb" id="fss5"></span></div>
+<div class="answer-row"><label>6. What does data validation prevent?</label><input class="ans-input" id="ss6" placeholder="..."><button class="check-btn" onclick="schkAny('ss6','fss6',['invalid data entry','errors','incorrect data','invalid entries'])">Check</button><span class="fb" id="fss6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>COUNTIF</strong> — counts cells matching a condition; <strong>SUMIF</strong> — sums cells matching a condition</li>
+<li><strong>Nested IF</strong> — multiple conditions: <code>=IF(a,x,IF(b,y,z))</code></li>
+<li><strong>VLOOKUP</strong> — looks up a value in the first column of a range, returns a value from another column</li>
+<li>Choose chart type by purpose: line (trends), bar (comparison), scatter (correlation), pie (proportions)</li>
+<li><strong>Data validation</strong> restricts cell input to prevent errors</li>
+<li><strong>What-if modelling</strong> — change inputs to explore outcomes; Goal Seek reverses this</li>
+</ul><div class="callout success">✅ Next: Web Development &amp; Ethics</div>` },
+  { type:`compete`, title:`🏆 Spreadsheets Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Advanced Spreadsheets Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What function counts cells matching a criterion?`, answers:[`COUNTIF`] },
+  { q:`What does VLOOKUP stand for?`, answers:[`Vertical Lookup`,`vertical lookup`] },
+  { q:`Which column must the lookup value be in for VLOOKUP?`, answers:[`leftmost`,`first column`,`column 1`] },
+  { q:`What chart best shows trends over time?`, answers:[`line chart`,`line graph`,`line`] },
+  { q:`What chart shows correlation between two variables?`, answers:[`scatter`,`scatter graph`,`scatter chart`] },
+  { q:`What does data validation do?`, answers:[`restricts cell input`,`prevents invalid data`,`controls input`] },
+  { q:`What does nested IF do?`, answers:[`multiple conditions`,`chains conditions`,`if within if`] },
+  { q:`What does SUMIF do?`, answers:[`sums cells matching a condition`,`conditional sum`] },
+  { q:`What is what-if modelling used for?`, answers:[`exploring outcomes`,`testing scenarios`,`decision making`] },
+  { q:`What does Goal Seek do?`, answers:[`calculates input needed for a target output`,`works backwards`] },
+  { q:`What chart type shows parts of a whole?`, answers:[`pie`,`pie chart`] },
+  { q:`What symbol must every formula start with?`, answers:[`=`] },
+] },
+  "9_5": { lid:`y9t5`, slides:[
+  { type:`intro`, title:`How Websites Work`, body:`<p>Every website you visit is built from three core technologies working together in your browser:</p>
+<div class="three-col">
+<div class="card"><h4>HTML</h4><p><strong>Structure</strong> — defines what is on the page: headings, paragraphs, images, links, forms. The skeleton of every webpage.</p></div>
+<div class="card"><h4>CSS</h4><p><strong>Style</strong> — controls appearance: colours, fonts, layout, spacing, animations. Makes pages look good.</p></div>
+<div class="card"><h4>JavaScript</h4><p><strong>Behaviour</strong> — adds interactivity: buttons, forms, games, dynamic content. Makes pages do things.</p></div></div>
+<div class="callout">🎯 Today: HTML structure, CSS styling, how the web works, and the ethics of web development.</div>` },
+  { type:`concept`, title:`HTML Fundamentals`, body:`<p>HTML uses <strong>tags</strong> to mark up content. Most tags come in pairs:</p>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Main Heading&lt;/h1&gt;
+    &lt;h2&gt;Subheading&lt;/h2&gt;
+    &lt;p&gt;This is a paragraph of text.&lt;/p&gt;
+    &lt;a href="https://bbc.co.uk"&gt;BBC Website&lt;/a&gt;
+    &lt;img src="photo.jpg" alt="A photo"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;List item one&lt;/li&gt;
+      &lt;li&gt;List item two&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>` },
+  { type:`concept`, title:`CSS Styling`, body:`<p>CSS selects HTML elements and applies styles:</p>
+<pre>/* Select by element type */
+h1 {
+    color: blue;
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+}
+
+/* Select by class */
+.highlight {
+    background-color: yellow;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+/* Select by ID */
+#header {
+    width: 100%;
+    background-color: #333;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    body { font-size: 14px; }
+}</pre>
+<div class="callout">💡 CSS can be: <strong>inline</strong> (style attribute), <strong>internal</strong> (&lt;style&gt; tag), or <strong>external</strong> (separate .css file). External is best practice.</div>` },
+  { type:`concept`, title:`Web Ethics & Accessibility`, body:`<p>Building websites comes with ethical responsibilities:</p>
+<table class="bit-table"><tr><th>Issue</th><th>Description</th></tr>
+<tr><td><strong>Accessibility</strong></td><td>Sites must work for all users including those with disabilities (screen readers, keyboard navigation, colour contrast)</td></tr>
+<tr><td><strong>Privacy</strong></td><td>Collecting user data requires consent (GDPR). Cookies must be disclosed.</td></tr>
+<tr><td><strong>Copyright</strong></td><td>Images, fonts, and code have licences. You must have permission to use them.</td></tr>
+<tr><td><strong>Misinformation</strong></td><td>Websites can spread false information — developers have responsibility for content</td></tr>
+<tr><td><strong>Dark Patterns</strong></td><td>Deceptive UX tricks users into actions (e.g. making unsubscribe hard to find)</td></tr>
+<tr><td><strong>Environmental</strong></td><td>Data centres consume vast energy — efficient code and green hosting matter</td></tr></table>` },
+  { type:`activity`, title:`Guided Tasks — Web Dev & Ethics`, body:`<p>Test your web development knowledge.</p>
+<div class="task-box"><h4>📝 Task A — HTML & CSS</h4>
+<div class="answer-row"><label>1. What does HTML stand for?</label><input class="ans-input" id="wd1" placeholder="..."><button class="check-btn" onclick="schkAny('wd1','fwd1',['hypertext markup language','HyperText Markup Language'])">Check</button><span class="fb" id="fwd1"></span></div>
+<div class="answer-row"><label>2. Which technology controls the appearance of a webpage?</label><input class="ans-input" id="wd2" placeholder="..."><button class="check-btn" onclick="schkAny('wd2','fwd2',['css','CSS'])">Check</button><span class="fb" id="fwd2"></span></div>
+<div class="answer-row"><label>3. What HTML tag creates a hyperlink?</label><input class="ans-input" id="wd3" placeholder="..."><button class="check-btn" onclick="schkAny('wd3','fwd3',['a','<a>','anchor'])">Check</button><span class="fb" id="fwd3"></span></div>
+<div class="answer-row"><label>4. What CSS property changes text colour?</label><input class="ans-input" id="wd4" placeholder="..."><button class="check-btn" onclick="schkAny('wd4','fwd4',['color','colour','color:'])">Check</button><span class="fb" id="fwd4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Ethics</h4>
+<div class="answer-row"><label>5. What regulation governs data collection in the UK?</label><input class="ans-input" id="wd5" placeholder="..."><button class="check-btn" onclick="schkAny('wd5','fwd5',['gdpr','GDPR'])">Check</button><span class="fb" id="fwd5"></span></div>
+<div class="answer-row"><label>6. What are deceptive UX design tricks called?</label><input class="ans-input" id="wd6" placeholder="..."><button class="check-btn" onclick="schkAny('wd6','fwd6',['dark patterns','dark pattern','Dark Patterns'])">Check</button><span class="fb" id="fwd6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>HTML</strong> — structure (tags define content)</li>
+<li><strong>CSS</strong> — style (selectors apply appearance rules)</li>
+<li><strong>JavaScript</strong> — behaviour (interactivity)</li>
+<li>CSS selectors: element, <code>.class</code>, <code>#id</code></li>
+<li>Web ethics: accessibility (WCAG), GDPR (data consent), copyright, dark patterns</li>
+<li>External CSS is best practice — separates content from presentation</li>
+</ul><div class="callout success">✅ Year 9 complete! Excellent work across the whole platform.</div>` },
+  { type:`compete`, title:`🏆 Web Dev Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Web Development & Ethics Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What does HTML stand for?`, answers:[`HyperText Markup Language`] },
+  { q:`Which technology styles a webpage?`, answers:[`CSS`] },
+  { q:`Which adds interactivity to a webpage?`, answers:[`JavaScript`,`JS`] },
+  { q:`What HTML tag creates a hyperlink?`, answers:[`<a>`,`a`,`anchor`] },
+  { q:`What HTML tag displays the largest heading?`, answers:[`h1`,`<h1>`] },
+  { q:`What CSS property changes text colour?`, answers:[`color`,`colour`] },
+  { q:`What does GDPR regulate?`, answers:[`data protection`,`personal data`,`data collection`] },
+  { q:`What are deceptive UX design tricks called?`, answers:[`dark patterns`,`dark pattern`] },
+  { q:`What attribute makes images accessible?`, answers:[`alt`,`alt attribute`] },
+  { q:`Where should CSS ideally be placed?`, answers:[`external file`,`separate .css file`,`external stylesheet`] },
+  { q:`What selector targets an HTML element by class?`, answers:[`.`,`.classname`,`dot`] },
+  { q:`What selector targets a unique element by ID?`, answers:[`#`,`hash`,`#id`] },
 ] },
 };
 
