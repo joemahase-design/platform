@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>y7t2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#00f0ff;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+
+/* Filter buttons */
+.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
+.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
+.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
+.fdot{width:7px;height:7px;border-radius:50%;}
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}
+
+</style>
+</head>
+<body>
+<div class="presentation">
+  <div class="filter-bar">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
+    <button class="fbtn ng-btn" onclick="setFilter('ng')"><span class="fdot" style="background:#6a9a4a"></span>🌿 Green</button>
+    <button class="fbtn sp-btn" onclick="setFilter('sp')"><span class="fdot" style="background:#f1c40f"></span>⚡ Superpower</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center">
+      <div class="dot-row" id="dots"></div>
+      <div class="sctr" id="sctr">1 / 1</div>
+      <div class="kbhint">← → Space to navigate &nbsp;|&nbsp; 🏆 Competition on last slide</div>
+    </div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID = 'y7t2';
+const SLIDES = [
+  {
+    type: 'intro',
+    title: 'Binary — The Language of Computers',
+    body: `<p>Every piece of data on a computer — photos, music, games, text — is stored as <strong>binary</strong>. It is the most fundamental concept in computer science.</p>
+<div class="two-col">
+  <div class="card"><h4>What is Binary?</h4><p>A number system that uses only <strong>two digits</strong>: <code>0</code> and <code>1</code>. These represent two electrical states: <strong>off</strong> and <strong>on</strong>.</p></div>
+  <div class="card"><h4>Why Binary?</h4><p>Computers use transistors — tiny switches that are either off (0) or on (1). Binary maps directly to this physical reality.</p></div>
+</div>
+<div class="callout">🎯 <strong>Today's goals:</strong> Understand why computers use binary, convert between binary and decimal, add binary numbers, and understand data sizes.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Bits and Bytes',
+    body: `<p>The building blocks of all digital data:</p>
+<table class="bit-table">
+  <tr><th>Unit</th><th>Size</th><th>Example</th><th>What it can store</th></tr>
+  <tr><td><strong>Bit</strong></td><td>1 binary digit</td><td><code>0</code> or <code>1</code></td><td>One switch: on or off</td></tr>
+  <tr><td><strong>Nibble</strong></td><td>4 bits</td><td><code>1010</code></td><td>One hex digit</td></tr>
+  <tr><td><strong>Byte</strong></td><td>8 bits</td><td><code>0100 0001</code></td><td>One character (e.g. "A")</td></tr>
+  <tr><td><strong>Kilobyte (KB)</strong></td><td>1,024 bytes</td><td>—</td><td>A short text message</td></tr>
+  <tr><td><strong>Megabyte (MB)</strong></td><td>1,024 KB</td><td>—</td><td>A 3-minute song</td></tr>
+  <tr><td><strong>Gigabyte (GB)</strong></td><td>1,024 MB</td><td>—</td><td>About 250 songs</td></tr>
+  <tr><td><strong>Terabyte (TB)</strong></td><td>1,024 GB</td><td>—</td><td>250,000 songs</td></tr>
+</table>
+<div class="callout warn">⚠️ Note: 1 KB = 1,024 bytes (not 1,000) because computers work in powers of 2.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Place Values',
+    body: `<p>Just like decimal uses place values (units, tens, hundreds...), binary uses <strong>powers of 2</strong>:</p>
+<table class="bit-table">
+  <tr><th>Bit 8</th><th>Bit 7</th><th>Bit 6</th><th>Bit 5</th><th>Bit 4</th><th>Bit 3</th><th>Bit 2</th><th>Bit 1</th></tr>
+  <tr><td><strong>128</strong></td><td><strong>64</strong></td><td><strong>32</strong></td><td><strong>16</strong></td><td><strong>8</strong></td><td><strong>4</strong></td><td><strong>2</strong></td><td><strong>1</strong></td></tr>
+</table>
+<div class="callout">📌 <strong>The golden rule:</strong> each column is exactly double the one to its right. Starting from 1: 1, 2, 4, 8, 16, 32, 64, 128.</div>
+<div class="two-col">
+  <div class="card"><h4>Example: 0100 0001 = 65</h4><p>Bit 7 (64) = 1 ✓<br>Bit 1 (1) = 1 ✓<br>All others = 0<br><strong>64 + 1 = 65</strong><br>This is the ASCII code for "A"!</p></div>
+  <div class="card"><h4>Example: 1000 1000 = 136</h4><p>Bit 8 (128) = 1 ✓<br>Bit 4 (8) = 1 ✓<br>All others = 0<br><strong>128 + 8 = 136</strong></p></div>
+</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary to Decimal — Step by Step',
+    body: `<p>To convert a binary number to decimal, multiply each bit by its place value and add them up.</p>
+<div class="callout"><strong>Example: Convert 0110 1100 to decimal</strong></div>
+<table class="bit-table">
+  <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+  <tr><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td class="bit-highlight">1</td><td class="bit-highlight">1</td><td>0</td><td>0</td></tr>
+  <tr><td>0</td><td>64</td><td>32</td><td>0</td><td>8</td><td>4</td><td>0</td><td>0</td></tr>
+</table>
+<p style="margin-top:12px">Add the highlighted values: <strong>64 + 32 + 8 + 4 = 108</strong></p>
+<div class="callout success">✅ <strong>0110 1100 in decimal = 108</strong></div>
+<div class="card" style="margin-top:14px"><h4>Your turn — try these:</h4><p>• 0000 1001 = ?<br>• 0011 0011 = ?<br>• 1010 1010 = ?</p><p style="color:var(--text-muted);font-size:12px;margin-top:8px">Answers: 9 | 51 | 170</p></div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Decimal to Binary — Step by Step',
+    body: `<p>To convert decimal to binary, repeatedly divide by 2 and record the remainders — then read them <strong>bottom to top</strong>.</p>
+<div class="two-col">
+  <div class="card">
+    <h4>Method: Division by 2</h4>
+    <pre>Convert 45 to binary:
+45 ÷ 2 = 22 remainder 1 ↑
+22 ÷ 2 = 11 remainder 0 ↑
+11 ÷ 2 =  5 remainder 1 ↑
+ 5 ÷ 2 =  2 remainder 1 ↑
+ 2 ÷ 2 =  1 remainder 0 ↑
+ 1 ÷ 2 =  0 remainder 1 ↑
+
+Read upward: 101101
+8-bit: 0010 1101</pre>
+  </div>
+  <div class="card">
+    <h4>Method: Subtract Place Values</h4>
+    <p>Starting from 128, ask: "Does this fit?"</p>
+    <pre>Convert 100:
+128? No (too big)
+ 64? Yes → bit=1, left=36
+ 32? Yes → bit=1, left=4
+ 16? No
+  8? No
+  4? Yes → bit=1, left=0
+  2? No  1? No
+
+= 0110 0100</pre>
+  </div>
+</div>
+<div class="callout success">✅ Check: 64+32+4 = 100 ✓</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Binary Addition',
+    body: `<p>Binary addition uses the same column-by-column method as decimal, but with only 0 and 1:</p>
+<table class="bit-table">
+  <tr><th>Rule</th><th>Result</th><th>Carry</th></tr>
+  <tr><td><code>0 + 0</code></td><td class="bit-highlight">0</td><td>0</td></tr>
+  <tr><td><code>0 + 1</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 0</code></td><td class="bit-highlight">1</td><td>0</td></tr>
+  <tr><td><code>1 + 1</code></td><td class="bit-highlight">0</td><td>1 (carry)</td></tr>
+  <tr><td><code>1 + 1 + 1</code></td><td class="bit-highlight">1</td><td>1 (carry)</td></tr>
+</table>
+<div class="callout"><strong>Example: 0001 0111 + 0000 1011 (23 + 11 = 34)</strong></div>
+<pre>  0001 0111   (23)
++ 0000 1011   (11)
+──────────────
+  0010 0010   (34)
+
+Working right to left:
+1+1=10 → write 0 carry 1
+1+1+1=11 → write 1 carry 1
+1+0+1=10 → write 0 carry 1
+0+0+1=1 → write 1
+...</pre>
+<div class="callout warn">⚠️ <strong>Overflow:</strong> If the result needs more than 8 bits, the 9th bit is lost. This is called overflow.</div>`,
+  },
+  {
+    type: 'concept',
+    title: 'Why Binary? The Hardware Link',
+    body: `<p>Understanding <em>why</em> computers use binary helps everything else make sense.</p>
+<div class="three-col">
+  <div class="card"><h4>Transistors</h4><p>Modern CPUs contain <strong>billions</strong> of transistors — tiny switches. Each is either on (1) or off (0). Binary maps directly to this.</p></div>
+  <div class="card"><h4>Reliability</h4><p>Distinguishing just two states (high/low voltage) is far more reliable than ten. Less chance of errors over billions of operations.</p></div>
+  <div class="card"><h4>Logic Gates</h4><p>AND, OR, NOT — logical operations on binary values. All computing is built from combinations of these simple gates.</p></div>
+</div>
+<div class="callout">🔌 Even the Wi-Fi signal carrying this page is ultimately a stream of 0s and 1s — billions of them per second.</div>
+<div class="two-col">
+  <div class="card"><h4>Text — ASCII</h4><p>"A" = 65 = <code>0100 0001</code><br>"a" = 97 = <code>0110 0001</code><br>"0" = 48 = <code>0011 0000</code></p></div>
+  <div class="card"><h4>Colours — RGB</h4><p>Red = <code>FF 00 00</code><br>Each channel: 0–255 (8 bits)<br>24 bits per pixel total</p></div>
+</div>`,
+  },
+  {
+    type: 'activity',
+    title: 'Guided Tasks — Binary Practice',
+    body: `<p>Work through each question and type your answer. Press <strong>Check</strong> to see if you are right.</p>
+<div class="task-box">
+  <h4>📝 Task A — Binary to Decimal</h4>
+  <div class="answer-row"><label>1. Convert <code>0000 0001</code> to decimal:</label><input class="ans-input" id="t1" placeholder="?"><button class="check-btn" onclick="chk('t1','f1','1')">Check</button><span class="fb" id="f1"></span></div>
+  <div class="answer-row"><label>2. Convert <code>0000 1010</code> to decimal:</label><input class="ans-input" id="t2" placeholder="?"><button class="check-btn" onclick="chk('t2','f2','10')">Check</button><span class="fb" id="f2"></span></div>
+  <div class="answer-row"><label>3. Convert <code>0001 1000</code> to decimal:</label><input class="ans-input" id="t3" placeholder="?"><button class="check-btn" onclick="chk('t3','f3','24')">Check</button><span class="fb" id="f3"></span></div>
+  <div class="answer-row"><label>4. Convert <code>0101 0101</code> to decimal:</label><input class="ans-input" id="t4" placeholder="?"><button class="check-btn" onclick="chk('t4','f4','85')">Check</button><span class="fb" id="f4"></span></div>
+  <div class="answer-row"><label>5. Convert <code>1111 1111</code> to decimal:</label><input class="ans-input" id="t5" placeholder="?"><button class="check-btn" onclick="chk('t5','f5','255')">Check</button><span class="fb" id="f5"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task B — Decimal to Binary (8-bit)</h4>
+  <div class="answer-row"><label>6. Convert <strong>5</strong> to 8-bit binary:</label><input class="ans-input" id="t6" placeholder="????????"><button class="check-btn" onclick="chkAny('t6','f6',['00000101','0000 0101'])">Check</button><span class="fb" id="f6"></span></div>
+  <div class="answer-row"><label>7. Convert <strong>13</strong> to 8-bit binary:</label><input class="ans-input" id="t7" placeholder="????????"><button class="check-btn" onclick="chkAny('t7','f7',['00001101','0000 1101'])">Check</button><span class="fb" id="f7"></span></div>
+  <div class="answer-row"><label>8. Convert <strong>64</strong> to 8-bit binary:</label><input class="ans-input" id="t8" placeholder="????????"><button class="check-btn" onclick="chkAny('t8','f8',['01000000','0100 0000'])">Check</button><span class="fb" id="f8"></span></div>
+  <div class="answer-row"><label>9. Convert <strong>200</strong> to 8-bit binary:</label><input class="ans-input" id="t9" placeholder="????????"><button class="check-btn" onclick="chkAny('t9','f9',['11001000','1100 1000'])">Check</button><span class="fb" id="f9"></span></div>
+</div>
+<div class="task-box">
+  <h4>📝 Task C — Binary Addition</h4>
+  <div class="answer-row"><label>10. <code>0000 0011</code> + <code>0000 0101</code> =</label><input class="ans-input" id="t10" placeholder="?"><button class="check-btn" onclick="chk('t10','f10','8')">Check</button><span class="fb" id="f10"></span></div>
+  <div class="answer-row"><label>11. <code>0001 0000</code> + <code>0000 1111</code> =</label><input class="ans-input" id="t11" placeholder="?"><button class="check-btn" onclick="chk('t11','f11','31')">Check</button><span class="fb" id="f11"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Tip:</strong> Use the place value table — 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 — and add up the values where there is a 1.</div>`,
+  },
+  {
+    type: 'summary',
+    title: 'What We Covered Today',
+    body: `<ul>
+  <li>Computers use <strong>binary</strong> (0 and 1) because transistors have two states</li>
+  <li>8 bits = 1 byte; data sizes: KB → MB → GB → TB (multiply by 1,024 each time)</li>
+  <li>Binary place values: <strong>128 | 64 | 32 | 16 | 8 | 4 | 2 | 1</strong></li>
+  <li>Binary → decimal: add up place values where bit = 1</li>
+  <li>Decimal → binary: subtract place values or divide by 2</li>
+  <li>Binary addition: column by column, carry when you get 1+1</li>
+  <li>Overflow: when a result needs more bits than available</li>
+</ul>
+<div class="callout success">✅ You can now read and write in the language computers use!</div>
+<div class="callout">🏆 Now test yourself — the competition is up next!</div>`,
+  },
+  {
+    type: 'compete',
+    title: '🏆 Binary Speed Challenge',
+    body: `
+<p style="color:var(--text-muted);margin-bottom:4px">How fast can you convert? Score points for correct answers — faster = more points!</p>
+<div class="compete-board">
+  <h4>🏆 Binary Speed Challenge</h4>
+  <div id="comp-start-area">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">Enter your name and hit Start. You have <strong style="color:var(--warning)">15 seconds</strong> per question. Faster answers score more points!</p>
+    <input class="compete-input" id="comp-name" placeholder="Your name..." style="font-size:16px;width:100%;max-width:360px;display:block;margin:0 auto 10px">
+    <button class="compete-btn" onclick="startComp()">🚀 Start Competition!</button>
+    <div style="margin-top:14px">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Leaderboard</h4>
+      <ul class="leaderboard" id="leaderboard"><li style="color:var(--text-muted);font-size:13px">Loading...</li></ul>
+    </div>
+  </div>
+  <div id="comp-game-area" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)" id="comp-qnum">1 / 10</span>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--warning)" id="comp-timeleft">15s</span>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill" style="width:100%"></div></div>
+    <div class="compete-q" id="comp-q">Question loads here</div>
+    <input class="compete-input" id="comp-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="compete-btn" onclick="submitCompAns()">Submit Answer ↵</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <span style="font-size:13px;color:var(--text-muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+      <span id="comp-feedback" style="font-size:13px;font-weight:700"></span>
+    </div>
+  </div>
+  <div id="comp-end-area" style="display:none;text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px">Well done, <span id="comp-final-name"></span>!</p>
+    <p style="color:var(--text-muted);margin-bottom:8px">Final score</p>
+    <div class="score-display" id="comp-final-score">0</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Score saved to leaderboard</p>
+    <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+    <div style="margin-top:16px;text-align:left">
+      <h4 style="font-size:12px;color:var(--text-muted);margin-bottom:8px">🏆 Top Scores</h4>
+      <ul class="leaderboard" id="leaderboard"></ul>
+    </div>
+  </div>
+</div>`,
+    onRender: () => { const lb = JSON.parse(localStorage.getItem("ks3_lb_y7t2")||"[]"); renderLeaderboard(lb); },
+  },
+];
+const COMP_Qs = [
+  { q: 'Convert binary 00001010 to decimal', answers: ['10'] },
+  { q: 'Convert binary 00001111 to decimal', answers: ['15'] },
+  { q: 'Convert decimal 8 to binary (8-bit)', answers: ['00001000','0000 1000'] },
+  { q: 'Convert binary 01000000 to decimal', answers: ['64'] },
+  { q: 'Convert decimal 255 to decimal — what is the max 8-bit value?', answers: ['255'] },
+  { q: 'How many bits in one byte?', answers: ['8'] },
+  { q: 'Convert binary 00110000 to decimal', answers: ['48'] },
+  { q: 'Convert decimal 16 to binary (just the 4 significant bits)', answers: ['00010000','0001 0000','10000'] },
+  { q: '00000011 + 00000100 = ? (decimal answer)', answers: ['7'] },
+  { q: 'Convert binary 10000000 to decimal', answers: ['128'] },
+  { q: 'How many bytes in 1 kilobyte?', answers: ['1024'] },
+  { q: 'Convert decimal 12 to binary (8-bit)', answers: ['00001100','0000 1100'] },
+];
+
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+// Filter system
+function setFilter(type) {
+  if (type==='ng') {
+    document.body.classList.remove('superpower');
+    const on = document.body.classList.toggle('nature-green');
+    localStorage.setItem('ks3_ng', on?'1':'0');
+    localStorage.setItem('ks3_sp', '0');
+  } else {
+    document.body.classList.remove('nature-green');
+    const on = document.body.classList.toggle('superpower');
+    localStorage.setItem('ks3_sp', on?'1':'0');
+    localStorage.setItem('ks3_ng', '0');
+  }
+  syncFilterBtns();
+}
+function syncFilterBtns() {
+  const ng = document.body.classList.contains('nature-green');
+  const sp = document.body.classList.contains('superpower');
+  document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));
+  document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));
+}
+// Apply on load
+(function(){
+  if (localStorage.getItem('ks3_ng')==='1') document.body.classList.add('nature-green');
+  if (localStorage.getItem('ks3_sp')==='1') document.body.classList.add('superpower');
+  syncFilterBtns();
+})();
+
+</script>
+</body>
+</html>
