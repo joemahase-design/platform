@@ -7,9 +7,9 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root {
-  --bg:#0f1117; --surface:#1a1d2e; --surface2:#22263a; --border:#353a5c;
-  --accent:#00f0ff; --ay7:#00f0ff; --ay8:#bf5fff; --ay9:#ff7a20;
-  --text:#f0f0ff; --muted:#9090c0; --success:#2ecc71; --warn:#f1c40f; --danger:#e74c3c;
+  --bg:#99ccff; --surface:#ffffff; --surface2:#deeeff; --border:#6aabee;
+  --accent:#0055cc; --ay7:#0055cc; --ay8:#7722aa; --ay9:#cc4400;
+  --text:#0a1a2e; --muted:#2a4a6e; --success:#007a3d; --warn:#b87800; --danger:#cc2200;
   --mono:'Space Mono','Courier New',monospace;
   --sans:'DM Sans','Segoe UI',system-ui,sans-serif;
   --ng-bg:#f4f1e8; --ng-surf:#fff; --ng-surf2:#ebe6d5; --ng-border:#a8956a;
@@ -20,10 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(0,240,255,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,240,255,.025) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0;}
+body::before{display:none;}
 body.nature-green{background:var(--ng-bg);--bg:var(--ng-bg);--surface:var(--ng-surf);
   --surface2:var(--ng-surf2);--border:var(--ng-border);--text:var(--ng-text);
   --muted:var(--ng-muted);--accent:var(--ng-acc);}
@@ -250,8 +247,8 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
 .sv-t-summary{background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
 .sv-t-compete{background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
 .sv-num{font-family:var(--mono);font-size:11px;color:var(--muted);}
-.sv-slide h1{font-size:clamp(18px,3vw,30px);font-weight:700;line-height:1.15;margin-bottom:16px;}
-.sv-slide .sb{color:var(--muted);font-size:15px;line-height:1.8;}
+.sv-slide h1{font-size:clamp(24px,4.5vw,48px);font-weight:700;line-height:1.15;margin-bottom:16px;}
+.sv-slide .sb{color:var(--muted);font-size:18px;line-height:1.8;}
 .sv-slide .sb ul,.sv-slide .sb ol{padding-left:20px;}
 .sv-slide .sb li{margin-bottom:7px;}
 .sv-slide .sb li::marker{color:var(--accent);}
@@ -262,7 +259,7 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
 .sv-slide .sb pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);
   padding:14px 18px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;
   margin:10px 0;line-height:1.7;white-space:pre-wrap;}
-.sv-slide .callout{background:var(--surface2);border-left:3px solid var(--accent);
+.sv-slide .callout{background:#c8e4ff;border-left:3px solid var(--accent);
   border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14px;color:var(--text);}
 .sv-slide .callout.warn{border-left-color:var(--warn);}
 .sv-slide .callout.success{border-left-color:var(--success);}
@@ -298,7 +295,7 @@ body.superpower *{font-family:var(--sp-font)!important;letter-spacing:.06em;
 
 
 /* ── Task elements (used in slide bodies) ── */
-.task-box{background:var(--surface2);border:1px solid var(--border);
+.task-box{background:#e8f4ff;border:1px solid var(--border);
   border-radius:12px;padding:18px 20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
 .answer-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;
