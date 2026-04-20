@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y8 — Boolean Logic</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#bf5fff;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+
+.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
+.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
+.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style>
+</head>
+<body>
+<div class="presentation">
+    <div class="filter-bar">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
+    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
+    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1 / 1</div>
+    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID = `y8t6`;
+const SLIDES = [
+  { type:`intro`, title:`What is Boolean Logic?`, body:`<p><strong>Boolean logic</strong> is a way of making decisions using only two values: <strong>True</strong> or <strong>False</strong> (also written as 1 or 0). It is the foundation of how computers think and decide.</p>
+<div class="two-col">
+<div class="card"><h4>Named after George Boole</h4><p>British mathematician George Boole developed this system in the 1850s. He showed that logical thinking could be expressed mathematically — a discovery that would later make digital computers possible.</p></div>
+<div class="card"><h4>Why It Matters</h4><p>Every decision a computer makes — from checking a password to filtering search results — uses Boolean logic. It is built into the transistors of every CPU.</p></div></div>
+<div class="callout">🎯 <strong>Lesson goals:</strong> Understand Boolean operators (AND, OR, NOT), explain how logic gates work, read and complete truth tables, and see how Boolean logic is used in real computing.</div>` },
+  { type:`concept`, title:`Boolean Operators — AND, OR, NOT`, body:`<p>Boolean logic uses three fundamental <strong>operators</strong> to combine or modify true/false values:</p>
+<table class="bit-table">
+<tr><th>Operator</th><th>How it works</th><th>Real-world example</th></tr>
+<tr><td><strong>AND</strong></td><td>True <strong>only if both</strong> inputs are true</td><td>Door opens if card AND PIN are correct</td></tr>
+<tr><td><strong>OR</strong></td><td>True if <strong>at least one</strong> input is true</td><td>Alarm rings if motion OR door sensor triggered</td></tr>
+<tr><td><strong>NOT</strong></td><td><strong>Reverses</strong> the input (true→false, false→true)</td><td>Light is ON when switch is NOT in off position</td></tr>
+</table>
+<div class="callout">💡 Think of AND as strict ("both must be true"), OR as flexible ("either will do"), and NOT as a flipper ("turn it around").</div>
+<div class="two-col">
+<div class="card"><h4>AND Example</h4><p>Is it raining AND cold?<br>True AND True = <strong>True</strong><br>True AND False = <strong>False</strong><br>False AND True = <strong>False</strong></p></div>
+<div class="card"><h4>OR Example</h4><p>Is it raining OR cold?<br>True OR False = <strong>True</strong><br>False OR False = <strong>False</strong><br>True OR True = <strong>True</strong></p></div></div>` },
+  { type:`concept`, title:`Logic Gates`, body:`<p>In physical hardware, Boolean operations are carried out by <strong>logic gates</strong> — electronic components built from transistors. Each gate takes one or two inputs and produces one output.</p>
+<table class="bit-table">
+<tr><th>Gate</th><th>Symbol shape</th><th>Rule</th><th>Output when A=1, B=1</th></tr>
+<tr><td><strong>AND gate</strong></td><td>D-shape with flat back</td><td>Output = 1 only if A AND B are both 1</td><td class="bit-highlight">1</td></tr>
+<tr><td><strong>OR gate</strong></td><td>Curved shield shape</td><td>Output = 1 if A OR B (or both) = 1</td><td class="bit-highlight">1</td></tr>
+<tr><td><strong>NOT gate</strong></td><td>Triangle with circle</td><td>Output = opposite of A (one input only)</td><td class="bit-highlight">0</td></tr>
+</table>
+<div class="callout warn">⚠️ The electronic component that carries out a logical operation is called a <strong>logic gate</strong>. The NOT gate is also called an <strong>inverter</strong> because it inverts (flips) its input.</div>
+<div class="callout">🔬 Modern CPUs contain billions of logic gates. A single AND gate can be built from just two transistors wired together — and a modern chip has up to 50 billion transistors.</div>` },
+  { type:`concept`, title:`Truth Tables`, body:`<p>A <strong>truth table</strong> is a chart that shows every possible combination of inputs and the output for a logic rule. They are used to design and test logic circuits.</p>
+<div class="two-col">
+<div class="card">
+<h4>AND Gate Truth Table</h4>
+<table class="bit-table">
+<tr><th>A</th><th>B</th><th>A AND B</th></tr>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td class="bit-highlight">1</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">Only true when <strong>both</strong> inputs are 1.</p>
+</div>
+<div class="card">
+<h4>OR Gate Truth Table</h4>
+<table class="bit-table">
+<tr><th>A</th><th>B</th><th>A OR B</th></tr>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td>0</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td>1</td><td class="bit-highlight">1</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">True when <strong>at least one</strong> input is 1.</p>
+</div></div>
+<div class="card" style="margin-top:14px">
+<h4>NOT Gate Truth Table (single input)</h4>
+<table class="bit-table">
+<tr><th>A</th><th>NOT A</th></tr>
+<tr><td>0</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td class="bit-highlight">0</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">Output is always the <strong>opposite</strong> of the input.</p>
+</div>` },
+  { type:`concept`, title:`Boolean Logic in Real Computing`, body:`<p>Boolean logic is not just theory — it is used constantly inside real systems:</p>
+<table class="bit-table">
+<tr><th>Context</th><th>Boolean logic used</th></tr>
+<tr><td>Login system</td><td>Username correct AND password correct → grant access</td></tr>
+<tr><td>Search engines</td><td>"Python AND tutorial" — finds pages with both words</td></tr>
+<tr><td>Security alarm</td><td>Motion detected OR door opened → trigger alert</td></tr>
+<tr><td>Parental controls</td><td>NOT on approved list → block website</td></tr>
+<tr><td>CPU arithmetic</td><td>Binary addition built entirely from logic gates (AND, OR, NOT)</td></tr>
+<tr><td>Database queries</td><td>WHERE age > 18 AND city = "London"</td></tr>
+</table>
+<div class="callout">💡 Boolean logic is also used in programming IF statements: <code>if raining AND cold:</code> — this is Boolean logic expressed in code. When you write a condition in Python, you are using the same AND/OR/NOT operators.</div>` },
+  { type:`concept`, title:`Building Logic Circuits`, body:`<p>Logic gates can be combined to create <strong>logic circuits</strong> that perform more complex operations. The process for using Boolean logic in a computer system is:</p>
+<div class="three-col">
+<div class="card"><h4>Step 1</h4><p><strong>Write a logic rule</strong><br>Define the condition in Boolean terms:<br><em>"Output is true if A AND B, OR if NOT C"</em></p></div>
+<div class="card"><h4>Step 2</h4><p><strong>Build the circuit</strong><br>Convert the rule into connected logic gates — AND, OR and NOT wired together in the right order.</p></div>
+<div class="card"><h4>Step 3</h4><p><strong>Make a truth table</strong><br>List all possible input combinations and their expected outputs. Used to verify the circuit is correct.</p></div></div>
+<div class="two-col">
+<div class="card"><h4>Step 4</h4><p><strong>Test the circuit</strong><br>Apply each row of the truth table as inputs and check the output matches. If not — redesign!</p></div>
+<div class="card"><h4>Half Adder Example</h4><p>A half adder (adds two bits) is built from one AND gate and one XOR gate. This is how CPUs perform binary addition at the hardware level.</p></div></div>` },
+  { type:`activity`, title:`Guided Tasks — Boolean Logic`, body:`<p>Test your Boolean logic knowledge with these questions.</p>
+<div class="task-box"><h4>📝 Task A — Operators</h4>
+<div class="answer-row"><label>1. AND is true only when both inputs are true. True or False?</label><input class="ans-input" id="bl1" placeholder="..."><button class="check-btn" onclick="schkAny('bl1','fbl1',['true','True'])">Check</button><span class="fb" id="fbl1"></span></div>
+<div class="answer-row"><label>2. What does a NOT gate do to its input?</label><input class="ans-input" id="bl2" placeholder="..."><button class="check-btn" onclick="schkAny('bl2','fbl2',['reverses it','flips it','inverts it','reverses'])">Check</button><span class="fb" id="fbl2"></span></div>
+<div class="answer-row"><label>3. OR is true if at least one input is true. True or False?</label><input class="ans-input" id="bl3" placeholder="..."><button class="check-btn" onclick="schkAny('bl3','fbl3',['true','True'])">Check</button><span class="fb" id="fbl3"></span></div>
+<div class="answer-row"><label>4. What is the electronic component that carries out a logical operation?</label><input class="ans-input" id="bl4" placeholder="..."><button class="check-btn" onclick="schkAny('bl4','fbl4',['logic gate','Logic gate','Logic Gate','gate'])">Check</button><span class="fb" id="fbl4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Truth Tables</h4>
+<div class="answer-row"><label>5. A=1, B=1. What is A AND B?</label><input class="ans-input" id="bl5" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl5','fbl5',['1','true','True'])">Check</button><span class="fb" id="fbl5"></span></div>
+<div class="answer-row"><label>6. A=1, B=0. What is A AND B?</label><input class="ans-input" id="bl6" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl6','fbl6',['0','false','False'])">Check</button><span class="fb" id="fbl6"></span></div>
+<div class="answer-row"><label>7. A=0, B=0. What is A OR B?</label><input class="ans-input" id="bl7" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl7','fbl7',['0','false','False'])">Check</button><span class="fb" id="fbl7"></span></div>
+<div class="answer-row"><label>8. A=1. What is NOT A?</label><input class="ans-input" id="bl8" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl8','fbl8',['0','false','False'])">Check</button><span class="fb" id="fbl8"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task C — Real World</h4>
+<div class="answer-row"><label>9. What chart shows all possible True/False outputs for a logic rule?</label><input class="ans-input" id="bl9" placeholder="..."><button class="check-btn" onclick="schkAny('bl9','fbl9',['truth table','Truth table','Truth Table'])">Check</button><span class="fb" id="fbl9"></span></div>
+<div class="answer-row"><label>10. Boolean logic is about numbers. True or False?</label><input class="ans-input" id="bl10" placeholder="..."><button class="check-btn" onclick="schkAny('bl10','fbl10',['false','False'])">Check</button><span class="fb" id="fbl10"></span></div>
+</div>
+<div class="callout warn">💡 Remember: Boolean logic is about <strong>true/false values</strong>, NOT numbers — despite using 0 and 1 to represent them.</div>` },
+  { type:`summary`, title:`Lesson Summary`, body:`<ul>
+<li><strong>Boolean logic</strong> uses only True/False values to make decisions</li>
+<li><strong>AND</strong>: true only if both inputs are true</li>
+<li><strong>OR</strong>: true if at least one input is true</li>
+<li><strong>NOT</strong>: reverses/inverts the input (one input only)</li>
+<li>A <strong>logic gate</strong> is the electronic component that carries out a logical operation</li>
+<li>A <strong>truth table</strong> shows all possible input combinations and their outputs</li>
+<li>Logic circuits are tested by working through every row of the truth table</li>
+<li>Boolean logic is used in logins, search engines, alarms, SQL queries, and CPU arithmetic</li>
+<li>Boolean logic is about True/False values — <strong>not</strong> numbers</li>
+</ul>
+<div class="callout success">✅ Exit quiz answers: logic gate · to make decisions using AND/OR/NOT · truth table · incorrect statement: "Boolean logic is about numbers"</div>` },
+  { type:`compete`, title:`🏆 Boolean Logic Speed Round`, body:`<div class="compete-board"><h4>🏆 Boolean Logic Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+];
+
+const COMP_Qs = [
+  { q:`What are the three Boolean operators?`, answers:[`AND OR NOT`,`AND, OR, NOT`] },
+  { q:`AND is true only when both inputs are true. True or False?`, answers:[`true`,`True`] },
+  { q:`What does a NOT gate do to its input?`, answers:[`reverses it`,`inverts it`,`flips it`] },
+  { q:`A=1, B=1. What is A AND B?`, answers:[`1`,`true`] },
+  { q:`A=1, B=0. What is A AND B?`, answers:[`0`,`false`] },
+  { q:`A=0, B=0. What is A OR B?`, answers:[`0`,`false`] },
+  { q:`A=1. What is NOT A?`, answers:[`0`,`false`] },
+  { q:`A=0, B=1. What is A OR B?`, answers:[`1`,`true`] },
+  { q:`What chart shows all True/False outputs for a logic rule?`, answers:[`truth table`,`Truth Table`] },
+  { q:`What electronic component carries out a logical operation?`, answers:[`logic gate`,`Logic Gate`] },
+  { q:`True or False: Boolean logic is about numbers.`, answers:[`false`,`False`] },
+  { q:`How many inputs does a NOT gate have?`, answers:[`1`,`one`] },
+  { q:`What is another name for a NOT gate?`, answers:[`inverter`,`Inverter`] },
+  { q:`A=1, B=1. What is A OR B?`, answers:[`1`,`true`] },
+];
+
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+
+function setFilter(t){
+  if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}
+  else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}
+  syncFB();
+}
+function syncFB(){
+  const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');
+  document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));
+  document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));
+}
+(function(){
+  if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');
+  if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');
+  syncFB();
+})();
+</script>
+</body>
+</html>
