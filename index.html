@@ -406,6 +406,7 @@ const LESSONS = {
     { id:'y7t3', title:'Networks & the Internet',                   file:'lessons/y7t3.html' },
     { id:'y7t4', title:'Introduction to Programming',               file:'lessons/y7t4.html' },
     { id:'y7t5', title:'7.5.1 — Spreadsheet Modelling',            file:'lessons/y7t5.html' },
+    { id:'y7t6', title:'Sequence & Subroutines in Scratch',         file:'lessons/y7t6.html' },
   ],
   8: [
     { id:'y8t2', title:'Binary, Hexadecimal & Denary',              file:'lessons/y8t2.html' },
@@ -413,6 +414,7 @@ const LESSONS = {
     { id:'y8t3', title:'Computer Hardware & FDE',                   file:'lessons/y8t3.html' },
     { id:'y8t4', title:'Cybersecurity',                             file:'lessons/y8t4.html' },
     { id:'y8t5', title:'Databases & SQL',                           file:'lessons/y8t5.html' },
+    { id:'y8t6', title:'Boolean Logic',                                 file:'lessons/y8t6.html' },
   ],
   9: [
     { id:'y9t6', title:'Pseudocode — Introduction & Practice',      file:'lessons/y9t6.html' },
@@ -2595,6 +2597,150 @@ h1 {
   { q:`What selector targets a unique element by ID?`, answers:[`#`,`hash`,`#id`] },
 ],
   },
+  "8_5": { lid:`y8t6`, slides:[
+  { type:`intro`, title:`What is Boolean Logic?`, body:`<p><strong>Boolean logic</strong> is a way of making decisions using only two values: <strong>True</strong> or <strong>False</strong> (also written as 1 or 0). It is the foundation of how computers think and decide.</p>
+<div class="two-col">
+<div class="card"><h4>Named after George Boole</h4><p>British mathematician George Boole developed this system in the 1850s. He showed that logical thinking could be expressed mathematically — a discovery that would later make digital computers possible.</p></div>
+<div class="card"><h4>Why It Matters</h4><p>Every decision a computer makes — from checking a password to filtering search results — uses Boolean logic. It is built into the transistors of every CPU.</p></div></div>
+<div class="callout">🎯 <strong>Lesson goals:</strong> Understand Boolean operators (AND, OR, NOT), explain how logic gates work, read and complete truth tables, and see how Boolean logic is used in real computing.</div>` },
+  { type:`concept`, title:`Boolean Operators — AND, OR, NOT`, body:`<p>Boolean logic uses three fundamental <strong>operators</strong> to combine or modify true/false values:</p>
+<table class="bit-table">
+<tr><th>Operator</th><th>How it works</th><th>Real-world example</th></tr>
+<tr><td><strong>AND</strong></td><td>True <strong>only if both</strong> inputs are true</td><td>Door opens if card AND PIN are correct</td></tr>
+<tr><td><strong>OR</strong></td><td>True if <strong>at least one</strong> input is true</td><td>Alarm rings if motion OR door sensor triggered</td></tr>
+<tr><td><strong>NOT</strong></td><td><strong>Reverses</strong> the input (true→false, false→true)</td><td>Light is ON when switch is NOT in off position</td></tr>
+</table>
+<div class="callout">💡 Think of AND as strict ("both must be true"), OR as flexible ("either will do"), and NOT as a flipper ("turn it around").</div>
+<div class="two-col">
+<div class="card"><h4>AND Example</h4><p>Is it raining AND cold?<br>True AND True = <strong>True</strong><br>True AND False = <strong>False</strong><br>False AND True = <strong>False</strong></p></div>
+<div class="card"><h4>OR Example</h4><p>Is it raining OR cold?<br>True OR False = <strong>True</strong><br>False OR False = <strong>False</strong><br>True OR True = <strong>True</strong></p></div></div>` },
+  { type:`concept`, title:`Logic Gates`, body:`<p>In physical hardware, Boolean operations are carried out by <strong>logic gates</strong> — electronic components built from transistors. Each gate takes one or two inputs and produces one output.</p>
+<table class="bit-table">
+<tr><th>Gate</th><th>Symbol shape</th><th>Rule</th><th>Output when A=1, B=1</th></tr>
+<tr><td><strong>AND gate</strong></td><td>D-shape with flat back</td><td>Output = 1 only if A AND B are both 1</td><td class="bit-highlight">1</td></tr>
+<tr><td><strong>OR gate</strong></td><td>Curved shield shape</td><td>Output = 1 if A OR B (or both) = 1</td><td class="bit-highlight">1</td></tr>
+<tr><td><strong>NOT gate</strong></td><td>Triangle with circle</td><td>Output = opposite of A (one input only)</td><td class="bit-highlight">0</td></tr>
+</table>
+<div class="callout warn">⚠️ The electronic component that carries out a logical operation is called a <strong>logic gate</strong>. The NOT gate is also called an <strong>inverter</strong> because it inverts (flips) its input.</div>
+<div class="callout">🔬 Modern CPUs contain billions of logic gates. A single AND gate can be built from just two transistors wired together — and a modern chip has up to 50 billion transistors.</div>` },
+  { type:`concept`, title:`Truth Tables`, body:`<p>A <strong>truth table</strong> is a chart that shows every possible combination of inputs and the output for a logic rule. They are used to design and test logic circuits.</p>
+<div class="two-col">
+<div class="card">
+<h4>AND Gate Truth Table</h4>
+<table class="bit-table">
+<tr><th>A</th><th>B</th><th>A AND B</th></tr>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td class="bit-highlight">1</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">Only true when <strong>both</strong> inputs are 1.</p>
+</div>
+<div class="card">
+<h4>OR Gate Truth Table</h4>
+<table class="bit-table">
+<tr><th>A</th><th>B</th><th>A OR B</th></tr>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td>0</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td>1</td><td class="bit-highlight">1</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">True when <strong>at least one</strong> input is 1.</p>
+</div></div>
+<div class="card" style="margin-top:14px">
+<h4>NOT Gate Truth Table (single input)</h4>
+<table class="bit-table">
+<tr><th>A</th><th>NOT A</th></tr>
+<tr><td>0</td><td class="bit-highlight">1</td></tr>
+<tr><td>1</td><td class="bit-highlight">0</td></tr>
+</table>
+<p style="font-size:13px;margin-top:8px">Output is always the <strong>opposite</strong> of the input.</p>
+</div>` },
+  { type:`concept`, title:`Boolean Logic in Real Computing`, body:`<p>Boolean logic is not just theory — it is used constantly inside real systems:</p>
+<table class="bit-table">
+<tr><th>Context</th><th>Boolean logic used</th></tr>
+<tr><td>Login system</td><td>Username correct AND password correct → grant access</td></tr>
+<tr><td>Search engines</td><td>"Python AND tutorial" — finds pages with both words</td></tr>
+<tr><td>Security alarm</td><td>Motion detected OR door opened → trigger alert</td></tr>
+<tr><td>Parental controls</td><td>NOT on approved list → block website</td></tr>
+<tr><td>CPU arithmetic</td><td>Binary addition built entirely from logic gates (AND, OR, NOT)</td></tr>
+<tr><td>Database queries</td><td>WHERE age > 18 AND city = "London"</td></tr>
+</table>
+<div class="callout">💡 Boolean logic is also used in programming IF statements: <code>if raining AND cold:</code> — this is Boolean logic expressed in code. When you write a condition in Python, you are using the same AND/OR/NOT operators.</div>` },
+  { type:`concept`, title:`Building Logic Circuits`, body:`<p>Logic gates can be combined to create <strong>logic circuits</strong> that perform more complex operations. The process for using Boolean logic in a computer system is:</p>
+<div class="three-col">
+<div class="card"><h4>Step 1</h4><p><strong>Write a logic rule</strong><br>Define the condition in Boolean terms:<br><em>"Output is true if A AND B, OR if NOT C"</em></p></div>
+<div class="card"><h4>Step 2</h4><p><strong>Build the circuit</strong><br>Convert the rule into connected logic gates — AND, OR and NOT wired together in the right order.</p></div>
+<div class="card"><h4>Step 3</h4><p><strong>Make a truth table</strong><br>List all possible input combinations and their expected outputs. Used to verify the circuit is correct.</p></div></div>
+<div class="two-col">
+<div class="card"><h4>Step 4</h4><p><strong>Test the circuit</strong><br>Apply each row of the truth table as inputs and check the output matches. If not — redesign!</p></div>
+<div class="card"><h4>Half Adder Example</h4><p>A half adder (adds two bits) is built from one AND gate and one XOR gate. This is how CPUs perform binary addition at the hardware level.</p></div></div>` },
+  { type:`activity`, title:`Guided Tasks — Boolean Logic`, body:`<p>Test your Boolean logic knowledge with these questions.</p>
+<div class="task-box"><h4>📝 Task A — Operators</h4>
+<div class="answer-row"><label>1. AND is true only when both inputs are true. True or False?</label><input class="ans-input" id="bl1" placeholder="..."><button class="check-btn" onclick="schkAny('bl1','fbl1',['true','True'])">Check</button><span class="fb" id="fbl1"></span></div>
+<div class="answer-row"><label>2. What does a NOT gate do to its input?</label><input class="ans-input" id="bl2" placeholder="..."><button class="check-btn" onclick="schkAny('bl2','fbl2',['reverses it','flips it','inverts it','reverses'])">Check</button><span class="fb" id="fbl2"></span></div>
+<div class="answer-row"><label>3. OR is true if at least one input is true. True or False?</label><input class="ans-input" id="bl3" placeholder="..."><button class="check-btn" onclick="schkAny('bl3','fbl3',['true','True'])">Check</button><span class="fb" id="fbl3"></span></div>
+<div class="answer-row"><label>4. What is the electronic component that carries out a logical operation?</label><input class="ans-input" id="bl4" placeholder="..."><button class="check-btn" onclick="schkAny('bl4','fbl4',['logic gate','Logic gate','Logic Gate','gate'])">Check</button><span class="fb" id="fbl4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Truth Tables</h4>
+<div class="answer-row"><label>5. A=1, B=1. What is A AND B?</label><input class="ans-input" id="bl5" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl5','fbl5',['1','true','True'])">Check</button><span class="fb" id="fbl5"></span></div>
+<div class="answer-row"><label>6. A=1, B=0. What is A AND B?</label><input class="ans-input" id="bl6" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl6','fbl6',['0','false','False'])">Check</button><span class="fb" id="fbl6"></span></div>
+<div class="answer-row"><label>7. A=0, B=0. What is A OR B?</label><input class="ans-input" id="bl7" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl7','fbl7',['0','false','False'])">Check</button><span class="fb" id="fbl7"></span></div>
+<div class="answer-row"><label>8. A=1. What is NOT A?</label><input class="ans-input" id="bl8" placeholder="0 or 1"><button class="check-btn" onclick="schkAny('bl8','fbl8',['0','false','False'])">Check</button><span class="fb" id="fbl8"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task C — Real World</h4>
+<div class="answer-row"><label>9. What chart shows all possible True/False outputs for a logic rule?</label><input class="ans-input" id="bl9" placeholder="..."><button class="check-btn" onclick="schkAny('bl9','fbl9',['truth table','Truth table','Truth Table'])">Check</button><span class="fb" id="fbl9"></span></div>
+<div class="answer-row"><label>10. Boolean logic is about numbers. True or False?</label><input class="ans-input" id="bl10" placeholder="..."><button class="check-btn" onclick="schkAny('bl10','fbl10',['false','False'])">Check</button><span class="fb" id="fbl10"></span></div>
+</div>
+<div class="callout warn">💡 Remember: Boolean logic is about <strong>true/false values</strong>, NOT numbers — despite using 0 and 1 to represent them.</div>` },
+  { type:`summary`, title:`Lesson Summary`, body:`<ul>
+<li><strong>Boolean logic</strong> uses only True/False values to make decisions</li>
+<li><strong>AND</strong>: true only if both inputs are true</li>
+<li><strong>OR</strong>: true if at least one input is true</li>
+<li><strong>NOT</strong>: reverses/inverts the input (one input only)</li>
+<li>A <strong>logic gate</strong> is the electronic component that carries out a logical operation</li>
+<li>A <strong>truth table</strong> shows all possible input combinations and their outputs</li>
+<li>Logic circuits are tested by working through every row of the truth table</li>
+<li>Boolean logic is used in logins, search engines, alarms, SQL queries, and CPU arithmetic</li>
+<li>Boolean logic is about True/False values — <strong>not</strong> numbers</li>
+</ul>
+<div class="callout success">✅ Exit quiz answers: logic gate · to make decisions using AND/OR/NOT · truth table · incorrect statement: "Boolean logic is about numbers"</div>` },
+  { type:`compete`, title:`🏆 Boolean Logic Speed Round`, body:`<div class="compete-board"><h4>🏆 Boolean Logic Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What are the three Boolean operators?`, answers:[`AND OR NOT`,`AND, OR, NOT`] },
+  { q:`AND is true only when both inputs are true. True or False?`, answers:[`true`,`True`] },
+  { q:`What does a NOT gate do to its input?`, answers:[`reverses it`,`inverts it`,`flips it`] },
+  { q:`A=1, B=1. What is A AND B?`, answers:[`1`,`true`] },
+  { q:`A=1, B=0. What is A AND B?`, answers:[`0`,`false`] },
+  { q:`A=0, B=0. What is A OR B?`, answers:[`0`,`false`] },
+  { q:`A=1. What is NOT A?`, answers:[`0`,`false`] },
+  { q:`A=0, B=1. What is A OR B?`, answers:[`1`,`true`] },
+  { q:`What chart shows all True/False outputs for a logic rule?`, answers:[`truth table`,`Truth Table`] },
+  { q:`What electronic component carries out a logical operation?`, answers:[`logic gate`,`Logic Gate`] },
+  { q:`True or False: Boolean logic is about numbers.`, answers:[`false`,`False`] },
+  { q:`How many inputs does a NOT gate have?`, answers:[`1`,`one`] },
+  { q:`What is another name for a NOT gate?`, answers:[`inverter`,`Inverter`] },
+  { q:`A=1, B=1. What is A OR B?`, answers:[`1`,`true`] },
+] },
 };
 
 const YEAR_META = {
@@ -3125,7 +3271,123 @@ function buildProof() {
   function getQuestionLabels(key) {
     const data = LESSON_DATA[key];
     if (!data) return {};
-    const map = {};
+    const map = {
+  "7_5": { lid:`y7t6`, slides:[
+  { type:`intro`, title:`Sequence & Subroutines`, body:`<p>In this lesson we explore how computers execute instructions — and how we can organise code using <strong>subroutines</strong> in Scratch.</p>
+<div class="two-col">
+<div class="card"><h4>What is a Sequence?</h4><p>A <strong>sequence</strong> is a set of instructions carried out one after another in a precise order. Computers follow sequences exactly — they cannot guess or adjust.</p></div>
+<div class="card"><h4>What is Execution?</h4><p>When instructions are <strong>executed</strong>, the computer carries them out. Unlike humans, computers do not interpret — they follow every instruction literally.</p></div></div>
+<div class="callout">🎯 <strong>Lesson goals:</strong> Understand sequences, compare computer vs human execution, create subroutines in Scratch, and use them to build a program.</div>` },
+  { type:`concept`, title:`Computers vs Humans — Precision`, body:`<p>One of the most important ideas in computing: computers need <strong>precise, unambiguous instructions</strong>. Humans can fill in gaps — computers cannot.</p>
+<div class="two-col">
+<div class="card"><h4>🤖 Robot Instructions</h4><p>To move a robot from A to B, you must specify every step:</p>
+<pre>Move forward 10 steps.
+Turn left 90 degrees.
+Move forward 15 steps.
+Turn right 90 degrees.
+Move forward 5 steps.</pre></div>
+<div class="card"><h4>🧑 Human Instructions</h4><p>A human only needs:</p>
+<pre>Walk to the door.</pre>
+<p style="margin-top:10px">They can see obstacles, adjust their route, and use common sense. A computer has none of these abilities.</p></div></div>
+<div class="callout warn">⚠️ If you give a computer a vague or incomplete instruction, it will not know what to do — or will do the wrong thing. This is why <strong>precision</strong> matters in programming.</div>` },
+  { type:`concept`, title:`Subroutines — Named Sections of Code`, body:`<p>A <strong>subroutine</strong> is a named block of code that can be written once and called (used) many times in a program.</p>
+<div class="two-col">
+<div class="card"><h4>Why Use Subroutines?</h4><ul><li>Avoids repeating the same code</li><li>Makes programs shorter and cleaner</li><li>Easier to find and fix errors</li><li>One change updates every use</li></ul></div>
+<div class="card"><h4>In Scratch</h4><p>Subroutines are created using <strong>"My Blocks"</strong> (the Define block). Once defined, you can call them anywhere in your program by placing the named block.</p></div></div>
+<div class="callout">💡 Think of a subroutine like a recipe — you write it once, then refer to it whenever you need it. "Make the sauce" is simpler than rewriting every step each time.</div>` },
+  { type:`concept`, title:`Subroutines in Scratch — Frère Jacques`, body:`<p>In Scratch, we can build a musical program using subroutines. Each line of the song becomes its own named block:</p>
+<table class="bit-table">
+<tr><th>Subroutine Name</th><th>Song Line</th><th>Called how many times?</th></tr>
+<tr><td><code>frere_jacques</code></td><td>Frère Jacques, Frère Jacques</td><td>2×</td></tr>
+<tr><td><code>dormez_vous</code></td><td>Dormez-vous? Dormez-vous?</td><td>2×</td></tr>
+<tr><td><code>sonnez_les_matines</code></td><td>Sonnez les matines!</td><td>2×</td></tr>
+<tr><td><code>ding_dang_dong</code></td><td>Ding, dang, dong</td><td>2×</td></tr>
+</table>
+<div class="callout">🎵 The main program just calls each subroutine in order — it stays short and readable. Each subroutine contains the actual note-playing code.</div>
+<pre>when 🏁 clicked
+  frere_jacques
+  frere_jacques
+  dormez_vous
+  dormez_vous
+  sonnez_les_matines
+  sonnez_les_matines
+  ding_dang_dong
+  ding_dang_dong</pre>` },
+  { type:`concept`, title:`Why Sequences Matter — Order is Everything`, body:`<p>In a sequence, the <strong>order of instructions</strong> completely determines the outcome. Swap two steps and the result changes entirely.</p>
+<div class="two-col">
+<div class="card"><h4>Sequence A</h4><pre>Move forward 10 steps.
+Turn left 90 degrees.
+Move forward 5 steps.</pre><p style="margin-top:8px">Ends up at a different place from Sequence B.</p></div>
+<div class="card"><h4>Sequence B</h4><pre>Move forward 5 steps.
+Turn left 90 degrees.
+Move forward 10 steps.</pre><p style="margin-top:8px">Same instructions, different order → completely different result.</p></div></div>
+<div class="two-col">
+<div class="card"><h4>In Scratch</h4><p>Block order matters. Moving the <code>play sound</code> block before or after the <code>move</code> block gives different behaviour.</p></div>
+<div class="card"><h4>Rearranging Changes Everything</h4><p>When blocks are joined differently, the <strong>sequence changes</strong> — and so does what the program does. This is one of the core ideas in programming.</p></div></div>` },
+  { type:`activity`, title:`Guided Tasks — Sequence & Subroutines`, body:`<p>Test your understanding of sequences and subroutines.</p>
+<div class="task-box"><h4>📝 Task A — Key Concepts</h4>
+<div class="answer-row"><label>1. What is it called when a computer carries out instructions?</label><input class="ans-input" id="sq1" placeholder="..."><button class="check-btn" onclick="schkAny('sq1','fsq1',['executing','execution','Executing'])">Check</button><span class="fb" id="fsq1"></span></div>
+<div class="answer-row"><label>2. What is a sequence?</label><input class="ans-input" id="sq2" placeholder="..."><button class="check-btn" onclick="schkAny('sq2','fsq2',['instructions in order','a set of instructions in order','ordered instructions'])">Check</button><span class="fb" id="fsq2"></span></div>
+<div class="answer-row"><label>3. What is a subroutine?</label><input class="ans-input" id="sq3" placeholder="..."><button class="check-btn" onclick="schkAny('sq3','fsq3',['a named section of code','named block of code','reusable named code'])">Check</button><span class="fb" id="fsq3"></span></div>
+<div class="answer-row"><label>4. Does a computer need more or less precise instructions than a human?</label><input class="ans-input" id="sq4" placeholder="..."><button class="check-btn" onclick="schkAny('sq4','fsq4',['more','more precise'])">Check</button><span class="fb" id="fsq4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Robot Sequence</h4>
+<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Write the missing commands. A robot must go forward 5 steps, turn right, then forward 3 steps:</p>
+<div class="answer-row"><label>5. First command:</label><input class="ans-input" id="sq5" placeholder="..."><button class="check-btn" onclick="schkAny('sq5','fsq5',['move forward 5 steps','forward 5','move forward 5'])">Check</button><span class="fb" id="fsq5"></span></div>
+<div class="answer-row"><label>6. Second command:</label><input class="ans-input" id="sq6" placeholder="..."><button class="check-btn" onclick="schkAny('sq6','fsq6',['turn right 90 degrees','turn right','turn right 90'])">Check</button><span class="fb" id="fsq6"></span></div>
+<div class="answer-row"><label>7. True or False: rearranging blocks in Scratch changes the sequence.</label><input class="ans-input" id="sq7" placeholder="..."><button class="check-btn" onclick="schkAny('sq7','fsq7',['true','True'])">Check</button><span class="fb" id="fsq7"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task C — Exit Quiz Practice</h4>
+<div class="answer-row"><label>8. In Frère Jacques, how many subroutines are needed?</label><input class="ans-input" id="sq8" placeholder="..."><button class="check-btn" onclick="schk('sq8','fsq8','4')">Check</button><span class="fb" id="fsq8"></span></div>
+<div class="answer-row"><label>9. In Scratch, what does <code>frere_jacques</code> represent in the main program?</label><input class="ans-input" id="sq9" placeholder="..."><button class="check-btn" onclick="schkAny('sq9','fsq9',['a subroutine','subroutine call','subroutine'])">Check</button><span class="fb" id="fsq9"></span></div>
+<div class="answer-row"><label>10. A ________ is a pattern where one thing follows another.</label><input class="ans-input" id="sq10" placeholder="..."><button class="check-btn" onclick="schkAny('sq10','fsq10',['sequence','Sequence'])">Check</button><span class="fb" id="fsq10"></span></div>
+</div>
+<div class="callout warn">💡 <strong>Scratch practice:</strong> Try <a href="https://oak.link/frere-sub" target="_blank" style="color:var(--accent)">oak.link/frere-sub</a> — create subroutines for each song line, then sequence the calls correctly.</div>` },
+  { type:`summary`, title:`Lesson Summary`, body:`<ul>
+<li><strong>Executing</strong> = when a computer carries out instructions</li>
+<li>A <strong>sequence</strong> is an ordered set of instructions — order matters completely</li>
+<li>Computers need <strong>precise</strong> instructions; humans can adapt and fill in gaps</li>
+<li>A <strong>subroutine</strong> is a named section of code that can be called multiple times</li>
+<li>Subroutines make code shorter, cleaner, and easier to maintain</li>
+<li>In Scratch: define a subroutine once using <strong>My Blocks</strong>, call it wherever needed</li>
+</ul>
+<div class="callout success">✅ Starter quiz check: a <strong>program</strong> is a set of commands run by a computer. A <strong>sequence</strong> is instructions in a precise order. True: rearranging blocks changes the sequence.</div>
+<div class="callout">🎮 Extension: Add a new sprite that displays the song lyrics in time with the melody using <code>say</code> blocks and <code>wait</code> blocks.</div>` },
+  { type:`compete`, title:`🏆 Sequence Speed Round`, body:`<div class="compete-board"><h4>🏆 Sequence Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+], comp:[
+  { q:`What is it called when a computer carries out instructions?`, answers:[`executing`,`execution`] },
+  { q:`What is a sequence?`, answers:[`instructions in order`,`ordered set of instructions`] },
+  { q:`What is a subroutine?`, answers:[`a named section of code`,`named reusable code`] },
+  { q:`Does a computer need MORE or LESS precise instructions than a human?`, answers:[`more`,`more precise`] },
+  { q:`True or false: rearranging Scratch blocks changes the sequence.`, answers:[`true`,`True`] },
+  { q:`In Frère Jacques, how many subroutines are needed?`, answers:[`4`] },
+  { q:`What does frere_jacques represent in the main Scratch program?`, answers:[`a subroutine call`,`subroutine`] },
+  { q:`What Scratch feature is used to define a subroutine?`, answers:[`My Blocks`,`my blocks`,`define block`] },
+  { q:`A ________ is a precise set of instructions in a particular order.`, answers:[`sequence`] },
+  { q:`Why do subroutines make programs better?`, answers:[`avoid repetition`,`reusable`,`DRY`,`avoid repeating code`] },
+  { q:`What happens if you give a computer a vague instruction?`, answers:[`error`,`it fails`,`wrong result`,`does not work`] },
+  { q:`How many times is each subroutine called in Frère Jacques?`, answers:[`2`,`twice`] },
+] },
+};
     data.slides.forEach(s => {
       if (!s.body) return;
       // Match label text + associated input id from answer-row divs
