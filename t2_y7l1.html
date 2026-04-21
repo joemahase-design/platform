@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 Y7 — Introduction to Computer Networks</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#00f0ff;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+
+.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
+.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
+.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style></head>
+<body><div class="presentation">
+    <div class="filter-bar">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
+    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
+    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1/1</div>
+    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID=`t2_y7l1`;
+const SLIDES = [
+  { type:`intro`, title:`What is a Computer Network?`, body:`<p>A <strong>computer network</strong> is a group of devices connected together — wirelessly or using cables — to enable communication and sharing of resources.</p>
+<div class="two-col">
+<div class="card"><h4>Why do we use networks?</h4><ul><li>Share files without physically moving them</li><li>Share expensive resources like printers</li><li>Communicate instantly between devices</li><li>Access the internet</li><li>Collaborate on documents in real time</li></ul></div>
+<div class="card"><h4>Networks are everywhere</h4><p>Every time you check social media, stream music, send a message, open a school file, print homework or play an online game — you are using a network.</p></div></div>
+<div class="callout">🎯 <strong>Lesson goals:</strong> Explain the benefits of a LAN, describe network hardware components, and identify clients, servers and routers.</div>` },
+  { type:`concept`, title:`Key Network Vocabulary`, body:`<p>Four essential terms you must know:</p>
+<table class="bit-table">
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td><strong>Network</strong></td><td>A group of devices connected together wirelessly or using cables to enable communication</td></tr>
+<tr><td><strong>Server</strong></td><td>A computer on a network that <em>provides</em> a service — storing files, web pages, or managing print jobs</td></tr>
+<tr><td><strong>Client</strong></td><td>A device on a network that <em>requests</em> a service from a server (e.g. a student's laptop)</td></tr>
+<tr><td><strong>Router</strong></td><td>A device that connects different networks together and directs data between them</td></tr>
+</table>
+<div class="callout warn">⚠️ Servers <strong>provide</strong> — clients <strong>request</strong>. This is the client-server model and it underpins almost all network communication.</div>` },
+  { type:`concept`, title:`Benefits of a Local Area Network`, body:`<p>A <strong>LAN (Local Area Network)</strong> covers a small area like a school or office. Connecting devices in a LAN provides significant advantages:</p>
+<table class="bit-table">
+<tr><th>Feature</th><th>Benefit to users</th></tr>
+<tr><td>Communication between devices</td><td>Share information regardless of location</td></tr>
+<tr><td>Flexibility of device choice</td><td>Expensive devices like printers can be shared across many users</td></tr>
+<tr><td>Easy information sharing</td><td>No need to physically copy or move files</td></tr>
+<tr><td>Collaboration on documents</td><td>Multiple users can work on the same document simultaneously</td></tr>
+<tr><td>Monitoring and tracking</td><td>Prevents unauthorised access and maintains network security</td></tr>
+<tr><td>Sharing expensive resources</td><td>One printer serves 30 computers — saves money</td></tr>
+</table>` },
+  { type:`concept`, title:`Network Hardware`, body:`<p>Networks use specialist hardware to connect devices and route data:</p>
+<div class="two-col">
+<div class="card"><h4>Types of Server</h4>
+<table class="bit-table">
+<tr><th>Server type</th><th>Role</th></tr>
+<tr><td><strong>File server</strong></td><td>Stores and provides access to files on the network</td></tr>
+<tr><td><strong>Print server</strong></td><td>Manages requests for the printer</td></tr>
+<tr><td><strong>Web server</strong></td><td>Hosts pages and files for websites</td></tr>
+</table></div>
+<div class="card"><h4>Cables</h4>
+<p><strong>Ethernet cable</strong> — copper wire, common in homes and schools</p>
+<p style="margin-top:8px"><strong>Fibre-optic cable</strong> — uses light pulses to transmit data; much faster and used over longer distances</p></div></div>
+<div class="callout">💡 In a school network: student laptops are <strong>clients</strong>, the shared drive is a <strong>file server</strong>, the shared printer is managed by a <strong>print server</strong>, and the device connecting to the internet is a <strong>router</strong>.</div>` },
+  { type:`activity`, title:`Guided Tasks — Networks Introduction`, body:`<p>Test your understanding of computer networks.</p>
+<div class="task-box"><h4>📝 Task A — Key Terms</h4>
+<div class="answer-row"><label>1. What is a computer network?</label><input class="ans-input" id="n1" placeholder="..."><button class="check-btn" onclick="schkAny('n1','fn1',['devices connected to share data','connected devices','group of devices connected together'])">Check</button><span class="fb" id="fn1"></span></div>
+<div class="answer-row"><label>2. What does a server do?</label><input class="ans-input" id="n2" placeholder="..."><button class="check-btn" onclick="schkAny('n2','fn2',['provides services','provides a service','provides services to clients'])">Check</button><span class="fb" id="fn2"></span></div>
+<div class="answer-row"><label>3. What does a client do?</label><input class="ans-input" id="n3" placeholder="..."><button class="check-btn" onclick="schkAny('n3','fn3',['requests services','requests a service','sends requests to a server'])">Check</button><span class="fb" id="fn3"></span></div>
+<div class="answer-row"><label>4. What is the role of a router?</label><input class="ans-input" id="n4" placeholder="..."><button class="check-btn" onclick="schkAny('n4','fn4',['connects networks and directs data','connects different networks','directs data between networks'])">Check</button><span class="fb" id="fn4"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Hardware</h4>
+<div class="answer-row"><label>5. Which cable type uses light pulses to transmit data?</label><input class="ans-input" id="n5" placeholder="..."><button class="check-btn" onclick="schkAny('n5','fn5',['fibre-optic','fibre optic','fiber optic','fibre-optic cable'])">Check</button><span class="fb" id="fn5"></span></div>
+<div class="answer-row"><label>6. Which type of server manages print requests?</label><input class="ans-input" id="n6" placeholder="..."><button class="check-btn" onclick="schkAny('n6','fn6',['print server','Print server'])">Check</button><span class="fb" id="fn6"></span></div>
+<div class="answer-row"><label>7. Name one benefit of connecting computers in a network.</label><input class="ans-input" id="n7" placeholder="..."><button class="check-btn" onclick="schkAny('n7','fn7',['sharing resources','share files','communication','sharing printers','easy communication'])">Check</button><span class="fb" id="fn7"></span></div>
+<div class="answer-row"><label>8. Is a student laptop a client or a server?</label><input class="ans-input" id="n8" placeholder="..."><button class="check-btn" onclick="schkAny('n8','fn8',['client','Client'])">Check</button><span class="fb" id="fn8"></span></div>
+</div>` },
+  { type:`summary`, title:`Lesson Summary`, body:`<ul>
+<li>A <strong>network</strong> = two or more devices connected to communicate and share resources</li>
+<li><strong>Server</strong> = provides services &nbsp;|&nbsp; <strong>Client</strong> = requests services</li>
+<li><strong>Router</strong> = connects different networks and directs data between them</li>
+<li>Server types: file server, print server, web server</li>
+<li>Cable types: <strong>Ethernet</strong> (copper) and <strong>Fibre-optic</strong> (light pulses — faster)</li>
+<li>LAN benefits: sharing resources, easy communication, collaboration, flexibility, monitoring</li>
+</ul>
+<div class="callout success">✅ Exit quiz answers: components = router, server, client · server = provides services · client in school = student's laptop · router = connects networks and directs data · fibre-optic = light pulses · network benefits = share resources, communication, flexibility</div>` },
+  { type:`compete`, title:`🏆 Networks Speed Round`, body:`<div class="compete-board"><h4>🏆 Networks Introduction Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+];
+const COMP_Qs = [
+  { q:`What is a computer network?`, answers:[`a group of devices connected together`,`connected devices sharing resources`] },
+  { q:`Does a server provide or request services?`, answers:[`provide`,`provides`] },
+  { q:`Does a client provide or request services?`, answers:[`request`,`requests`] },
+  { q:`What does a router do?`, answers:[`connects networks and directs data`,`connects different networks`] },
+  { q:`Which cable uses light pulses to transmit data?`, answers:[`fibre-optic`,`fiber-optic`] },
+  { q:`What type of server stores and provides access to files?`, answers:[`file server`,`File server`] },
+  { q:`What type of server manages print requests?`, answers:[`print server`,`Print server`] },
+  { q:`Name one benefit of a computer network.`, answers:[`sharing resources`,`communication`,`easy file sharing`,`share printers`] },
+  { q:`Is a student laptop a client or a server?`, answers:[`client`] },
+  { q:`What does LAN stand for?`, answers:[`Local Area Network`] },
+  { q:`Which server hosts web pages and files for websites?`, answers:[`web server`,`Web server`] },
+  { q:`What connects a device to the network using light through glass?`, answers:[`fibre-optic cable`,`fibre optic`] },
+];
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+function setFilter(t){if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}syncFB();}
+function syncFB(){const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));}
+(function(){if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');syncFB();})();
+</script></body></html>

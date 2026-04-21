@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2 Y7 — Protocols and IP Addresses</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#00f0ff;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+
+.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
+.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
+.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style></head>
+<body><div class="presentation">
+    <div class="filter-bar">
+    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
+    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
+    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1/1</div>
+    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID=`t2_y7l2`;
+const SLIDES = [
+  { type:`intro`, title:`Rules for Communication`, body:`<p>All communication needs rules. When you write a letter, there are rules about format, address, and postage. Computers need rules too — these are called <strong>protocols</strong>.</p>
+<div class="two-col">
+<div class="card"><h4>Protocol</h4><p>A <strong>protocol</strong> is a set of rules that allows devices to communicate with each other. Without protocols, computers could send data in incompatible formats that other devices cannot understand.</p></div>
+<div class="card"><h4>IP Address</h4><p>A <strong>unique identifier</strong> assigned to every networked device — like a postal address for your computer. Example: <code>192.168.4.8</code></p></div></div>
+<div class="callout">🎯 <strong>Lesson goals:</strong> Describe the role of protocols in network communication, explain why IP addresses are needed, and identify valid IP address formats.</div>` },
+  { type:`concept`, title:`Why Protocols Are Needed`, body:`<p>Without protocols, computers sending data to a network would not know:</p>
+<ul>
+<li>Which device the data is meant for</li>
+<li>What format the data should be in</li>
+<li>How to handle errors or missing data</li>
+</ul>
+<div class="callout">💡 <strong>Real-world analogy:</strong> Posting a letter has rules — correct address format, valid stamp, sealed envelope. Without these rules the postal service cannot deliver it. Computer protocols work the same way.</div>
+<div class="two-col">
+<div class="card"><h4>Email protocol example</h4><p>• Must include an @ symbol<br>• Address must be unique<br>• Format: <code>name@domain.com</code></p></div>
+<div class="card"><h4>Website address protocol</h4><p>• Must start with <code>http://</code> or <code>https://</code><br>• Address must be unique<br>• Dots separate each part</p></div></div>
+<div class="callout warn">⚠️ If a website address does not follow the correct protocol, <strong>the web page will not load</strong>.</div>` },
+  { type:`concept`, title:`IP Addresses`, body:`<p>Every device on a network has a unique <strong>IP (Internet Protocol) address</strong> — a number that identifies it so data is delivered to the right place.</p>
+<table class="bit-table">
+<tr><th>Feature</th><th>Detail</th></tr>
+<tr><td><strong>Format</strong></td><td>Four groups of numbers separated by dots: <code>192.168.25.1</code></td></tr>
+<tr><td><strong>Range</strong></td><td>Each group is a number from 0 to 255</td></tr>
+<tr><td><strong>Unique</strong></td><td>No two devices on the same network share an IP address</td></tr>
+<tr><td><strong>Purpose</strong></td><td>Ensures data arrives at the correct device</td></tr>
+</table>
+<div class="two-col">
+<div class="card"><h4>✅ Valid IP address</h4><p><code>192.168.25.1</code><br>Four groups, separated by dots, each 0–255</p></div>
+<div class="card"><h4>❌ Invalid examples</h4><p><code>192-168-25-1</code> (hyphens not dots)<br><code>192.168.25</code> (only 3 groups)<br><code>192.168.25.256</code> (256 is out of range)</p></div></div>
+<div class="callout">💡 The sender's IP address is always included on network messages so that if delivery fails, the sending device can be informed.</div>` },
+  { type:`concept`, title:`Protocols in Action`, body:`<p>Protocols ensure data is transmitted reliably and efficiently across networks. Key protocols you need to know:</p>
+<table class="bit-table">
+<tr><th>Protocol</th><th>Full name</th><th>Purpose</th></tr>
+<tr><td><strong>HTTP</strong></td><td>HyperText Transfer Protocol</td><td>Transfers web pages between browser and server</td></tr>
+<tr><td><strong>HTTPS</strong></td><td>HTTP Secure</td><td>Encrypted version of HTTP — safe for passwords and payments</td></tr>
+<tr><td><strong>TCP/IP</strong></td><td>Transmission Control Protocol / Internet Protocol</td><td>Core internet protocol — splits data into packets and routes them</td></tr>
+<tr><td><strong>SMTP</strong></td><td>Simple Mail Transfer Protocol</td><td>Sending email</td></tr>
+<tr><td><strong>DNS</strong></td><td>Domain Name System</td><td>Translates domain names to IP addresses</td></tr>
+</table>
+<div class="callout">🔑 The main reason computers need protocols: <strong>to ensure data is sent to the correct device in the correct format</strong>.</div>` },
+  { type:`activity`, title:`Guided Tasks — Protocols & IP Addresses`, body:`<p>Test your knowledge of protocols and IP addresses.</p>
+<div class="task-box"><h4>📝 Task A — Protocols</h4>
+<div class="answer-row"><label>1. What is a protocol?</label><input class="ans-input" id="p1" placeholder="..."><button class="check-btn" onclick="schkAny('p1','fp1',['a set of rules for communication','set of rules','rules for devices to communicate'])">Check</button><span class="fb" id="fp1"></span></div>
+<div class="answer-row"><label>2. What happens if a website address does not follow the correct protocol?</label><input class="ans-input" id="p2" placeholder="..."><button class="check-btn" onclick="schkAny('p2','fp2',['the web page will not load','it will not load','page won't load'])">Check</button><span class="fb" id="fp2"></span></div>
+<div class="answer-row"><label>3. Why do computers need protocols on a network?</label><input class="ans-input" id="p3" placeholder="..."><button class="check-btn" onclick="schkAny('p3','fp3',['to send data to the correct device in the correct format','correct device correct format','ensure data arrives correctly'])">Check</button><span class="fb" id="fp3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — IP Addresses</h4>
+<div class="answer-row"><label>4. What is an IP address?</label><input class="ans-input" id="p4" placeholder="..."><button class="check-btn" onclick="schkAny('p4','fp4',['a unique number assigned to a device','unique identifier for a device','unique number for a networked device'])">Check</button><span class="fb" id="fp4"></span></div>
+<div class="answer-row"><label>5. Is 192.168.25.1 a valid IP address? Yes or No.</label><input class="ans-input" id="p5" placeholder="..."><button class="check-btn" onclick="schkAny('p5','fp5',['yes','Yes'])">Check</button><span class="fb" id="fp5"></span></div>
+<div class="answer-row"><label>6. Is 192.168.25.256 a valid IP address? Yes or No.</label><input class="ans-input" id="p6" placeholder="..."><button class="check-btn" onclick="schkAny('p6','fp6',['no','No'])">Check</button><span class="fb" id="fp6"></span></div>
+<div class="answer-row"><label>7. What protocol is used to securely transfer web pages?</label><input class="ans-input" id="p7" placeholder="..."><button class="check-btn" onclick="schkAny('p7','fp7',['https','HTTPS'])">Check</button><span class="fb" id="fp7"></span></div>
+<div class="answer-row"><label>8. Why is the sender's IP address included on network messages?</label><input class="ans-input" id="p8" placeholder="..."><button class="check-btn" onclick="schkAny('p8','fp8',['so the sender can be informed if delivery fails','to inform sender of problems','delivery failure notification'])">Check</button><span class="fb" id="fp8"></span></div>
+</div>` },
+  { type:`summary`, title:`Lesson Summary`, body:`<ul>
+<li>A <strong>protocol</strong> = a set of rules that allows devices to communicate with each other</li>
+<li>Protocols ensure data is sent to the <strong>correct device in the correct format</strong></li>
+<li>An <strong>IP address</strong> = a unique number (e.g. <code>192.168.25.1</code>) assigned to a networked device</li>
+<li>Valid IP address: four groups of numbers (0–255) separated by dots</li>
+<li>Key protocols: <strong>HTTP/HTTPS</strong> (web), <strong>TCP/IP</strong> (internet), <strong>SMTP</strong> (email), <strong>DNS</strong> (name lookup)</li>
+<li>Sender IP address is always included so failed deliveries can be reported back</li>
+</ul>
+<div class="callout success">✅ Exit quiz answers: protocol = set of rules · email example = must have @ symbol · failed protocol = page won't load · reason for protocols = correct device correct format · IP = unique number · valid format = 192.168.25.1</div>` },
+  { type:`compete`, title:`🏆 Protocols & IP Speed Round`, body:`<div class="compete-board"><h4>🏆 Protocols & IP Addresses Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+];
+const COMP_Qs = [
+  { q:`What is a protocol?`, answers:[`a set of rules for communication`,`set of rules allowing devices to communicate`] },
+  { q:`What does IP stand for?`, answers:[`Internet Protocol`] },
+  { q:`What is an IP address?`, answers:[`a unique number assigned to a device`,`unique identifier for a networked device`] },
+  { q:`Is 192.168.25.1 a valid IP address?`, answers:[`yes`,`Yes`] },
+  { q:`Is 192-168-25-1 a valid IP address?`, answers:[`no`,`No`] },
+  { q:`What happens if a website address breaks protocol?`, answers:[`page will not load`,`it won't load`] },
+  { q:`Why do computers need protocols?`, answers:[`correct device correct format`,`send data to correct device in correct format`] },
+  { q:`What protocol sends web pages securely?`, answers:[`HTTPS`] },
+  { q:`What protocol is used to send email?`, answers:[`SMTP`] },
+  { q:`What does DNS do?`, answers:[`translates domain names to IP addresses`,`converts names to IP addresses`] },
+  { q:`How many groups of numbers are in an IPv4 address?`, answers:[`4`,`four`] },
+  { q:`What is the maximum value in each group of an IP address?`, answers:[`255`] },
+];
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+function setFilter(t){if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}syncFB();}
+function syncFB(){const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));}
+(function(){if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');syncFB();})();
+</script></body></html>
