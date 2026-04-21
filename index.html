@@ -2775,9 +2775,7 @@ window.onload = () => {
 //  RELEASE SYSTEM
 // ═══════════════════════════════════════════════════════
 function getReleased() {
-  const s = localStorage.getItem('ks3_released');
-  if (s) return JSON.parse(s);
-  // Default: all lessons released — teacher can lock individually via teacher.html
+  // All lessons always open on student portal — no localStorage dependency
   return {
     7: LESSONS[7].map((_,i)=>i),
     8: LESSONS[8].map((_,i)=>i),
