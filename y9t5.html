@@ -58,9 +58,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -180,14 +180,14 @@ h1 {
 <tr><td><strong>Environmental</strong></td><td>Data centres consume vast energy — efficient code and green hosting matter</td></tr></table>` },
   { type:`activity`, title:`Guided Tasks — Web Dev & Ethics`, body:`<p>Test your web development knowledge.</p>
 <div class="task-box"><h4>📝 Task A — HTML & CSS</h4>
-<div class="answer-row"><label>1. What does HTML stand for?</label><input class="ans-input" id="wd1" placeholder="..."><button class="check-btn" onclick="schkAny('wd1','fwd1',['hypertext markup language','HyperText Markup Language'])">Check</button><span class="fb" id="fwd1"></span></div>
+<div class="answer-row"><label>1. What does HTML stand for?</label><input class="ans-input" id="wd1" placeholder="..."><button class="check-btn" onclick="schkAny('wd1','fwd1',['hypertext markup language','HyperText Markup Language','html','HTML'])">Check</button><span class="fb" id="fwd1"></span></div>
 <div class="answer-row"><label>2. Which technology controls the appearance of a webpage?</label><input class="ans-input" id="wd2" placeholder="..."><button class="check-btn" onclick="schkAny('wd2','fwd2',['css','CSS'])">Check</button><span class="fb" id="fwd2"></span></div>
-<div class="answer-row"><label>3. What HTML tag creates a hyperlink?</label><input class="ans-input" id="wd3" placeholder="..."><button class="check-btn" onclick="schkAny('wd3','fwd3',['a','<a>','anchor'])">Check</button><span class="fb" id="fwd3"></span></div>
+<div class="answer-row"><label>3. What HTML tag creates a hyperlink?</label><input class="ans-input" id="wd3" placeholder="..."><button class="check-btn" onclick="schkAny('wd3','fwd3',['a','<a>','anchor','<a> tag','a tag','the a tag','anchor tag'])">Check</button><span class="fb" id="fwd3"></span></div>
 <div class="answer-row"><label>4. What CSS property changes text colour?</label><input class="ans-input" id="wd4" placeholder="..."><button class="check-btn" onclick="schkAny('wd4','fwd4',['color','colour','color:'])">Check</button><span class="fb" id="fwd4"></span></div>
 </div>
 <div class="task-box"><h4>📝 Task B — Ethics</h4>
 <div class="answer-row"><label>5. What regulation governs data collection in the UK?</label><input class="ans-input" id="wd5" placeholder="..."><button class="check-btn" onclick="schkAny('wd5','fwd5',['gdpr','GDPR'])">Check</button><span class="fb" id="fwd5"></span></div>
-<div class="answer-row"><label>6. What are deceptive UX design tricks called?</label><input class="ans-input" id="wd6" placeholder="..."><button class="check-btn" onclick="schkAny('wd6','fwd6',['dark patterns','dark pattern','Dark Patterns'])">Check</button><span class="fb" id="fwd6"></span></div>
+<div class="answer-row"><label>6. What are deceptive UX design tricks called?</label><input class="ans-input" id="wd6" placeholder="..."><button class="check-btn" onclick="schkAny('wd6','fwd6',['dark patterns','dark pattern','Dark Patterns','deceptive design','deceptive patterns','ux dark patterns'])">Check</button><span class="fb" id="fwd6"></span></div>
 </div>` },
   { type:`summary`, title:`Topic Summary`, body:`<ul>
 <li><strong>HTML</strong> — structure (tags define content)</li>
@@ -278,7 +278,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -286,8 +287,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
