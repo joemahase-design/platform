@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y9 — AI & Machine Learning Ethics</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
+  --accent:#ff7a20;--text:#f0f0ff;--text-muted:#9090c0;
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+.presentation{display:flex;flex-direction:column;height:100vh;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.slide{
+  width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;
+  max-height:calc(100vh - 130px);animation:sIn 0.3s ease;
+}
+@keyframes sIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.stype{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 10px;border-radius:5px;display:inline-block;}
+.t-intro   {background:rgba(0,240,255,.12);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.t-concept {background:rgba(191,95,255,.12);color:#bf5fff;border:1px solid rgba(191,95,255,.3);}
+.t-activity{background:rgba(255,122,32,.12);color:#ff7a20;border:1px solid rgba(255,122,32,.3);}
+.t-summary {background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.t-compete {background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.3);}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.slide h1{font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.15;margin-bottom:18px;}
+.slide h3{font-size:16px;font-weight:700;margin:18px 0 10px;}
+.sb{color:var(--text-muted);font-size:15px;line-height:1.8;}
+.sb ul,.sb ol{padding-left:22px;}
+.sb li{margin-bottom:7px;}
+.sb li::marker{color:var(--accent);}
+.sb strong{color:var(--text);}
+.sb p{margin-bottom:12px;}
+.sb p:last-child{margin-bottom:0;}
+code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent);}
+pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:16px 20px;border-radius:10px;font-size:13px;color:var(--accent);overflow-x:auto;margin:12px 0;line-height:1.7;}
+.callout{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text);}
+.callout.warn{border-left-color:var(--warning);background:rgba(241,196,15,.08);}
+.callout.success{border-left-color:var(--success);background:rgba(46,204,113,.08);}
+.callout.compete{border-left-color:var(--warning);background:rgba(241,196,15,.06);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
+/* Binary table */
+.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
+.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
+.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
+.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
+/* Task interactive */
+.task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
+.task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
+.ans-input:focus{outline:none;border-color:var(--accent);}
+.check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
+.check-btn:hover{background:var(--accent);color:#000;}
+.fb{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;}
+.fb.ok{background:rgba(46,204,113,.15);color:var(--success);border:1px solid var(--success);display:inline-block;}
+.fb.no{background:rgba(231,76,60,.15);color:var(--danger);border:1px solid var(--danger);display:inline-block;}
+/* Compete */
+.compete-board{background:var(--surface2);border:2px solid var(--warning);border-radius:14px;padding:20px;margin:14px 0;}
+.compete-board h4{color:var(--warning);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.score-display{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--warning);text-align:center;margin:10px 0;}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin:8px 0;overflow:hidden;}
+.timer-fill{height:100%;background:var(--warning);border-radius:4px;transition:width 1s linear;}
+.compete-input{background:var(--bg);border:2px solid var(--warning);border-radius:8px;padding:10px 16px;color:var(--text);font-family:var(--mono);font-size:20px;width:100%;text-align:center;margin:10px 0;}
+.compete-input:focus{outline:none;}
+.compete-btn{padding:10px 28px;border-radius:8px;border:none;background:var(--warning);color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sans);width:100%;margin-top:6px;}
+.compete-q{font-size:18px;font-weight:700;text-align:center;padding:14px;color:var(--text);min-height:56px;}
+.leaderboard{list-style:none;margin-top:10px;}
+.leaderboard li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px;background:rgba(241,196,15,.06);border:1px solid rgba(241,196,15,.15);}
+.lb-pos{font-family:var(--mono);font-size:12px;color:var(--warning);width:24px;}
+.lb-name{flex:1;font-weight:600;}
+.lb-score{font-family:var(--mono);font-size:13px;color:var(--warning);}
+/* Nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
+.nav-btn{padding:8px 22px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dot-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:300px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.pdot.active{background:var(--accent);transform:scale(1.4);}
+.pdot.done{background:var(--text-muted);}
+.pdot.compete-dot{background:rgba(241,196,15,.4);}
+.pdot.compete-dot.active{background:var(--warning);}
+.sctr{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.kbhint{font-size:11px;color:var(--text-muted);}
+/* Filters */
+body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--text-muted:#5c5430;}
+body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
+body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
+body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
+body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
+@media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
+</style></head>
+<body>
+<div class="presentation">
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slide-area"><div class="slide" id="slide"></div></div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1 / 1</div>
+    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+<script>
+const LESSON_ID = `y9t3`;
+const SLIDES = [
+  { type:`intro`, title:`What is Artificial Intelligence?`, body:`<p><strong>Artificial Intelligence (AI)</strong> is the simulation of human intelligence by computer systems — including learning, reasoning, problem-solving, perception and language.</p>
+<div class="two-col">
+<div class="card"><h4>Narrow AI</h4><p>AI designed for one specific task. All current AI is narrow: chess engines, image recognition, voice assistants, recommendation systems.</p></div>
+<div class="card"><h4>General AI</h4><p>Hypothetical AI that could perform any intellectual task a human can. Does not yet exist — and may never exist.</p></div></div>
+<div class="callout">🎯 Today: how machine learning works, types of ML, real applications, and the ethical implications.</div>` },
+  { type:`concept`, title:`Machine Learning`, body:`<p><strong>Machine Learning (ML)</strong> is a branch of AI where systems learn from data rather than being explicitly programmed:</p>
+<div class="three-col">
+<div class="card"><h4>Supervised Learning</h4><p>Trained on labelled examples. Learns to predict an output from an input.<br><em>Example: email spam filter</em></p></div>
+<div class="card"><h4>Unsupervised Learning</h4><p>Finds patterns in unlabelled data without guidance.<br><em>Example: customer segmentation</em></p></div>
+<div class="card"><h4>Reinforcement Learning</h4><p>Learns through trial and error, rewarded for correct actions.<br><em>Example: game-playing AI</em></p></div></div>
+<div class="callout">💡 A traditional program follows fixed rules you write. An ML model discovers its own rules from data. Given 10,000 cat photos, it learns what cats look like — you never define "cat" explicitly.</div>` },
+  { type:`concept`, title:`Neural Networks`, body:`<p>Inspired by the human brain, <strong>neural networks</strong> are layers of connected nodes that process data:</p>
+<ul>
+<li><strong>Input layer</strong> — receives raw data (e.g. pixel values of an image)</li>
+<li><strong>Hidden layers</strong> — learn increasingly complex features (edges → shapes → faces)</li>
+<li><strong>Output layer</strong> — produces the final prediction (e.g. "cat" or "dog")</li>
+</ul>
+<div class="two-col">
+<div class="card"><h4>Training</h4><p>The network processes millions of examples, adjusting connections (weights) to minimise errors. This is called <strong>backpropagation</strong>.</p></div>
+<div class="card"><h4>Deep Learning</h4><p>Neural networks with many hidden layers. Behind image recognition, language models (like ChatGPT), and self-driving cars.</p></div></div>` },
+  { type:`concept`, title:`AI Ethics — Key Concerns`, body:`<p>As AI becomes more powerful, serious ethical questions arise:</p>
+<table class="bit-table"><tr><th>Issue</th><th>Explanation</th><th>Example</th></tr>
+<tr><td><strong>Bias</strong></td><td>AI trained on biased data reproduces and amplifies bias</td><td>Facial recognition less accurate for dark skin</td></tr>
+<tr><td><strong>Privacy</strong></td><td>AI systems collect and process vast personal data</td><td>Location tracking, browsing history</td></tr>
+<tr><td><strong>Transparency</strong></td><td>Complex models are "black boxes" — hard to explain decisions</td><td>Loan rejections with no explanation</td></tr>
+<tr><td><strong>Job Displacement</strong></td><td>Automation threatens many roles</td><td>Manufacturing, customer service, transport</td></tr>
+<tr><td><strong>Deepfakes</strong></td><td>AI-generated fake media is increasingly convincing</td><td>Fake political speeches, fraud</td></tr>
+<tr><td><strong>Autonomous Weapons</strong></td><td>AI-controlled weapons with no human oversight</td><td>Drone targeting systems</td></tr></table>` },
+  { type:`activity`, title:`Guided Tasks — AI Ethics`, body:`<p>Test your AI and ethics knowledge.</p>
+<div class="task-box"><h4>📝 Task A — AI & ML Concepts</h4>
+<div class="answer-row"><label>1. What branch of AI learns from data?</label><input class="ans-input" id="ai1" placeholder="..."><button class="check-btn" onclick="schkAny('ai1','fai1',['machine learning','Machine Learning','ml','ML'])">Check</button><span class="fb" id="fai1"></span></div>
+<div class="answer-row"><label>2. What type of ML uses labelled training data?</label><input class="ans-input" id="ai2" placeholder="..."><button class="check-btn" onclick="schkAny('ai2','fai2',['supervised learning','supervised','Supervised Learning'])">Check</button><span class="fb" id="fai2"></span></div>
+<div class="answer-row"><label>3. What type of ML learns through trial and reward?</label><input class="ans-input" id="ai3" placeholder="..."><button class="check-btn" onclick="schkAny('ai3','fai3',['reinforcement learning','reinforcement','Reinforcement Learning'])">Check</button><span class="fb" id="fai3"></span></div>
+</div>
+<div class="task-box"><h4>📝 Task B — Ethics</h4>
+<div class="answer-row"><label>4. What ethical issue arises when AI is trained on unfair data?</label><input class="ans-input" id="ai4" placeholder="..."><button class="check-btn" onclick="schkAny('ai4','fai4',['bias','Bias','algorithmic bias'])">Check</button><span class="fb" id="fai4"></span></div>
+<div class="answer-row"><label>5. What are AI-generated fake videos or images called?</label><input class="ans-input" id="ai5" placeholder="..."><button class="check-btn" onclick="schkAny('ai5','fai5',['deepfakes','deepfake','deep fakes'])">Check</button><span class="fb" id="fai5"></span></div>
+<div class="answer-row"><label>6. What makes many AI decisions difficult to explain?</label><input class="ans-input" id="ai6" placeholder="..."><button class="check-btn" onclick="schkAny('ai6','fai6',['black box','lack of transparency','transparency','black-box','black box problem','not transparent','opaque','explainability'])">Check</button><span class="fb" id="fai6"></span></div>
+</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li><strong>AI</strong>: systems that simulate human intelligence. All current AI is narrow (task-specific)</li>
+<li><strong>Machine Learning</strong>: learns patterns from data — supervised, unsupervised, reinforcement</li>
+<li><strong>Neural networks</strong>: layered nodes inspired by the brain; deep learning = many layers</li>
+<li>AI ethics concerns: <strong>bias</strong>, privacy, transparency, job displacement, deepfakes, autonomous weapons</li>
+<li>Bias in AI reflects bias in training data — often amplified at scale</li>
+<li>Responsible AI requires fairness, accountability, transparency and human oversight</li>
+</ul><div class="callout success">✅ Next: Spreadsheets Advanced</div>` },
+  { type:`compete`, title:`🏆 AI & Ethics Speed Challenge`, body:`<div class="compete-board"><h4>🏆 AI & ML Ethics Speed Round</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+<input class="compete-input" id="comp-name" placeholder="Your name...">
+<button class="compete-btn" onclick="startComp()">🚀 Start!</button>
+<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<div id="comp-game-area" style="display:none">
+<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
+<div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
+<div class="compete-q" id="comp-q"></div>
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
+<button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
+<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div id="comp-end-area" style="display:none;text-align:center">
+<div style="font-size:40px;margin-bottom:8px">🎉</div>
+<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div class="score-display" id="comp-final-score">0</div>
+<button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
+<ul class="leaderboard" id="leaderboard"></ul></div></div>` },
+];
+
+const COMP_Qs = [
+  { q:`What does AI stand for?`, answers:[`Artificial Intelligence`] },
+  { q:`What branch of AI learns from data?`, answers:[`Machine Learning`,`ML`] },
+  { q:`What type of ML uses labelled examples?`, answers:[`supervised learning`,`supervised`] },
+  { q:`What type of ML uses trial and reward?`, answers:[`reinforcement learning`,`reinforcement`] },
+  { q:`What are AI fake videos/images called?`, answers:[`deepfakes`,`deep fakes`] },
+  { q:`What is a "black box" problem in AI?`, answers:[`lack of transparency`,`unexplainable decisions`,`transparency`] },
+  { q:`What causes AI bias?`, answers:[`biased training data`,`biased data`] },
+  { q:`What inspired neural networks?`, answers:[`the human brain`,`brain`] },
+  { q:`What are the layers of a neural network?`, answers:[`input hidden output`,`input, hidden, output`] },
+  { q:`What is deep learning?`, answers:[`neural networks with many layers`,`many hidden layers`] },
+  { q:`What does ML stand for?`, answers:[`Machine Learning`] },
+  { q:`Which current AI type exists — narrow or general?`, answers:[`narrow`,`Narrow AI`] },
+];
+
+// ── RENDER ──────────────────────────────────────────────────
+let cur = 0;
+function render() {
+  const s = SLIDES[cur], total = SLIDES.length;
+  const typeLabel = s.type === 'compete' ? 'Competition' : s.type.charAt(0).toUpperCase() + s.type.slice(1);
+  document.getElementById('slide').innerHTML =
+    '<div class="eyebrow">' +
+      '<span class="stype t-' + s.type + '">' + typeLabel + '</span>' +
+      '<span class="snum">Slide ' + (cur+1) + ' of ' + total + '</span>' +
+    '</div>' +
+    '<h1>' + s.title + '</h1>' +
+    '<div class="sb">' + (s.body || '') + '</div>';
+  if (s.onRender) setTimeout(s.onRender, 80);
+  document.getElementById('prog').style.width = ((cur+1)/total*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + total;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const d = document.createElement('div');
+    const isCompete = sl.type === 'compete';
+    d.className = 'pdot' + (isCompete ? ' compete-dot' : '') + (i===cur?' active':i<cur?' done':'');
+    d.onclick = () => { cur=i; render(); };
+    d.title = sl.title;
+    dots.appendChild(d);
+  });
+}
+function goNext() { if (cur < SLIDES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'filter') {
+    document.body.classList.remove('nature-green','superpower');
+    if (e.data.filter) document.body.classList.add(e.data.filter);
+  }
+});
+
+// ── TASK CHECK HELPER ────────────────────────────────────────
+function chk(inputId, fbId, correct) {
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const ans = String(correct).toLowerCase().replace(/\s+/g,'');
+  const ok  = val === ans;
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
+}
+function chkAny(inputId, fbId, answers) {
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
+  const fb  = document.getElementById(fbId);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
+}
+
+// ── COMPETITION ENGINE ───────────────────────────────────────
+let compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+
+function startComp() {
+  const nameEl = document.getElementById('comp-name');
+  if (!nameEl || !nameEl.value.trim()) { alert('Enter your name first!'); return; }
+  compState.name = nameEl.value.trim();
+  compState.score = 0;
+  compState.qIdx = 0;
+  compState.active = true;
+  document.getElementById('comp-start-area').style.display = 'none';
+  document.getElementById('comp-game-area').style.display = 'block';
+  document.getElementById('comp-end-area').style.display = 'none';
+  nextCompQ();
+}
+
+function nextCompQ() {
+  if (compState.qIdx >= COMP_Qs.length) { endComp(); return; }
+  clearInterval(compState.timer);
+  compState.timeLeft = 15;
+  const q = COMP_Qs[compState.qIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-ans').focus();
+  document.getElementById('comp-score').textContent = compState.score;
+  document.getElementById('comp-qnum').textContent = (compState.qIdx+1) + ' / ' + COMP_Qs.length;
+  document.getElementById('comp-feedback').textContent = '';
+  updateTimer();
+  compState.timer = setInterval(() => {
+    compState.timeLeft--;
+    updateTimer();
+    if (compState.timeLeft <= 0) { clearInterval(compState.timer); autoWrong(); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('comp-timer-fill');
+  const pct = (compState.timeLeft / 15) * 100;
+  if (el) el.style.width = pct + '%';
+  const tlEl = document.getElementById('comp-timeleft');
+  if (tlEl) tlEl.textContent = compState.timeLeft + 's';
+}
+
+function submitCompAns() {
+  if (!compState.active) return;
+  clearInterval(compState.timer);
+  const ans = document.getElementById('comp-ans').value.trim().toLowerCase().replace(/\s+/g,'');
+  const q   = COMP_Qs[compState.qIdx];
+  const ok  = q.answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(ans);
+  const fb  = document.getElementById('comp-feedback');
+  if (ok) {
+    const pts = Math.max(1, compState.timeLeft);
+    compState.score += pts;
+    fb.style.color = 'var(--success)';
+    fb.textContent = '✓ Correct! +' + pts + ' points';
+  } else {
+    fb.style.color = 'var(--danger)';
+    fb.textContent = '✗ Answer: ' + q.answers[0];
+  }
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1200);
+}
+
+function autoWrong() {
+  const q  = COMP_Qs[compState.qIdx];
+  const fb = document.getElementById('comp-feedback');
+  fb.style.color = 'var(--danger)';
+  fb.textContent = '⏱ Time up! Answer: ' + q.answers[0];
+  compState.qIdx++;
+  setTimeout(nextCompQ, 1400);
+}
+
+function endComp() {
+  compState.active = false;
+  clearInterval(compState.timer);
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'block';
+  document.getElementById('comp-final-score').textContent = compState.score;
+  document.getElementById('comp-final-name').textContent = compState.name;
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compState.name, score: compState.score, date: new Date().toLocaleDateString() });
+  lb.sort((a,b) => b.score - a.score);
+  const top10 = lb.slice(0,10);
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(top10));
+  renderLeaderboard(top10);
+}
+
+function renderLeaderboard(lb) {
+  const el = document.getElementById('leaderboard');
+  if (!el) return;
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.length === 0
+    ? '<li style="color:var(--text-muted);font-size:13px">No scores yet — be the first!</li>'
+    : lb.map((e,i) => '<li><span class="lb-pos">' + (medals[i]||'#'+(i+1)) + '</span><span class="lb-name">' + e.name + '</span><span class="lb-score">' + e.score + ' pts</span></li>').join('');
+}
+
+function resetComp() {
+  document.getElementById('comp-start-area').style.display = 'block';
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display = 'none';
+  compState = { score:0, qIdx:0, timer:null, timeLeft:15, active:false, name:'' };
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'comp-ans' && e.key === 'Enter') { e.preventDefault(); submitCompAns(); }
+});
+render();
+
+
+</script></body></html>
