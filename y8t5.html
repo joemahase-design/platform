@@ -58,9 +58,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -175,11 +175,11 @@ SELECT AVG(Score) FROM Results WHERE Subject = "Maths";</pre>` },
 <div class="task-box"><h4>📝 Task A — Database Structure</h4>
 <div class="answer-row"><label>1. What uniquely identifies each record in a table?</label><input class="ans-input" id="db1" placeholder="..."><button class="check-btn" onclick="schkAny('db1','fdb1',['primary key','Primary Key','primary key (pk)'])">Check</button><span class="fb" id="fdb1"></span></div>
 <div class="answer-row"><label>2. What is a row of data in a database table called?</label><input class="ans-input" id="db2" placeholder="..."><button class="check-btn" onclick="schkAny('db2','fdb2',['record','Record'])">Check</button><span class="fb" id="fdb2"></span></div>
-<div class="answer-row"><label>3. What does SQL stand for?</label><input class="ans-input" id="db3" placeholder="..."><button class="check-btn" onclick="schkAny('db3','fdb3',['structured query language','Structured Query Language'])">Check</button><span class="fb" id="fdb3"></span></div>
+<div class="answer-row"><label>3. What does SQL stand for?</label><input class="ans-input" id="db3" placeholder="..."><button class="check-btn" onclick="schkAny('db3','fdb3',['structured query language','Structured Query Language','sql','SQL'])">Check</button><span class="fb" id="fdb3"></span></div>
 </div>
 <div class="task-box"><h4>📝 Task B — SQL Queries</h4>
 <div class="answer-row"><label>4. What SQL keyword retrieves data?</label><input class="ans-input" id="db4" placeholder="..."><button class="check-btn" onclick="schkAny('db4','fdb4',['select','SELECT'])">Check</button><span class="fb" id="fdb4"></span></div>
-<div class="answer-row"><label>5. What does <code>SELECT * FROM Students</code> return?</label><input class="ans-input" id="db5" placeholder="..."><button class="check-btn" onclick="schkAny('db5','fdb5',['all columns all records','all records','everything from students'])">Check</button><span class="fb" id="fdb5"></span></div>
+<div class="answer-row"><label>5. What does <code>SELECT * FROM Students</code> return?</label><input class="ans-input" id="db5" placeholder="..."><button class="check-btn" onclick="schkAny('db5','fdb5',['all columns all records','all records','everything from students','select all','all data','all rows','all rows and columns','every record'])">Check</button><span class="fb" id="fdb5"></span></div>
 <div class="answer-row"><label>6. What SQL keyword filters records?</label><input class="ans-input" id="db6" placeholder="..."><button class="check-btn" onclick="schkAny('db6','fdb6',['where','WHERE'])">Check</button><span class="fb" id="fdb6"></span></div>
 <div class="answer-row"><label>7. What wildcard character matches any sequence of characters in LIKE?</label><input class="ans-input" id="db7" placeholder="..."><button class="check-btn" onclick="schk('db7','fdb7','%')">Check</button><span class="fb" id="fdb7"></span></div>
 </div>` },
@@ -272,7 +272,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -280,8 +281,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
