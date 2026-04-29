@@ -58,9 +58,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -190,12 +190,12 @@ def merge(left, right):
   { type:`activity`, title:`Guided Tasks — Algorithms`, body:`<p>Test your searching and sorting knowledge.</p>
 <div class="task-box"><h4>📝 Task A — Search Algorithms</h4>
 <div class="answer-row"><label>1. Which search requires sorted data?</label><input class="ans-input" id="al1" placeholder="..."><button class="check-btn" onclick="schkAny('al1','fal1',['binary search','binary','Binary Search'])">Check</button><span class="fb" id="fal1"></span></div>
-<div class="answer-row"><label>2. What is the worst case complexity of linear search?</label><input class="ans-input" id="al2" placeholder="..."><button class="check-btn" onclick="schkAny('al2','fal2',['o(n)','O(n)','linear'])">Check</button><span class="fb" id="fal2"></span></div>
+<div class="answer-row"><label>2. What is the worst case complexity of linear search?</label><input class="ans-input" id="al2" placeholder="..."><button class="check-btn" onclick="schkAny('al2','fal2',['o(n)','O(n)','linear','o n','linear time','n'])">Check</button><span class="fb" id="fal2"></span></div>
 <div class="answer-row"><label>3. Binary search on 1024 items — max comparisons?</label><input class="ans-input" id="al3" placeholder="..."><button class="check-btn" onclick="schk('al3','fal3','10')">Check</button><span class="fb" id="fal3"></span></div>
 </div>
 <div class="task-box"><h4>📝 Task B — Sorting</h4>
-<div class="answer-row"><label>4. What is the time complexity of bubble sort?</label><input class="ans-input" id="al4" placeholder="..."><button class="check-btn" onclick="schkAny('al4','fal4',['o(n2)','O(n²)','o(n^2)','quadratic'])">Check</button><span class="fb" id="fal4"></span></div>
-<div class="answer-row"><label>5. What strategy does merge sort use?</label><input class="ans-input" id="al5" placeholder="..."><button class="check-btn" onclick="schkAny('al5','fal5',['divide and conquer','divide and conquer'])">Check</button><span class="fb" id="fal5"></span></div>
+<div class="answer-row"><label>4. What is the time complexity of bubble sort?</label><input class="ans-input" id="al4" placeholder="..."><button class="check-btn" onclick="schkAny('al4','fal4',['o(n2)','O(n²)','o(n^2)','quadratic','on2','on squared','o(n squared)','n squared','n2'])">Check</button><span class="fb" id="fal4"></span></div>
+<div class="answer-row"><label>5. What strategy does merge sort use?</label><input class="ans-input" id="al5" placeholder="..."><button class="check-btn" onclick="schkAny('al5','fal5',['divide and conquer','divide & conquer','divideandconquer','split and merge','splitting'])">Check</button><span class="fb" id="fal5"></span></div>
 <div class="answer-row"><label>6. Which sort is more efficient on large data — bubble or merge?</label><input class="ans-input" id="al6" placeholder="..."><button class="check-btn" onclick="schkAny('al6','fal6',['merge','merge sort','Merge Sort'])">Check</button><span class="fb" id="fal6"></span></div>
 </div>` },
   { type:`summary`, title:`Topic Summary`, body:`<ul>
@@ -286,7 +286,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -294,8 +295,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
