@@ -10,7 +10,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
 .presentation{display:flex;flex-direction:column;height:100vh;}
-.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;}
 .progress-fill{height:100%;background:var(--accent);transition:width 0.5s ease;}
 .slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
 .slide{width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 56px;position:relative;overflow-y:auto;max-height:calc(100vh - 130px);animation:sIn 0.3s ease;}
@@ -41,11 +41,6 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;}
 .card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
 .card h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;}
-.bit-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:var(--mono);}
-.bit-table th{background:var(--surface2);padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:13px;color:var(--accent);}
-.bit-table td{padding:10px 14px;border:1px solid var(--border);text-align:center;font-size:14px;}
-.bit-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
-.bit-highlight{background:rgba(0,240,255,.15)!important;color:var(--accent);font-weight:700;}
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
 .answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
@@ -96,114 +91,354 @@ body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;
   <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
   <div class="slide-area"><div class="slide" id="slide"></div></div>
   <div class="nav-bar">
-    <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
+    <button class="nav-btn" id="prev-btn" onclick="goPrev()">&#8592; Previous</button>
     <div class="nav-center">
       <div class="dot-row" id="dots"></div>
       <div class="sctr" id="sctr">1 / 1</div>
-      <div class="kbhint">← → Space · 🏆 Competition on last slide</div>
+      <div class="kbhint">&#8592; &#8594; Space &middot; &#127942; Competition on last slide</div>
     </div>
-    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
+    <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next &#8594;</button>
   </div>
 </div>
+
 <script>
-const LESSON_ID = `y9t6`;
-const SLIDES = [{"type": "intro", "title": "Pseudocode — Introduction & Practice", "body": "<p><strong>Pseudocode</strong> is a way of planning algorithms using structured English. It is not a real programming language — it has no strict syntax — but it follows logical patterns that mirror real code.</p><div class=\"callout\">💡 Pseudocode lets you focus on the logic of your solution without worrying about the exact syntax of a particular language. It is used in exam answers, planning and design.</div><div class=\"two-col\"><div class=\"card\"><h4>Why use pseudocode?</h4><ul><li>Language-independent — understood by all programmers</li><li>Quick to write during planning</li><li>Used in GCSE and A-Level exams</li><li>Easier to spot logic errors before coding</li></ul></div><div class=\"card\"><h4>Key features</h4><ul><li>Uses keywords like INPUT, OUTPUT, IF, WHILE, FOR</li><li>Uses indentation to show blocks</li><li>No brackets needed for conditions</li><li>Assignment uses ← or =</li></ul></div></div>"}, {"type": "concept", "title": "Variables, Input & Output", "body": "<p>Pseudocode uses clear keywords for the most common operations:</p><pre>// Declaring and assigning variables\nname ← \"Alice\"\nage ← 16\nscore ← 0\n\n// Getting input from user\nINPUT name\nINPUT age\n\n// Displaying output\nOUTPUT \"Hello, \" + name\nOUTPUT \"Your age is: \" + age</pre><div class=\"callout\">The ← symbol means assignment (store this value). Some styles use = instead.</div><div class=\"callout warn\">⚠️ OUTPUT is used for displaying results — not PRINT (that is Python-specific).</div>"}, {"type": "concept", "title": "Selection — IF Statements", "body": "<p>Selection uses IF...THEN...ELSE...ENDIF:</p><pre>INPUT score\n\nIF score >= 70 THEN\n    OUTPUT \"Distinction\"\nELSE IF score >= 50 THEN\n    OUTPUT \"Pass\"\nELSE\n    OUTPUT \"Fail\"\nENDIF</pre><div class=\"two-col\"><div class=\"card\"><h4>Comparison operators</h4><ul><li><code>=</code> equal to</li><li><code>≠</code> or <code>!=</code> not equal</li><li><code>&gt;</code> greater than</li><li><code>&lt;</code> less than</li><li><code>≥</code> or <code>>=</code> greater/equal</li><li><code>≤</code> or <code>&lt;=</code> less/equal</li></ul></div><div class=\"card\"><h4>Logical operators</h4><ul><li><code>AND</code> — both must be true</li><li><code>OR</code> — at least one true</li><li><code>NOT</code> — reverses the condition</li></ul></div></div>"}, {"type": "concept", "title": "Iteration — FOR and WHILE loops", "body": "<p>Two types of loop in pseudocode:</p><div class=\"two-col\"><div class=\"card\"><h4>FOR loop — count-controlled</h4><pre>FOR i ← 1 TO 10\n    OUTPUT i\nENDFOR\n\nFOR i ← 0 TO 4\n    OUTPUT i * 2\nENDFOR</pre></div><div class=\"card\"><h4>WHILE loop — condition-controlled</h4><pre>count ← 0\nWHILE count &lt; 5 DO\n    OUTPUT count\n    count ← count + 1\nENDWHILE</pre></div></div><div class=\"callout\">Use a FOR loop when you know how many times to repeat. Use WHILE when you repeat until a condition is met.</div>"}, {"type": "concept", "title": "Subroutines (Procedures & Functions)", "body": "<p>Subroutines are named blocks of code that can be called multiple times:</p><div class=\"two-col\"><div class=\"card\"><h4>Procedure — no return value</h4><pre>PROCEDURE greet(name)\n    OUTPUT \"Hello, \" + name\nENDPROCEDURE\n\n// Calling it:\ngreet(\"Alice\")\ngreet(\"Bob\")</pre></div><div class=\"card\"><h4>Function — returns a value</h4><pre>FUNCTION square(n)\n    RETURN n * n\nENDFUNCTION\n\n// Calling it:\nresult ← square(5)\nOUTPUT result  // 25</pre></div></div><div class=\"callout success\">✓ Functions use RETURN to send a value back. Procedures perform actions but do not return values.</div>"}, {"type": "activity", "title": "Guided Tasks — Pseudocode", "body": "<div class=\"task-box\"><h4>Core questions:</h4><div class=\"answer-row\"><label>1. What keyword is used to get data from a user?</label><input class=\"ans-input\" id=\"ps1\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps1','fps1',['input','INPUT'])\">Check</button><span class=\"fb\" id=\"fps1\"></span></div><div class=\"answer-row\"><label>2. What keyword ends an IF block in pseudocode?</label><input class=\"ans-input\" id=\"ps2\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps2','fps2',['endif','ENDIF','end if'])\">Check</button><span class=\"fb\" id=\"fps2\"></span></div><div class=\"answer-row\"><label>3. Which loop is used when you know the number of repetitions?</label><input class=\"ans-input\" id=\"ps3\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps3','fps3',['for','for loop','FOR','count controlled','count-controlled'])\">Check</button><span class=\"fb\" id=\"fps3\"></span></div><div class=\"answer-row\"><label>4. What keyword sends a value back from a function?</label><input class=\"ans-input\" id=\"ps4\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps4','fps4',['return','RETURN'])\">Check</button><span class=\"fb\" id=\"fps4\"></span></div><div class=\"answer-row\"><label>5. What symbol is commonly used for assignment in pseudocode?</label><input class=\"ans-input\" id=\"ps5\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps5','fps5',['←','<-','arrow','left arrow','='])\">Check</button><span class=\"fb\" id=\"fps5\"></span></div></div><div class=\"task-box\"><h4>Challenge:</h4><div class=\"answer-row\"><label>6. What is the difference between a procedure and a function?</label><input class=\"ans-input\" id=\"ps6\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps6','fps6',['function returns a value','functions return values','procedure has no return value','procedures dont return values'])\">Check</button><span class=\"fb\" id=\"fps6\"></span></div><div class=\"answer-row\"><label>7. Which loop repeats while a condition is true?</label><input class=\"ans-input\" id=\"ps7\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps7','fps7',['while','while loop','WHILE','condition controlled','condition-controlled'])\">Check</button><span class=\"fb\" id=\"fps7\"></span></div><div class=\"answer-row\"><label>8. What does ENDWHILE mark in pseudocode?</label><input class=\"ans-input\" id=\"ps8\" placeholder=\"...\"><button class=\"check-btn\" onclick=\"schkAny('ps8','fps8',['end of while loop','end of the loop','end of loop','close of while','the end of the while block'])\">Check</button><span class=\"fb\" id=\"fps8\"></span></div></div>"}, {"type": "summary", "title": "Topic Summary", "body": "<ul><li><strong>Pseudocode</strong> is a structured, language-independent way to plan algorithms</li><li>Key keywords: <code>INPUT</code>, <code>OUTPUT</code>, <code>IF...THEN...ELSE...ENDIF</code></li><li><strong>FOR</strong> loops — count-controlled, use when repetitions are known</li><li><strong>WHILE</strong> loops — condition-controlled, repeat until condition is false</li><li><strong>Procedures</strong> — reusable blocks that perform actions (no return value)</li><li><strong>Functions</strong> — reusable blocks that RETURN a value</li><li>Use indentation to show the structure of blocks</li></ul><div class=\"callout success\">✓ Good pseudocode is the mark of a good programmer — plan your logic before you code it!</div>"}, {"type": "compete", "title": "🏆 Pseudocode Speed Challenge", "body": "<div class=\"compete-board\">\n<h4>🏆 Pseudocode Speed Challenge</h4>\n<div id=\"comp-start-area\"><p style=\"font-size:14px;color:var(--text-muted);margin-bottom:12px\">15 seconds per question. Faster = more points!</p>\n<input class=\"compete-input\" id=\"comp-name\" placeholder=\"Your name...\">\n<button class=\"compete-btn\" onclick=\"startCompete()\">Start Challenge →</button></div>\n<div id=\"comp-game-area\" style=\"display:none\">\n<div class=\"compete-q\" id=\"comp-q\">Loading...</div>\n<div class=\"timer-bar\"><div class=\"timer-fill\" id=\"comp-timer\" style=\"width:100%\"></div></div>\n<div class=\"score-display\" id=\"comp-score\">0</div>\n<input class=\"compete-input\" id=\"comp-ans\" placeholder=\"Answer...\" autocomplete=\"off\">\n<button class=\"compete-btn\" onclick=\"submitCompete()\">Submit →</button>\n<div class=\"fb\" id=\"comp-fb\"></div>\n</div>\n<div id=\"comp-end-area\" style=\"display:none\">\n<div class=\"score-display\" id=\"comp-final\">0</div>\n<p style=\"text-align:center;color:var(--text-muted);margin-bottom:10px\">Your final score</p>\n<button class=\"compete-btn\" onclick=\"showLeaderboard()\">View Leaderboard</button>\n</div>\n<ul class=\"leaderboard\" id=\"comp-lb\"></ul>\n</div>"}];
-const CQ = [{"q": "What keyword gets input from a user?", "answers": ["input", "INPUT"]}, {"q": "What keyword ends an IF block?", "answers": ["endif", "ENDIF", "end if"]}, {"q": "What loop is count-controlled?", "answers": ["for", "FOR", "for loop"]}, {"q": "What loop is condition-controlled?", "answers": ["while", "WHILE", "while loop"]}, {"q": "What keyword returns a value from a function?", "answers": ["return", "RETURN"]}, {"q": "What does a function have that a procedure does not?", "answers": ["return value", "a return value", "return statement"]}, {"q": "What keyword displays output?", "answers": ["output", "OUTPUT"]}, {"q": "What symbol means assignment in pseudocode?", "answers": ["←", "<-", "=", "arrow"]}, {"q": "What keyword begins a function definition?", "answers": ["function", "FUNCTION"]}, {"q": "What keyword begins a procedure definition?", "answers": ["procedure", "PROCEDURE"]}];
-let cur=0,compIdx=0,compScore=0,compTimer=null,compName='',compRunning=false;
-function render(){
-  const s=SLIDES[cur];
-  const typeMap={intro:'intro',concept:'concept',activity:'activity',summary:'summary',compete:'compete'};
-  document.getElementById('slide').innerHTML=`<div class="eyebrow"><span class="stype t-${typeMap[s.type]||'intro'}">${s.type}</span><span class="snum">${cur+1} / ${SLIDES.length}</span></div><h1>${s.title}</h1><div class="sb">${s.body}</div>`;
-  document.getElementById('prog').style.width=`${((cur+1)/SLIDES.length)*100}%`;
-  document.getElementById('sctr').textContent=`${cur+1} / ${SLIDES.length}`;
-  document.getElementById('prev-btn').disabled=cur===0;
-  document.getElementById('next-btn').disabled=cur===SLIDES.length-1;
-  const dots=document.getElementById('dots');
-  dots.innerHTML=SLIDES.map((sl,i)=>`<div class="pdot${sl.type==='compete'?' compete-dot':''}${i===cur?' active':i<cur?' done':''}" onclick="goTo(${i})"></div>`).join('');
-  if(s.type==='compete'){const lb=JSON.parse(localStorage.getItem('ks3_lb_'+LESSON_ID)||'[]');renderLeaderboard(lb);}
+const LESSON_ID = 'y9t6';
+
+// ── UTILITY FUNCTIONS (must be global so onclick attributes can call them) ──
+function clean(s){ return String(s).toLowerCase().replace(/[^a-z0-9]/g,''); }
+
+function schkAny(inputId, fbId, answers) {
+  var val = clean(document.getElementById(inputId).value.trim());
+  var ok  = answers.map(function(a){ return clean(a); }).indexOf(val) > -1;
+  var fb  = document.getElementById(fbId);
+  fb.innerHTML = ok ? '&#10003; Correct!' : '&#10007; Try again &mdash; answer: ' + answers[0];
+  fb.className   = 'fb ' + (ok ? 'ok' : 'no');
 }
-function goNext(){if(cur<SLIDES.length-1){cur++;render();}}
-function goPrev(){if(cur>0){cur--;render();}}
-function goTo(i){cur=i;render();}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goNext();}if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}} );
-function schkAny(inputId,fbId,answers){
-  const clean=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
-  const val=clean(document.getElementById(inputId).value.trim());
-  const ok=answers.map(a=>clean(a)).includes(val);
-  const fb=document.getElementById(fbId);
-  fb.textContent=ok?'✓ Correct!':'✗ Try again — answer: '+answers[0];
-  fb.className='fb '+(ok?'ok':'no');
+
+function schk(inputId, fbId, correct) {
+  var val = clean(document.getElementById(inputId).value.trim());
+  var ok  = val === clean(String(correct));
+  var fb  = document.getElementById(fbId);
+  fb.innerHTML = ok ? '&#10003; Correct!' : '&#10007; Try again &mdash; answer: ' + correct;
+  fb.className   = 'fb ' + (ok ? 'ok' : 'no');
 }
-function schk(inputId,fbId,correct){
-  const clean=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
-  const val=clean(document.getElementById(inputId).value.trim());
-  const ok=val===clean(String(correct));
-  const fb=document.getElementById(fbId);
-  fb.textContent=ok?'✓ Correct!':'✗ Try again — answer: '+correct;
-  fb.className='fb '+(ok?'ok':'no');
+
+// ── SLIDES ──
+var cur = 0;
+
+var SLIDE_TYPES = ['intro','concept','concept','concept','concept','activity','summary','compete'];
+var SLIDE_TITLES = [
+  'Pseudocode \u2014 Introduction &amp; Practice',
+  'Variables, Input &amp; Output',
+  'Selection \u2014 IF Statements',
+  'Iteration \u2014 FOR and WHILE loops',
+  'Subroutines (Procedures &amp; Functions)',
+  'Guided Tasks \u2014 Pseudocode',
+  'Topic Summary',
+  '&#127942; Pseudocode Speed Challenge'
+];
+
+var SLIDE_BODIES = [
+
+// 0 - INTRO
+'<p><strong>Pseudocode</strong> is a way of planning algorithms using structured English. It is not a real programming language \u2014 it has no strict syntax \u2014 but it follows logical patterns that mirror real code.</p>\
+<div class="callout">&#128161; Pseudocode lets you focus on the <em>logic</em> of your solution without worrying about exact syntax. It is used in exam answers, planning and design.</div>\
+<div class="two-col">\
+<div class="card"><h4>Why use pseudocode?</h4><ul>\
+<li>Language-independent \u2014 understood by all programmers</li>\
+<li>Quick to write during planning</li>\
+<li>Used in GCSE and A-Level exams</li>\
+<li>Easier to spot logic errors before coding</li>\
+</ul></div>\
+<div class="card"><h4>Key features</h4><ul>\
+<li>Keywords: INPUT, OUTPUT, IF, WHILE, FOR</li>\
+<li>Indentation shows blocks of code</li>\
+<li>No brackets needed around conditions</li>\
+<li>Assignment uses &#8592; or =</li>\
+</ul></div>\
+</div>',
+
+// 1 - CONCEPT: Variables
+'<p>Pseudocode uses clear keywords for the most common operations:</p>\
+<pre>// Assigning variables\nname &#8592; "Alice"\nage &#8592; 16\nscore &#8592; 0\n\n// Getting input from user\nINPUT name\nINPUT age\n\n// Displaying output\nOUTPUT "Hello, " + name\nOUTPUT "Your age is: " + age</pre>\
+<div class="callout">The &#8592; symbol means assignment (store this value). Some exam boards use = instead.</div>\
+<div class="callout warn">&#9888;&#65039; Use OUTPUT to display results \u2014 not PRINT (that is Python-specific syntax).</div>',
+
+// 2 - CONCEPT: Selection
+'<p>Selection uses IF&hellip;THEN&hellip;ELSE&hellip;ENDIF to choose between paths:</p>\
+<pre>INPUT score\n\nIF score &gt;= 70 THEN\n    OUTPUT "Distinction"\nELSE IF score &gt;= 50 THEN\n    OUTPUT "Pass"\nELSE\n    OUTPUT "Fail"\nENDIF</pre>\
+<div class="two-col">\
+<div class="card"><h4>Comparison operators</h4><ul>\
+<li><code>=</code> equal to</li>\
+<li><code>!=</code> or <code>&#8800;</code> not equal</li>\
+<li><code>&gt;</code> greater than</li>\
+<li><code>&lt;</code> less than</li>\
+<li><code>&gt;=</code> or <code>&#8805;</code> greater or equal</li>\
+<li><code>&lt;=</code> or <code>&#8804;</code> less or equal</li>\
+</ul></div>\
+<div class="card"><h4>Logical operators</h4><ul>\
+<li><code>AND</code> \u2014 both conditions must be true</li>\
+<li><code>OR</code> \u2014 at least one must be true</li>\
+<li><code>NOT</code> \u2014 reverses the condition</li>\
+</ul></div>\
+</div>',
+
+// 3 - CONCEPT: Iteration
+'<p>Two types of loop in pseudocode:</p>\
+<div class="two-col">\
+<div class="card"><h4>FOR loop \u2014 count-controlled</h4>\
+<pre>FOR i &#8592; 1 TO 10\n    OUTPUT i\nENDFOR\n\nFOR i &#8592; 0 TO 4\n    OUTPUT i * 2\nENDFOR</pre></div>\
+<div class="card"><h4>WHILE loop \u2014 condition-controlled</h4>\
+<pre>count &#8592; 0\nWHILE count &lt; 5 DO\n    OUTPUT count\n    count &#8592; count + 1\nENDWHILE</pre></div>\
+</div>\
+<div class="callout">Use a <strong>FOR</strong> loop when you know the number of repetitions. Use <strong>WHILE</strong> when you repeat until a condition becomes false.</div>',
+
+// 4 - CONCEPT: Subroutines
+'<p>Subroutines are named, reusable blocks of code:</p>\
+<div class="two-col">\
+<div class="card"><h4>Procedure \u2014 no return value</h4>\
+<pre>PROCEDURE greet(name)\n    OUTPUT "Hello, " + name\nENDPROCEDURE\n\n// Calling it:\ngreet("Alice")\ngreet("Bob")</pre></div>\
+<div class="card"><h4>Function \u2014 returns a value</h4>\
+<pre>FUNCTION square(n)\n    RETURN n * n\nENDFUNCTION\n\n// Calling it:\nresult &#8592; square(5)\nOUTPUT result  // 25</pre></div>\
+</div>\
+<div class="callout success">&#10003; Functions use RETURN to send a value back. Procedures perform actions but do <strong>not</strong> return values.</div>',
+
+// 5 - ACTIVITY
+'<div class="task-box"><h4>Core questions:</h4>' +
+'<div class="answer-row"><label>1. What keyword is used to get data from a user?</label>' +
+'<input class="ans-input" id="ps1" placeholder="...">' +
+'<button class="check-btn" data-in="ps1" data-fb="fps1" data-ans="input|INPUT">Check</button>' +
+'<span class="fb" id="fps1"></span></div>' +
+'<div class="answer-row"><label>2. What keyword ends an IF block in pseudocode?</label>' +
+'<input class="ans-input" id="ps2" placeholder="...">' +
+'<button class="check-btn" data-in="ps2" data-fb="fps2" data-ans="endif|ENDIF|end if">Check</button>' +
+'<span class="fb" id="fps2"></span></div>' +
+'<div class="answer-row"><label>3. Which loop is best when you know the number of repetitions?</label>' +
+'<input class="ans-input" id="ps3" placeholder="...">' +
+'<button class="check-btn" data-in="ps3" data-fb="fps3" data-ans="for|for loop|FOR|count controlled|count-controlled">Check</button>' +
+'<span class="fb" id="fps3"></span></div>' +
+'<div class="answer-row"><label>4. What keyword sends a value back from a function?</label>' +
+'<input class="ans-input" id="ps4" placeholder="...">' +
+'<button class="check-btn" data-in="ps4" data-fb="fps4" data-ans="return|RETURN">Check</button>' +
+'<span class="fb" id="fps4"></span></div>' +
+'<div class="answer-row"><label>5. What keyword displays results to the user?</label>' +
+'<input class="ans-input" id="ps5" placeholder="...">' +
+'<button class="check-btn" data-in="ps5" data-fb="fps5" data-ans="output|OUTPUT">Check</button>' +
+'<span class="fb" id="fps5"></span></div>' +
+'</div>' +
+'<div class="task-box"><h4>Challenge questions:</h4>' +
+'<div class="answer-row"><label>6. Key difference between a procedure and a function?</label>' +
+'<input class="ans-input" id="ps6" placeholder="...">' +
+'<button class="check-btn" data-in="ps6" data-fb="fps6" data-ans="function returns a value|functions return values|procedure has no return value|procedures dont return values|a function returns a value">Check</button>' +
+'<span class="fb" id="fps6"></span></div>' +
+'<div class="answer-row"><label>7. Which loop repeats while a condition remains true?</label>' +
+'<input class="ans-input" id="ps7" placeholder="...">' +
+'<button class="check-btn" data-in="ps7" data-fb="fps7" data-ans="while|while loop|WHILE|condition controlled|condition-controlled">Check</button>' +
+'<span class="fb" id="fps7"></span></div>' +
+'<div class="answer-row"><label>8. What keyword begins a function definition in pseudocode?</label>' +
+'<input class="ans-input" id="ps8" placeholder="...">' +
+'<button class="check-btn" data-in="ps8" data-fb="fps8" data-ans="function|FUNCTION">Check</button>' +
+'<span class="fb" id="fps8"></span></div>' +
+'</div>',
+
+// 6 - SUMMARY
+'<ul>\
+<li><strong>Pseudocode</strong> is a structured, language-independent way to plan algorithms</li>\
+<li>Use <code>INPUT</code> to receive data, <code>OUTPUT</code> to display results</li>\
+<li><code>IF&hellip;THEN&hellip;ELSE&hellip;ENDIF</code> handles selection (decisions)</li>\
+<li><strong>FOR</strong> loops are count-controlled (you know how many times)</li>\
+<li><strong>WHILE</strong> loops are condition-controlled (repeat until condition is false)</li>\
+<li><strong>Procedures</strong> are reusable blocks that perform actions (no return value)</li>\
+<li><strong>Functions</strong> are reusable blocks that <code>RETURN</code> a value</li>\
+<li>Use indentation to show the structure of blocks clearly</li>\
+</ul>\
+<div class="callout success">&#10003; Good pseudocode is the mark of a good programmer \u2014 plan your logic before you code!</div>',
+
+// 7 - COMPETE
+'<div class="compete-board">\
+<h4>&#127942; Pseudocode Speed Challenge</h4>\
+<div id="comp-start-area"><p style="font-size:14px;color:var(--text-muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>\
+<input class="compete-input" id="comp-name" placeholder="Your name...">\
+<button class="compete-btn" onclick="startCompete()">Start Challenge &#8594;</button></div>\
+<div id="comp-game-area" style="display:none">\
+<div class="compete-q" id="comp-q">Loading...</div>\
+<div class="timer-bar"><div class="timer-fill" id="comp-timer" style="width:100%"></div></div>\
+<div class="score-display" id="comp-score">0</div>\
+<input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">\
+<button class="compete-btn" onclick="submitCompete()">Submit &#8594;</button>\
+<div class="fb" id="comp-fb"></div>\
+</div>\
+<div id="comp-end-area" style="display:none">\
+<div class="score-display" id="comp-final">0</div>\
+<p style="text-align:center;color:var(--text-muted);margin-bottom:10px">Your final score</p>\
+<button class="compete-btn" onclick="showLeaderboard()">View Leaderboard</button>\
+</div>\
+<ul class="leaderboard" id="comp-lb"></ul>\
+</div>'
+
+];
+
+// ── RENDER ──
+function render() {
+  var s = SLIDE_TYPES[cur];
+  var typeLabel = s;
+  var html = '<div class="eyebrow">'
+    + '<span class="stype t-' + typeLabel + '">' + typeLabel + '</span>'
+    + '<span class="snum">' + (cur+1) + ' / ' + SLIDE_TYPES.length + '</span>'
+    + '</div>'
+    + '<h1>' + SLIDE_TITLES[cur] + '</h1>'
+    + '<div class="sb">' + SLIDE_BODIES[cur] + '</div>';
+  document.getElementById('slide').innerHTML = html;
+  document.getElementById('prog').style.width = (((cur+1)/SLIDE_TYPES.length)*100) + '%';
+  document.getElementById('sctr').textContent = (cur+1) + ' / ' + SLIDE_TYPES.length;
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === SLIDE_TYPES.length-1;
+  var dotsHtml = '';
+  for (var i=0; i<SLIDE_TYPES.length; i++) {
+    var cls = 'pdot';
+    if (SLIDE_TYPES[i]==='compete') cls += ' compete-dot';
+    if (i===cur) cls += ' active';
+    else if (i<cur) cls += ' done';
+    dotsHtml += '<div class="' + cls + '" onclick="goTo(' + i + ')"></div>';
+  }
+  document.getElementById('dots').innerHTML = dotsHtml;
+  if (s === 'compete') {
+    var lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+    renderLeaderboard(lb);
+  }
 }
-function startCompete(){
-  compName=document.getElementById('comp-name').value.trim()||'Anonymous';
-  compScore=0;compIdx=0;compRunning=true;
+
+function goNext() { if (cur < SLIDE_TYPES.length-1) { cur++; render(); } }
+function goPrev() { if (cur > 0) { cur--; render(); } }
+function goTo(i)  { cur = i; render(); }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key==='ArrowRight' || e.key===' ') { e.preventDefault(); goNext(); }
+  if (e.key==='ArrowLeft')                  { e.preventDefault(); goPrev(); }
+});
+
+// ── SPEED CHALLENGE ──
+var CQ = [
+  { q:'What keyword gets input from a user?',            answers:['input','INPUT'] },
+  { q:'What keyword ends an IF block?',                  answers:['endif','ENDIF','end if'] },
+  { q:'What loop is count-controlled?',                  answers:['for','FOR','for loop'] },
+  { q:'What loop is condition-controlled?',              answers:['while','WHILE','while loop'] },
+  { q:'What keyword returns a value from a function?',   answers:['return','RETURN'] },
+  { q:'What does a function have that a procedure does not?', answers:['return value','a return value','return statement'] },
+  { q:'What keyword displays output to the user?',       answers:['output','OUTPUT'] },
+  { q:'What keyword starts a function definition?',      answers:['function','FUNCTION'] },
+  { q:'What keyword starts a procedure definition?',     answers:['procedure','PROCEDURE'] },
+  { q:'Which loop do you use when you know how many repetitions?', answers:['for','FOR','for loop','count controlled'] },
+];
+
+var compIdx=0, compScore=0, compTimer=null, compName='', compRunning=false;
+
+function startCompete() {
+  compName = document.getElementById('comp-name').value.trim() || 'Anonymous';
+  compScore=0; compIdx=0; compRunning=true;
   document.getElementById('comp-start-area').style.display='none';
   document.getElementById('comp-game-area').style.display='block';
   nextCompQ();
 }
-function nextCompQ(){
-  if(compIdx>=CQ.length){endCompete();return;}
-  const q=CQ[compIdx];
-  document.getElementById('comp-q').textContent=q.q;
-  document.getElementById('comp-ans').value='';
-  document.getElementById('comp-fb').className='fb';
+
+function nextCompQ() {
+  if (compIdx >= CQ.length) { endCompete(); return; }
+  var q = CQ[compIdx];
+  document.getElementById('comp-q').textContent = q.q;
+  document.getElementById('comp-ans').value = '';
+  document.getElementById('comp-fb').className = 'fb';
   document.getElementById('comp-ans').focus();
-  let t=15;
-  document.getElementById('comp-timer').style.transition='none';
-  document.getElementById('comp-timer').style.width='100%';
-  setTimeout(()=>{document.getElementById('comp-timer').style.transition='width 1s linear';document.getElementById('comp-timer').style.width='0%';},50);
+  var t = 15;
+  var timerEl = document.getElementById('comp-timer');
+  timerEl.style.transition = 'none';
+  timerEl.style.width = '100%';
+  setTimeout(function() {
+    timerEl.style.transition = 'width 1s linear';
+    timerEl.style.width = '0%';
+  }, 50);
   clearInterval(compTimer);
-  compTimer=setInterval(()=>{t--;if(t<=0){clearInterval(compTimer);autoNext();}},1000);
+  compTimer = setInterval(function() {
+    t--;
+    if (t <= 0) { clearInterval(compTimer); autoNext(); }
+  }, 1000);
 }
-function autoNext(){
-  if(!compRunning)return;
-  const fb=document.getElementById('comp-fb');
-  fb.textContent='⏱ Time up! Answer: '+CQ[compIdx].answers[0];
-  fb.className='fb no';
+
+function autoNext() {
+  if (!compRunning) return;
+  var fb = document.getElementById('comp-fb');
+  fb.innerHTML = '&#9201; Time up! Answer: ' + CQ[compIdx].answers[0];
+  fb.className = 'fb no';
   compIdx++;
-  setTimeout(nextCompQ,1200);
+  setTimeout(nextCompQ, 1200);
 }
-function submitCompete(){
-  if(!compRunning)return;
+
+function submitCompete() {
+  if (!compRunning) return;
   clearInterval(compTimer);
-  const clean=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
-  const ans=clean(document.getElementById('comp-ans').value.trim());
-  const q=CQ[compIdx];
-  const ok=q.answers.map(a=>clean(a)).includes(ans);
-  const fb=document.getElementById('comp-fb');
-  const pct=parseFloat(document.getElementById('comp-timer').style.width)||0;
-  const bonus=ok?Math.ceil(pct/10)+10:0;
-  if(ok){compScore+=bonus;document.getElementById('comp-score').textContent=compScore;fb.textContent='✓ +'+bonus+' pts';fb.className='fb ok';}
-  else{fb.textContent='✗ Answer: '+q.answers[0];fb.className='fb no';}
+  var ans = clean(document.getElementById('comp-ans').value.trim());
+  var q   = CQ[compIdx];
+  var ok  = q.answers.map(function(a){ return clean(a); }).indexOf(ans) > -1;
+  var fb  = document.getElementById('comp-fb');
+  var pct = parseFloat(document.getElementById('comp-timer').style.width) || 0;
+  var bonus = ok ? Math.ceil(pct/10) + 10 : 0;
+  if (ok) {
+    compScore += bonus;
+    document.getElementById('comp-score').textContent = compScore;
+    fb.innerHTML = '&#10003; +' + bonus + ' pts';
+    fb.className = 'fb ok';
+  } else {
+    fb.innerHTML = '&#10007; Answer: ' + q.answers[0];
+    fb.className = 'fb no';
+  }
   compIdx++;
-  setTimeout(nextCompQ,1000);
+  setTimeout(nextCompQ, 1000);
 }
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&compRunning&&document.getElementById('comp-ans')===document.activeElement)submitCompete();});
-function endCompete(){
-  compRunning=false;
-  document.getElementById('comp-game-area').style.display='none';
-  document.getElementById('comp-end-area').style.display='block';
-  document.getElementById('comp-final').textContent=compScore;
-  const lb=JSON.parse(localStorage.getItem('ks3_lb_'+LESSON_ID)||'[]');
-  lb.push({name:compName,score:compScore,ts:Date.now()});
-  lb.sort((a,b)=>b.score-a.score);
-  localStorage.setItem('ks3_lb_'+LESSON_ID,JSON.stringify(lb.slice(0,10)));
+
+document.addEventListener('keydown', function(e) {
+  var ansEl = document.getElementById('comp-ans');
+  if (e.key==='Enter' && compRunning && ansEl && document.activeElement===ansEl) submitCompete();
+});
+
+function endCompete() {
+  compRunning = false;
+  document.getElementById('comp-game-area').style.display = 'none';
+  document.getElementById('comp-end-area').style.display  = 'block';
+  document.getElementById('comp-final').textContent = compScore;
+  var lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  lb.push({ name: compName, score: compScore, ts: Date.now() });
+  lb.sort(function(a,b){ return b.score - a.score; });
+  localStorage.setItem('ks3_lb_' + LESSON_ID, JSON.stringify(lb.slice(0,10)));
   renderLeaderboard(lb);
 }
-function showLeaderboard(){const lb=JSON.parse(localStorage.getItem('ks3_lb_'+LESSON_ID)||'[]');renderLeaderboard(lb);}
-function renderLeaderboard(lb){
-  const el=document.getElementById('comp-lb');
-  if(!el)return;
-  el.innerHTML=lb.slice(0,10).map((e,i)=>`<li><span class="lb-pos">${i+1}</span><span class="lb-name">${e.name}</span><span class="lb-score">${e.score}pts</span></li>`).join('');
+
+function showLeaderboard() {
+  var lb = JSON.parse(localStorage.getItem('ks3_lb_' + LESSON_ID) || '[]');
+  renderLeaderboard(lb);
 }
+
+function renderLeaderboard(lb) {
+  var el = document.getElementById('comp-lb');
+  if (!el) return;
+  el.innerHTML = lb.slice(0,10).map(function(e,i) {
+    return '<li><span class="lb-pos">' + (i+1) + '</span>'
+         + '<span class="lb-name">' + e.name + '</span>'
+         + '<span class="lb-score">' + e.score + 'pts</span></li>';
+  }).join('');
+}
+
+
+// ── EVENT DELEGATION for check buttons (avoids inline onclick quote issues) ──
+document.addEventListener('click', function(e) {
+  var btn = e.target;
+  if (!btn.classList.contains('check-btn')) return;
+  var inputId = btn.getAttribute('data-in');
+  var fbId    = btn.getAttribute('data-fb');
+  var ansStr  = btn.getAttribute('data-ans');
+  if (!inputId || !fbId || !ansStr) return;
+  var answers = ansStr.split('|');
+  schkAny(inputId, fbId, answers);
+});
+
 render();
 </script>
 </body>
