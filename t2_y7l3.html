@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>T2 Y7 — Wired and Wireless Networks</title><style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y7 — Networks & the Internet</title>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root {
   --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
@@ -57,9 +61,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -103,90 +107,83 @@ body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:
 body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
 body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
 @media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
-
-.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
-.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
-.fbtn:hover{border-color:var(--accent);color:var(--accent);}
-.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
-.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
-body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
-body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
-body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
-body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
-body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style></head>
-<body><div class="presentation">
-    <div class="filter-bar">
-    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
-    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
-    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
-  </div>
+</style>
+</head>
+<body>
+<div class="presentation">
   <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
   <div class="slide-area"><div class="slide" id="slide"></div></div>
   <div class="nav-bar">
     <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
-    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1/1</div>
-    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <div class="nav-center">
+      <div class="dot-row" id="dots"></div>
+      <div class="sctr" id="sctr">1 / 1</div>
+      <div class="kbhint">← → Space · 🏆 Competition on last slide</div>
+    </div>
     <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
   </div>
 </div>
 <script>
-const LESSON_ID=`t2_y7l3`;
+const LESSON_ID = `y7t3`;
 const SLIDES = [
-  { type:`intro`, title:`How Devices Connect`, body:`<p>Computer networks can use <strong>wired</strong> connections (cables) or <strong>wireless</strong> connections (radio waves) — or both together.</p>
-<div class="two-col">
-<div class="card"><h4>Wired</h4><p>Uses a cable to connect a device to a network. Common types: Ethernet (copper) and fibre-optic. Faster and more secure.</p></div>
-<div class="card"><h4>Wireless</h4><p>Uses radio waves to connect a device to a network. Devices can move freely. Less secure, typically lower bandwidth.</p></div></div>
-<div class="callout">🎯 <strong>Lesson goals:</strong> Compare wired and wireless networks, explain what bandwidth is and how it is measured, and compare bandwidth requirements for different activities.</div>` },
-  { type:`concept`, title:`Wired vs Wireless — Comparison`, body:`<p>Each connection type has distinct advantages and disadvantages:</p>
-<table class="bit-table">
-<tr><th></th><th>Wired</th><th>Wireless</th></tr>
-<tr><td><strong>Speed/Bandwidth</strong></td><td class="bit-highlight">Higher bandwidth</td><td>Lower bandwidth</td></tr>
-<tr><td><strong>Security</strong></td><td class="bit-highlight">More secure</td><td>Potentially insecure</td></tr>
-<tr><td><strong>Mobility</strong></td><td>Devices in fixed positions</td><td class="bit-highlight">Portable — move freely</td></tr>
-<tr><td><strong>Cables</strong></td><td>Cables can be a trip hazard</td><td class="bit-highlight">No cables needed</td></tr>
-<tr><td><strong>Setup</strong></td><td>More complex to install</td><td class="bit-highlight">Simpler to add devices</td></tr>
-</table>
-<div class="callout">💡 <strong>Choosing the right connection:</strong> office workers at fixed desks → wired. Restaurant staff with mobile tablets → wireless. Video uploader needing maximum speed → wired.</div>` },
-  { type:`concept`, title:`Bandwidth`, body:`<p><strong>Bandwidth</strong> is the maximum amount of data that can be transmitted at a time. It is measured in <strong>bits per second (bps)</strong> — typically megabits per second (Mbps) or gigabits per second (Gbps).</p>
-<div class="callout">💡 <strong>Water pipe analogy:</strong> Bandwidth is like the <em>width</em> of a pipe. A wider pipe lets more water through at once — higher bandwidth means more data can flow simultaneously. It is not the same as speed — it is <em>capacity</em>.</div>
-<div class="two-col">
-<div class="card"><h4>Bandwidth formula</h4><p>Bandwidth = File size ÷ Time taken</p><p style="margin-top:10px"><strong>Example:</strong><br>File = 100,000,000 bits<br>Time = 5 seconds<br>100,000,000 ÷ 5 = <strong>20 Mbps</strong></p></div>
-<div class="card"><h4>What causes buffering?</h4><p>Buffering happens when there is <strong>not enough bandwidth</strong> to stream video smoothly. The video arrives slower than it plays, so it has to pause to catch up.</p></div></div>` },
-  { type:`concept`, title:`Bandwidth Requirements`, body:`<p>Different activities need very different amounts of bandwidth:</p>
-<table class="bit-table">
-<tr><th>Light bandwidth</th><th>Medium bandwidth</th><th>High bandwidth</th></tr>
-<tr><td>Checking email</td><td>Checking social media</td><td>Online gaming</td></tr>
-<tr><td>Reading online news</td><td>Standard video calls</td><td>Uploading videos</td></tr>
-<tr><td>Checking weather</td><td>Music streaming</td><td>HD video streaming</td></tr>
-</table>
-<div class="callout warn">⚠️ If multiple people in the same home or school use high-bandwidth activities simultaneously, the available bandwidth is shared and everyone's connection slows down.</div>
-<div class="two-col">
-<div class="card"><h4>For online gaming</h4><p>Wired connection recommended — higher bandwidth and lower latency means smoother gameplay and fewer disconnections.</p></div>
-<div class="card"><h4>For mobile working</h4><p>Wireless connection needed — staff need to move around. Lower bandwidth is acceptable for tasks like checking emails or taking orders.</p></div></div>` },
-  { type:`activity`, title:`Guided Tasks — Wired & Wireless`, body:`<p>Test your understanding of wired and wireless networks.</p>
-<div class="task-box"><h4>📝 Task A — Comparison</h4>
-<div class="answer-row"><label>1. Name one advantage of wired over wireless.</label><input class="ans-input" id="w1" placeholder="..."><button class="check-btn" onclick="schkAny('w1','fw1',['higher bandwidth','more secure','faster','more reliable'])">Check</button><span class="fb" id="fw1"></span></div>
-<div class="answer-row"><label>2. Name one advantage of wireless over wired.</label><input class="ans-input" id="w2" placeholder="..."><button class="check-btn" onclick="schkAny('w2','fw2',['portable','no cables','mobility','flexible'])">Check</button><span class="fb" id="fw2"></span></div>
-<div class="answer-row"><label>3. A restaurant with staff using tablets should use which connection type?</label><input class="ans-input" id="w3" placeholder="..."><button class="check-btn" onclick="schkAny('w3','fw3',['wireless','Wireless'])">Check</button><span class="fb" id="fw3"></span></div>
-<div class="answer-row"><label>4. A vlogger uploading HD videos should use which connection type?</label><input class="ans-input" id="w4" placeholder="..."><button class="check-btn" onclick="schkAny('w4','fw4',['wired','Wired'])">Check</button><span class="fb" id="fw4"></span></div>
+  { type:`intro`, title:`What is a Network?`, body:`<p>A <strong>network</strong> is two or more computers connected to share data and resources. Networks are everywhere — your school, home broadband, the internet itself.</p>
+<div class="two-col"><div class="card"><h4>LAN</h4><p><strong>Local Area Network</strong> — covers a small area like a school building or home. Usually connected by cables or Wi-Fi.</p></div>
+<div class="card"><h4>WAN</h4><p><strong>Wide Area Network</strong> — spans large areas (cities, countries). The Internet is the world's largest WAN.</p></div></div>
+<div class="callout">🎯 Learning goals: understand network types, hardware, protocols, and how the internet works.</div>` },
+  { type:`concept`, title:`Network Hardware`, body:`<p>Networks use specialist hardware to connect devices and route data:</p>
+<div class="two-col"><div class="card"><h4>Router</h4><p>Connects different networks together (e.g. your home network to the internet). Directs data packets to the right destination.</p></div>
+<div class="card"><h4>Switch</h4><p>Connects devices within a LAN. Unlike a hub, it sends data only to the intended device — more efficient.</p></div></div>
+<div class="two-col"><div class="card"><h4>NIC</h4><p>Network Interface Card — hardware built into your device that lets it connect to a network. Has a unique MAC address.</p></div>
+<div class="card"><h4>WAP</h4><p>Wireless Access Point — transmits Wi-Fi signals so devices can join a network wirelessly.</p></div></div>` },
+  { type:`concept`, title:`IP & MAC Addresses`, body:`<p>Every device on a network needs a unique identifier:</p>
+<table class="bit-table"><tr><th>Type</th><th>Example</th><th>Assigned by</th><th>Changes?</th></tr>
+<tr><td><strong>IP Address</strong></td><td><code>192.168.1.42</code></td><td>Network (DHCP)</td><td>Yes — can change</td></tr>
+<tr><td><strong>MAC Address</strong></td><td><code>A1:B2:C3:D4:E5:F6</code></td><td>Manufacturer</td><td>No — permanent</td></tr></table>
+<div class="callout">💡 Think of IP as your postcode (changes if you move) and MAC as your fingerprint (always yours).</div>
+<div class="two-col"><div class="card"><h4>IPv4</h4><p>Four groups of numbers: <code>192.168.0.1</code><br>About 4 billion addresses — nearly full!</p></div>
+<div class="card"><h4>IPv6</h4><p>Eight groups of hex: <code>2001:0db8::1</code><br>340 undecillion addresses — effectively unlimited.</p></div></div>` },
+  { type:`concept`, title:`Network Protocols`, body:`<p>A <strong>protocol</strong> is an agreed set of rules for communication. Without protocols, devices from different manufacturers could not communicate.</p>
+<table class="bit-table"><tr><th>Protocol</th><th>Purpose</th></tr>
+<tr><td><strong>HTTP/HTTPS</strong></td><td>Transfer web pages. HTTPS adds encryption.</td></tr>
+<tr><td><strong>TCP/IP</strong></td><td>Core internet protocols — splits data into packets and routes them.</td></tr>
+<tr><td><strong>DNS</strong></td><td>Domain Name System — translates domain names to IP addresses.</td></tr>
+<tr><td><strong>FTP</strong></td><td>File Transfer Protocol — transfers files between computers.</td></tr>
+<tr><td><strong>SMTP/IMAP</strong></td><td>Sending and receiving email.</td></tr></table>` },
+  { type:`concept`, title:`The Internet & World Wide Web`, body:`<p>People often confuse these — they are different things:</p>
+<div class="two-col"><div class="card"><h4>The Internet</h4><p>The global physical <strong>infrastructure</strong> — cables, routers, servers connecting billions of devices worldwide. It carries all kinds of data.</p></div>
+<div class="card"><h4>The World Wide Web</h4><p>A <strong>service</strong> that runs on the internet. Consists of web pages (HTML files) accessed via HTTP. One of many internet services.</p></div></div>
+<div class="callout">🌐 Other internet services: email (SMTP), video calls (VOIP), online gaming, file sharing (FTP). The web is just one of them.</div>
+<div class="two-col"><div class="card"><h4>URL</h4><p><code>https://bbc.co.uk/news</code><br>Protocol + domain + path</p></div>
+<div class="card"><h4>DNS</h4><p>Translates <code>bbc.co.uk</code> to an IP address so your browser can find the server.</p></div></div>` },
+  { type:`concept`, title:`Packet Switching`, body:`<p>Data on the internet travels as <strong>packets</strong> — small chunks that may take different routes and are reassembled at the destination.</p>
+<ul><li>Each packet contains: data, source IP, destination IP, sequence number</li>
+<li>Packets can travel via different routes and arrive out of order</li>
+<li><strong>TCP</strong> ensures all packets arrive and reassembles them in order</li>
+<li>Lost packets are re-requested automatically</li></ul>
+<div class="callout">📦 Sending a photo: it gets split into hundreds of packets, each finds its own route across the internet, then they are reassembled on the other side. All in milliseconds!</div>` },
+  { type:`activity`, title:`Guided Tasks — Networks`, body:`<p>Work through each question and check your answer.</p>
+<div class="task-box"><h4>📝 Task A — Key Terms</h4>
+<div class="answer-row"><label>1. What does LAN stand for?</label><input class="ans-input" id="n1" placeholder="..."><button class="check-btn" onclick="schkAny('n1','fn1',['local area network','Local Area Network'])">Check</button><span class="fb" id="fn1"></span></div>
+<div class="answer-row"><label>2. What device connects a home to the internet?</label><input class="ans-input" id="n2" placeholder="..."><button class="check-btn" onclick="schkAny('n2','fn2',['router','Router'])">Check</button><span class="fb" id="fn2"></span></div>
+<div class="answer-row"><label>3. What protocol translates domain names to IP addresses?</label><input class="ans-input" id="n3" placeholder="..."><button class="check-btn" onclick="schkAny('n3','fn3',['dns','DNS'])">Check</button><span class="fb" id="fn3"></span></div>
+<div class="answer-row"><label>4. What does HTTP stand for?</label><input class="ans-input" id="n4" placeholder="..."><button class="check-btn" onclick="schkAny('n4','fn4',['hypertext transfer protocol','HyperText Transfer Protocol','http'])">Check</button><span class="fb" id="fn4"></span></div>
+<div class="answer-row"><label>5. A MAC address is permanent. True or False?</label><input class="ans-input" id="n5" placeholder="..."><button class="check-btn" onclick="schkAny('n5','fn5',['true','True'])">Check</button><span class="fb" id="fn5"></span></div>
 </div>
-<div class="task-box"><h4>📝 Task B — Bandwidth</h4>
-<div class="answer-row"><label>5. What is bandwidth?</label><input class="ans-input" id="w5" placeholder="..."><button class="check-btn" onclick="schkAny('w5','fw5',['maximum data transmitted at a time','amount of data transferred in a given time','data capacity'])">Check</button><span class="fb" id="fw5"></span></div>
-<div class="answer-row"><label>6. What unit is used to measure bandwidth?</label><input class="ans-input" id="w6" placeholder="..."><button class="check-btn" onclick="schkAny('w6','fw6',['bits per second','bps','mbps','Mbps'])">Check</button><span class="fb" id="fw6"></span></div>
-<div class="answer-row"><label>7. File = 200,000,000 bits, time = 10 seconds. What is the bandwidth in Mbps?</label><input class="ans-input" id="w7" placeholder="..."><button class="check-btn" onclick="schkAny('w7','fw7',['20','20 mbps','20 Mbps'])">Check</button><span class="fb" id="fw7"></span></div>
-<div class="answer-row"><label>8. What causes video buffering?</label><input class="ans-input" id="w8" placeholder="..."><button class="check-btn" onclick="schkAny('w8','fw8',['not enough bandwidth','insufficient bandwidth','low bandwidth'])">Check</button><span class="fb" id="fw8"></span></div>
-</div>` },
-  { type:`summary`, title:`Lesson Summary`, body:`<ul>
-<li><strong>Wired</strong>: higher bandwidth, more secure, devices fixed, cables can be hazard</li>
-<li><strong>Wireless</strong>: portable, no cables, lower bandwidth, potentially less secure</li>
-<li><strong>Bandwidth</strong> = maximum data that can be transmitted at a time</li>
-<li>Measured in <strong>bits per second (bps)</strong> — typically Mbps or Gbps</li>
-<li>Formula: <strong>Bandwidth = file size ÷ time</strong></li>
-<li>Buffering = not enough bandwidth to stream video smoothly</li>
-<li>High bandwidth activities: online gaming, uploading videos, HD streaming</li>
-</ul>
-<div class="callout success">✅ Exit quiz answers: stable gaming = wired · buffering = not enough bandwidth · highest bandwidth = multiplayer online game · wireless disadvantage = lower bandwidth · bandwidth = amount of data in given time · unit = bits per second</div>` },
-  { type:`compete`, title:`🏆 Wired & Wireless Speed Round`, body:`<div class="compete-board"><h4>🏆 Wired & Wireless Networks Speed Round</h4>
+<div class="task-box"><h4>📝 Task B — Hardware Match</h4>
+<div class="answer-row"><label>6. Which hardware allows wireless connections?</label><input class="ans-input" id="n6" placeholder="..."><button class="check-btn" onclick="schkAny('n6','fn6',['wap','WAP','wireless access point','wireless access point (wap)'])">Check</button><span class="fb" id="fn6"></span></div>
+<div class="answer-row"><label>7. What splits data into packets for transmission?</label><input class="ans-input" id="n7" placeholder="..."><button class="check-btn" onclick="schkAny('n7','fn7',['tcp','TCP','tcp/ip','TCP/IP','transmission control protocol'])">Check</button><span class="fb" id="fn7"></span></div>
+<div class="answer-row"><label>8. What connects devices within a LAN efficiently?</label><input class="ans-input" id="n8" placeholder="..."><button class="check-btn" onclick="schkAny('n8','fn8',['switch','Switch'])">Check</button><span class="fb" id="fn8"></span></div>
+</div>
+<div class="callout warn">💡 Remember: the Internet is the infrastructure; the World Wide Web is a service that runs on it.</div>` },
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>LAN</strong> is local; a <strong>WAN</strong> spans large distances (the internet is a WAN)</li>
+<li>Key hardware: Router (connects networks), Switch (connects devices in LAN), NIC, WAP</li>
+<li><strong>IP address</strong> — logical, can change. <strong>MAC address</strong> — physical, permanent</li>
+<li>Protocols: HTTP/S (web), TCP/IP (core internet), DNS (name lookup), SMTP (email)</li>
+<li>Data travels as <strong>packets</strong> that may take different routes and are reassembled</li>
+<li>The Internet ≠ the Web — the web is one service running on the internet</li>
+</ul><div class="callout success">✅ Next: Introduction to Programming with Python</div>` },
+  { type:`compete`, title:`🏆 Networks Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Networks Speed Challenge</h4>
 <div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
 <input class="compete-input" id="comp-name" placeholder="Your name...">
 <button class="compete-btn" onclick="startComp()">🚀 Start!</button>
@@ -197,9 +194,8 @@ const SLIDES = [
 <div class="compete-q" id="comp-q"></div>
 <input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
 <button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
-<div style="display:flex;justify-content:space-between;margin-top:8px">
-<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
-<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
 <div id="comp-end-area" style="display:none;text-align:center">
 <div style="font-size:40px;margin-bottom:8px">🎉</div>
 <p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
@@ -207,20 +203,22 @@ const SLIDES = [
 <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
 <ul class="leaderboard" id="leaderboard"></ul></div></div>` },
 ];
+
 const COMP_Qs = [
-  { q:`What does wired mean in networking?`, answers:[`uses a cable to connect to a network`,`cable connection`] },
-  { q:`What does wireless mean in networking?`, answers:[`uses radio waves`,`radio waves to connect`] },
-  { q:`What is bandwidth?`, answers:[`maximum data transmitted at a time`,`amount of data in a given time`] },
-  { q:`What unit measures bandwidth?`, answers:[`bits per second`,`bps`,`Mbps`] },
-  { q:`Is wired or wireless more secure?`, answers:[`wired`,`Wired`] },
-  { q:`Is wired or wireless better for portable devices?`, answers:[`wireless`,`Wireless`] },
-  { q:`File = 100Mb, time = 10s. Bandwidth in Mbps?`, answers:[`10`,`10 Mbps`] },
-  { q:`What causes video buffering?`, answers:[`not enough bandwidth`,`insufficient bandwidth`] },
-  { q:`Which needs highest bandwidth — email or HD video streaming?`, answers:[`HD video streaming`,`video streaming`] },
-  { q:`What type of connection is best for online gaming?`, answers:[`wired`,`Wired`] },
-  { q:`Name one disadvantage of wireless networks.`, answers:[`lower bandwidth`,`less secure`,`potentially insecure`] },
-  { q:`Name one disadvantage of wired networks.`, answers:[`cables are a trip hazard`,`devices in fixed positions`,`trip hazard`] },
+  { q:`What does LAN stand for?`, answers:[`Local Area Network`] },
+  { q:`What device connects your home network to the internet?`, answers:[`router`,`Router`] },
+  { q:`What protocol translates domain names to IP addresses?`, answers:[`DNS`] },
+  { q:`Is a MAC address permanent or temporary?`, answers:[`permanent`] },
+  { q:`What does HTTP stand for?`, answers:[`HyperText Transfer Protocol`,`hypertext transfer protocol`] },
+  { q:`What connects devices within a LAN efficiently?`, answers:[`switch`,`Switch`] },
+  { q:`What splits internet data into smaller chunks for transmission?`, answers:[`packets`,`Packets`] },
+  { q:`What is the difference between the Internet and the Web?`, answers:[`infrastructure vs service`,`the web is a service`] },
+  { q:`What does HTTPS add to HTTP?`, answers:[`encryption`,`Encryption`] },
+  { q:`What type of address is built into network hardware permanently?`, answers:[`MAC`,`mac address`,`MAC address`] },
+  { q:`What does DNS stand for?`, answers:[`Domain Name System`] },
+  { q:`Which IP version provides virtually unlimited addresses?`, answers:[`IPv6`] },
 ];
+
 // ── RENDER ──────────────────────────────────────────────────
 let cur = 0;
 function render() {
@@ -265,7 +263,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -273,8 +272,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
@@ -390,7 +390,6 @@ document.addEventListener('keydown', e => {
 render();
 
 
-function setFilter(t){if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}syncFB();}
-function syncFB(){const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));}
-(function(){if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');syncFB();})();
-</script></body></html>
+</script>
+</body>
+</html>
