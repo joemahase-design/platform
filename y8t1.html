@@ -58,9 +58,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -198,8 +198,8 @@ print(name.startswith(" ")) # True</pre>
 <div class="answer-row"><label>1. What keyword defines a function?</label><input class="ans-input" id="pw1" placeholder="..."><button class="check-btn" onclick="schkAny('pw1','fpw1',['def','DEF'])">Check</button><span class="fb" id="fpw1"></span></div>
 <div class="answer-row"><label>2. What keyword sends a value back from a function?</label><input class="ans-input" id="pw2" placeholder="..."><button class="check-btn" onclick="schkAny('pw2','fpw2',['return','RETURN'])">Check</button><span class="fb" id="fpw2"></span></div>
 <div class="answer-row"><label>3. What index is the first item in a list?</label><input class="ans-input" id="pw3" placeholder="..."><button class="check-btn" onclick="schk('pw3','fpw3','0')">Check</button><span class="fb" id="fpw3"></span></div>
-<div class="answer-row"><label>4. What method adds an item to the end of a list?</label><input class="ans-input" id="pw4" placeholder="..."><button class="check-btn" onclick="schkAny('pw4','fpw4',['append','.append()','append()'])">Check</button><span class="fb" id="fpw4"></span></div>
-<div class="answer-row"><label>5. What does <code>"hello".upper()</code> return?</label><input class="ans-input" id="pw5" placeholder="..."><button class="check-btn" onclick="schkAny('pw5','fpw5',['hello','HELLO'])">Check</button><span class="fb" id="fpw5"></span></div>
+<div class="answer-row"><label>4. What method adds an item to the end of a list?</label><input class="ans-input" id="pw4" placeholder="..."><button class="check-btn" onclick="schkAny('pw4','fpw4',['append','.append()','append()','list.append','list.append()'])">Check</button><span class="fb" id="fpw4"></span></div>
+<div class="answer-row"><label>5. What does <code>"hello".upper()</code> return?</label><input class="ans-input" id="pw5" placeholder="..."><button class="check-btn" onclick="schkAny('pw5','fpw5',['hello','HELLO','Hello','"hello"','hello world'])">Check</button><span class="fb" id="fpw5"></span></div>
 </div>
 <div class="task-box"><h4>📝 Task B — Trace the Code</h4>
 <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Given: <code>nums = [3, 7, 2, 9, 4]</code></p>
@@ -295,7 +295,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -303,8 +304,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
