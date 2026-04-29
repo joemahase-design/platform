@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>T2 Y7 — The Internet</title><style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y7 — Introduction to Programming</title>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root {
   --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
@@ -57,9 +61,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -103,127 +107,137 @@ body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:
 body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
 body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
 @media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
-
-.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
-.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
-.fbtn:hover{border-color:var(--accent);color:var(--accent);}
-.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
-.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
-body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
-body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
-body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
-body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
-body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style></head>
-<body><div class="presentation">
-    <div class="filter-bar">
-    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
-    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
-    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
-  </div>
+</style>
+</head>
+<body>
+<div class="presentation">
   <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
   <div class="slide-area"><div class="slide" id="slide"></div></div>
   <div class="nav-bar">
     <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
-    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1/1</div>
-    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <div class="nav-center">
+      <div class="dot-row" id="dots"></div>
+      <div class="sctr" id="sctr">1 / 1</div>
+      <div class="kbhint">← → Space · 🏆 Competition on last slide</div>
+    </div>
     <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
   </div>
 </div>
 <script>
-const LESSON_ID=`t2_y7l4`;
+const LESSON_ID = `y7t4`;
 const SLIDES = [
-  { type:`intro`, title:`The Internet vs The World Wide Web`, body:`<p>Most people use these terms interchangeably — but they are very different things.</p>
-<div class="two-col">
-<div class="card"><h4>The Internet</h4><p>The <strong>global system of interconnected computer networks</strong>. The physical infrastructure — cables, satellites, routers — connecting billions of devices worldwide. It carries many types of data.</p></div>
-<div class="card"><h4>The World Wide Web</h4><p>A <strong>service provided via the internet</strong> that allows us to access web pages and other shared files through a browser. One of many services running on the internet.</p></div></div>
-<div class="callout warn">⚠️ The internet ≠ the Web. The internet is the infrastructure. The WWW is just one service that uses it — like how roads are infrastructure and delivery lorries are one service that uses the roads.</div>
-<div class="callout">🎯 <strong>Lesson goals:</strong> Explain the difference between the internet and the WWW, describe how the internet transmits data, and explore internet services.</div>` },
-  { type:`concept`, title:`How the Internet Transmits Data`, body:`<p>The internet uses multiple types of physical connections to carry data around the world:</p>
-<table class="bit-table">
-<tr><th>Connection type</th><th>How it works</th><th>Used for</th></tr>
-<tr><td><strong>Fibre-optic cables</strong></td><td>Light pulses through glass cables — on land and under the sea</td><td>High-speed backbone connections</td></tr>
-<tr><td><strong>Satellites</strong></td><td>Orbit Earth, use radio waves to connect remote areas</td><td>Rural/remote internet access</td></tr>
-<tr><td><strong>Microwave links</strong></td><td>Beam data between towers</td><td>Point-to-point connections</td></tr>
-<tr><td><strong>Wi-Fi / Radio waves</strong></td><td>Wireless connections for local devices</td><td>Home and office networks</td></tr>
-</table>
-<div class="callout">🌍 Any device connected to the internet can communicate with any other connected device anywhere in the world — this global reach is what makes the internet so powerful.</div>` },
-  { type:`concept`, title:`The World Wide Web`, body:`<p>The WWW is a collection of <strong>web pages</strong> — digital files containing text, images, videos and links to other pages.</p>
-<div class="two-col">
-<div class="card"><h4>Web page</h4><p>A single document viewed using a web browser. Contains text, images, video, links.</p></div>
-<div class="card"><h4>Website</h4><p>A group of related web pages, usually created and maintained by the same person or organisation. Linked together by hyperlinks.</p></div></div>
-<table class="bit-table" style="margin-top:14px">
-<tr><th>Description</th><th>Internet or WWW?</th></tr>
-<tr><td>A global network connecting millions of computers</td><td><strong>Internet</strong></td></tr>
-<tr><td>Used to load websites and videos in a browser</td><td><strong>WWW</strong></td></tr>
-<tr><td>Uses web pages linked together by hyperlinks</td><td><strong>WWW</strong></td></tr>
-<tr><td>Works through cables, satellites and wireless connections</td><td><strong>Internet</strong></td></tr>
-</table>` },
-  { type:`concept`, title:`Internet Services`, body:`<p>The internet carries many different services — the WWW is just one:</p>
-<table class="bit-table">
-<tr><th>Service</th><th>What it does</th><th>Example use</th></tr>
-<tr><td><strong>World Wide Web</strong></td><td>Access web pages via a browser</td><td>Research, news, shopping</td></tr>
-<tr><td><strong>Email</strong></td><td>Send and receive messages with attachments</td><td>Communicating with teachers</td></tr>
-<tr><td><strong>VoIP</strong></td><td>Voice and video calls over the internet</td><td>Calling a relative abroad</td></tr>
-<tr><td><strong>Cloud storage</strong></td><td>Store files remotely, access from anywhere</td><td>Google Drive, OneDrive</td></tr>
-<tr><td><strong>Instant messaging</strong></td><td>Real-time text communication</td><td>Arranging a meetup</td></tr>
-<tr><td><strong>Video streaming</strong></td><td>Watch video content on demand</td><td>Netflix, YouTube</td></tr>
-<tr><td><strong>Online gaming</strong></td><td>Play games with others remotely</td><td>Multiplayer games</td></tr>
-</table>` },
-  { type:`activity`, title:`Guided Tasks — The Internet`, body:`<p>Test your understanding of the internet.</p>
-<div class="task-box"><h4>📝 Task A — Internet vs WWW</h4>
-<div class="answer-row"><label>1. What is the internet?</label><input class="ans-input" id="i1" placeholder="..."><button class="check-btn" onclick="schkAny('i1','fi1',['global network of networks','global system of interconnected networks','global network'])">Check</button><span class="fb" id="fi1"></span></div>
-<div class="answer-row"><label>2. What is the World Wide Web?</label><input class="ans-input" id="i2" placeholder="..."><button class="check-btn" onclick="schkAny('i2','fi2',['a service on the internet','collection of web pages','service providing web pages'])">Check</button><span class="fb" id="fi2"></span></div>
-<div class="answer-row"><label>3. Is the internet the same as the WWW? Yes or No.</label><input class="ans-input" id="i3" placeholder="..."><button class="check-btn" onclick="schkAny('i3','fi3',['no','No'])">Check</button><span class="fb" id="fi3"></span></div>
-<div class="answer-row"><label>4. Which type of cable carries data under the sea between continents?</label><input class="ans-input" id="i4" placeholder="..."><button class="check-btn" onclick="schkAny('i4','fi4',['fibre-optic','fibre optic','fiber optic'])">Check</button><span class="fb" id="fi4"></span></div>
+  { type:`intro`, title:`What is Programming?`, body:`<p>Programming is writing instructions that a computer can follow to solve a problem or complete a task. Every app, game and website is built from code.</p>
+<div class="two-col"><div class="card"><h4>Why Python?</h4><p>Python is one of the world's most popular languages. It reads almost like English, making it perfect for beginners — and it is used by Google, NASA and Netflix.</p></div>
+<div class="card"><h4>What is a Program?</h4><p>A sequence of instructions written in a programming language. The computer executes them one by one, top to bottom (unless told otherwise).</p></div></div>
+<div class="callout">🎯 Goals today: variables, data types, input/output, and writing your first Python programs.</div>` },
+  { type:`concept`, title:`Variables & Data Types`, body:`<p>A <strong>variable</strong> is a named box in memory that stores a value your program can use and change.</p>
+<pre>name = "Alice"     # String — text in quotes
+age  = 14          # Integer — whole number
+score = 9.5        # Float — decimal number
+passed = True      # Boolean — True or False</pre>
+<table class="bit-table"><tr><th>Type</th><th>Example</th><th>Used for</th></tr>
+<tr><td><strong>String</strong></td><td><code>"Hello"</code></td><td>Text, names, messages</td></tr>
+<tr><td><strong>Integer</strong></td><td><code>42</code></td><td>Whole numbers, counts</td></tr>
+<tr><td><strong>Float</strong></td><td><code>3.14</code></td><td>Decimals, measurements</td></tr>
+<tr><td><strong>Boolean</strong></td><td><code>True</code></td><td>Yes/No decisions</td></tr></table>
+<div class="callout warn">⚠️ Python is case-sensitive: <code>Name</code> and <code>name</code> are different variables!</div>` },
+  { type:`concept`, title:`Input & Output`, body:`<p>Programs communicate with users via <strong>input</strong> (reading) and <strong>output</strong> (displaying):</p>
+<pre># OUTPUT — display to screen
+print("Hello, World!")
+print("Your score is:", score)
+
+# INPUT — read from keyboard
+name = input("What is your name? ")
+age  = int(input("How old are you? "))</pre>
+<div class="callout warn">⚠️ <code>input()</code> always returns a <strong>string</strong>. To use it as a number, convert it:<br><code>age = int(input("Age: "))</code> or <code>price = float(input("Price: "))</code></div>
+<div class="card" style="margin-top:14px"><h4>String Concatenation</h4>
+<pre>name = "Alex"
+print("Hello, " + name + "!")  # Hello, Alex!</pre></div>` },
+  { type:`concept`, title:`Selection — IF Statements`, body:`<p><strong>Selection</strong> lets your program make decisions and follow different paths:</p>
+<pre>score = int(input("Enter your score: "))
+
+if score >= 70:
+    print("Distinction!")
+elif score >= 50:
+    print("Pass")
+else:
+    print("Try again")
+
+print("Program finished")</pre>
+<div class="two-col"><div class="card"><h4>Comparison Operators</h4><p><code>==</code> equal to<br><code>!=</code> not equal<br><code>&gt;</code> greater than<br><code>&lt;</code> less than<br><code>&gt;=</code> greater or equal<br><code>&lt;=</code> less or equal</p></div>
+<div class="card"><h4>Key Rules</h4><p>• Colon <code>:</code> after every condition<br>• Indent with 4 spaces inside blocks<br>• <code>elif</code> = else if<br>• Only ONE branch runs</p></div></div>` },
+  { type:`concept`, title:`Iteration — Loops`, body:`<p><strong>Iteration</strong> repeats a block of code. Python has two main loop types:</p>
+<div class="two-col"><div class="card"><h4>FOR Loop — count controlled</h4>
+<pre>for i in range(5):
+    print(i)
+# Prints: 0 1 2 3 4
+
+for i in range(1, 6):
+    print(i)
+# Prints: 1 2 3 4 5</pre></div>
+<div class="card"><h4>WHILE Loop — condition controlled</h4>
+<pre>count = 0
+while count < 5:
+    print(count)
+    count = count + 1
+# Prints: 0 1 2 3 4</pre></div></div>
+<div class="callout">🔑 Use <strong>FOR</strong> when you know how many times. Use <strong>WHILE</strong> when you repeat until something happens.</div>` },
+  { type:`activity`, title:`Guided Tasks — Python Basics`, body:`<p>Answer each question about Python programming.</p>
+<div class="task-box"><h4>📝 Task A — Variables & Types</h4>
+<div class="answer-row"><label>1. What data type is <code>"Hello"</code>?</label><input class="ans-input" id="p1" placeholder="..."><button class="check-btn" onclick="schkAny('p1','fp1',['string','String'])">Check</button><span class="fb" id="fp1"></span></div>
+<div class="answer-row"><label>2. What data type is <code>42</code>?</label><input class="ans-input" id="p2" placeholder="..."><button class="check-btn" onclick="schkAny('p2','fp2',['integer','Integer','int'])">Check</button><span class="fb" id="fp2"></span></div>
+<div class="answer-row"><label>3. What does <code>input()</code> always return?</label><input class="ans-input" id="p3" placeholder="..."><button class="check-btn" onclick="schkAny('p3','fp3',['string','String','a string'])">Check</button><span class="fb" id="fp3"></span></div>
+<div class="answer-row"><label>4. What symbol checks equality in Python?</label><input class="ans-input" id="p4" placeholder="..."><button class="check-btn" onclick="schk('p4','fp4','==')">Check</button><span class="fb" id="fp4"></span></div>
 </div>
-<div class="task-box"><h4>📝 Task B — Internet Services</h4>
-<div class="answer-row"><label>5. What service allows voice and video calls over the internet?</label><input class="ans-input" id="i5" placeholder="..."><button class="check-btn" onclick="schkAny('i5','fi5',['voip','VoIP','voice over ip'])">Check</button><span class="fb" id="fi5"></span></div>
-<div class="answer-row"><label>6. What service lets you store files and access them from anywhere?</label><input class="ans-input" id="i6" placeholder="..."><button class="check-btn" onclick="schkAny('i6','fi6',['cloud storage','Cloud storage','cloud'])">Check</button><span class="fb" id="fi6"></span></div>
-<div class="answer-row"><label>7. A group of related web pages is called a _______.</label><input class="ans-input" id="i7" placeholder="..."><button class="check-btn" onclick="schkAny('i7','fi7',['website','Website'])">Check</button><span class="fb" id="fi7"></span></div>
+<div class="task-box"><h4>📝 Task B — Reading Code</h4>
+<p style="font-size:13px;color:var(--muted);margin-bottom:10px">What does this code print?<br><code>x = 10<br>if x > 5:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Big")<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Small")</code></p>
+<div class="answer-row"><label>5. What is printed?</label><input class="ans-input" id="p5" placeholder="..."><button class="check-btn" onclick="schkAny('p5','fp5',['big','Big','"big"'])">Check</button><span class="fb" id="fp5"></span></div>
+<div class="answer-row"><label>6. How many times does <code>for i in range(4):</code> loop?</label><input class="ans-input" id="p6" placeholder="..."><button class="check-btn" onclick="schk('p6','fp6','4')">Check</button><span class="fb" id="fp6"></span></div>
+<div class="answer-row"><label>7. Which loop is best when you don't know how many repeats?</label><input class="ans-input" id="p7" placeholder="..."><button class="check-btn" onclick="schkAny('p7','fp7',['while','while loop','WHILE','a while loop'])">Check</button><span class="fb" id="fp7"></span></div>
 </div>` },
-  { type:`summary`, title:`Lesson Summary`, body:`<ul>
-<li><strong>Internet</strong> = the global physical infrastructure of interconnected networks</li>
-<li><strong>WWW</strong> = a service that runs ON the internet — collection of web pages accessed via a browser</li>
-<li>Internet transmission: fibre-optic cables, satellites, microwave links, radio waves</li>
-<li>A <strong>web page</strong> = a single document; a <strong>website</strong> = a group of related pages</li>
-<li>Internet services: WWW, email, VoIP, cloud storage, instant messaging, video streaming, online gaming</li>
-</ul>
-<div class="callout success">✅ Exit quiz answers: internet = global network, WWW = service · data transmission = fibre-optic, satellites, microwave links · WWW = collection of web pages in a browser · internet activities = email, streaming, video call · cloud storage · VoIP = voice/video calls</div>` },
-  { type:`compete`, title:`🏆 The Internet Speed Round`, body:`<div class="compete-board"><h4>🏆 The Internet Speed Round</h4>
-<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A <strong>variable</strong> stores a value: String, Integer, Float, or Boolean</li>
+<li><code>print()</code> outputs to screen; <code>input()</code> reads from keyboard (always returns a string)</li>
+<li>Convert input to numbers: <code>int(input(...))</code> or <code>float(input(...))</code></li>
+<li><strong>Selection</strong>: <code>if / elif / else</code> — always end condition with <code>:</code>, indent body 4 spaces</li>
+<li><strong>FOR loop</strong>: count-controlled, use <code>range()</code></li>
+<li><strong>WHILE loop</strong>: condition-controlled, repeats until condition is False</li>
+</ul><div class="callout success">✅ Next: Spreadsheet Modelling</div>` },
+  { type:`compete`, title:`🏆 Python Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Python Speed Challenge</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question!</p>
 <input class="compete-input" id="comp-name" placeholder="Your name...">
 <button class="compete-btn" onclick="startComp()">🚀 Start!</button>
-<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<ul class="leaderboard" id="leaderboard"></ul></div>
 <div id="comp-game-area" style="display:none">
 <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
 <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
 <div class="compete-q" id="comp-q"></div>
 <input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
 <button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
-<div style="display:flex;justify-content:space-between;margin-top:8px">
-<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
-<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
 <div id="comp-end-area" style="display:none;text-align:center">
-<div style="font-size:40px;margin-bottom:8px">🎉</div>
-<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div style="font-size:40px">🎉</div><p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
 <div class="score-display" id="comp-final-score">0</div>
 <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
 <ul class="leaderboard" id="leaderboard"></ul></div></div>` },
 ];
+
 const COMP_Qs = [
-  { q:`What is the internet?`, answers:[`global network of networks`,`global system of interconnected networks`] },
-  { q:`What is the World Wide Web?`, answers:[`a service on the internet`,`collection of web pages`] },
-  { q:`Is the internet the same as the WWW?`, answers:[`no`,`No`] },
-  { q:`Name a way data travels across the internet.`, answers:[`fibre-optic cables`,`satellites`,`microwave links`,`radio waves`] },
-  { q:`What does VoIP stand for?`, answers:[`Voice over Internet Protocol`] },
-  { q:`What service stores files remotely?`, answers:[`cloud storage`] },
-  { q:`What is a group of related web pages called?`, answers:[`website`] },
-  { q:`What do you use to view web pages?`, answers:[`web browser`,`browser`] },
-  { q:`Which internet service lets you make video calls?`, answers:[`VoIP`] },
-  { q:`What cable type transmits data under the sea?`, answers:[`fibre-optic`,`fibre optic`] },
-  { q:`Can email be sent without the WWW?`, answers:[`yes`,`Yes`] },
-  { q:`The WWW is a service that runs on the internet. True or False?`, answers:[`true`,`True`] },
+  { q:`What Python function displays output to the screen?`, answers:[`print`,`print()`] },
+  { q:`What data type stores text in Python?`, answers:[`string`,`String`] },
+  { q:`What does int() do to an input value?`, answers:[`converts it to an integer`,`converts to integer`,`makes it a number`] },
+  { q:`What symbol is used for equality comparison in Python?`, answers:[`==`] },
+  { q:`How many times does range(5) loop?`, answers:[`5`] },
+  { q:`Which loop repeats while a condition is True?`, answers:[`while`,`while loop`,`WHILE`] },
+  { q:`What must you put at the end of an if statement line?`, answers:[`colon`,`:`] },
+  { q:`What data type is True or False?`, answers:[`boolean`,`Boolean`] },
+  { q:`What is the correct indentation in Python?`, answers:[`4 spaces`,`4`] },
+  { q:`Which loop uses range()?`, answers:[`for`,`for loop`,`FOR`] },
+  { q:`What does print("Hi" + " " + "Joe") output?`, answers:[`Hi Joe`] },
+  { q:`What keyword follows if to add another condition?`, answers:[`elif`] },
 ];
+
 // ── RENDER ──────────────────────────────────────────────────
 let cur = 0;
 function render() {
@@ -268,7 +282,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -276,8 +291,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
@@ -393,7 +409,6 @@ document.addEventListener('keydown', e => {
 render();
 
 
-function setFilter(t){if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}syncFB();}
-function syncFB(){const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));}
-(function(){if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');syncFB();})();
-</script></body></html>
+</script>
+</body>
+</html>
