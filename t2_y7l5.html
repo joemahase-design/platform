@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>T2 Y7 — Exploring the World Wide Web</title><style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y7 — Spreadsheet Modelling</title>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root {
   --bg:#0f1117;--surface:#1a1d2e;--surface2:#22263a;--border:#353a5c;
@@ -57,9 +61,9 @@ pre{font-family:var(--mono);background:var(--surface2);border:1px solid var(--bo
 /* Task interactive */
 .task-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;}
 .task-box h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-.answer-row label{font-size:13px;color:var(--text-muted);min-width:220px;}
-.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:120px;text-align:center;transition:border-color .2s;}
+.answer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.answer-row label{font-size:13px;color:var(--muted);min-width:260px;flex:1 1 260px;line-height:1.5;}
+.ans-input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--mono);font-size:14px;width:clamp(140px,30vw,320px);text-align:left;transition:border-color .2s;}
 .ans-input:focus{outline:none;border-color:var(--accent);}
 .check-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;}
 .check-btn:hover{background:var(--accent);color:#000;}
@@ -103,120 +107,103 @@ body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:
 body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
 body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--text-muted:#5a4e20;--accent:#1a6fd4;}
 @media(max-width:640px){.slide{padding:24px 18px;}.two-col,.three-col{grid-template-columns:1fr;}.nav-btn{padding:7px 14px;font-size:12px;}}
-
-.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;justify-content:flex-end;}
-.fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
-.fbtn:hover{border-color:var(--accent);color:var(--accent);}
-.fbtn.on-ng{background:#e8f5e0;border-color:#6a9a4a;color:#2a4a1a;}
-.fbtn.on-sp{background:#fff3cd;border-color:#c8b97a;color:#5a4e20;}
-body.nature-green{--bg:#f4f1e8;--surface:#fff;--surface2:#ebe6d5;--border:#a8956a;--accent:#3a7a3a;--text:#1c1a0e;--muted:#5c5430;}
-body.nature-green .callout{background:#e8f5e0!important;border-left-color:#3a7a3a!important;}
-body.nature-green code,body.nature-green pre{background:#e8f5e0!important;color:#1c3a1c!important;border-color:#a8c8a8!important;}
-body.superpower *{font-family:'OpenDyslexic','Comic Sans MS',cursive!important;letter-spacing:.06em;word-spacing:.18em;line-height:1.9!important;}
-body.superpower{--bg:#fffbea;--surface:#fff;--surface2:#f5f0dc;--border:#c8b97a;--text:#1a1200;--muted:#5a4e20;--accent:#1a6fd4;}</style></head>
-<body><div class="presentation">
-    <div class="filter-bar">
-    <span style="font-size:11px;color:var(--muted);margin-right:4px">Accessibility:</span>
-    <button class="fbtn ng-btn" onclick="setFilter('ng')">🌿 Green</button>
-    <button class="fbtn sp-btn" onclick="setFilter('sp')">⚡ Superpower</button>
-  </div>
+</style>
+</head>
+<body>
+<div class="presentation">
   <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
   <div class="slide-area"><div class="slide" id="slide"></div></div>
   <div class="nav-bar">
     <button class="nav-btn" id="prev-btn" onclick="goPrev()">← Previous</button>
-    <div class="nav-center"><div class="dot-row" id="dots"></div><div class="sctr" id="sctr">1/1</div>
-    <div class="kbhint">← → Space · 🏆 Competition on last slide</div></div>
+    <div class="nav-center">
+      <div class="dot-row" id="dots"></div>
+      <div class="sctr" id="sctr">1 / 1</div>
+      <div class="kbhint">← → Space · 🏆 Competition on last slide</div>
+    </div>
     <button class="nav-btn primary" id="next-btn" onclick="goNext()">Next →</button>
   </div>
 </div>
 <script>
-const LESSON_ID=`t2_y7l5`;
+const LESSON_ID = `y7t5`;
 const SLIDES = [
-  { type:`intro`, title:`How the WWW Works`, body:`<p>When you type a web address and press Enter, a complex chain of events happens in milliseconds. This lesson explains exactly how web pages reach your screen.</p>
-<div class="two-col">
-<div class="card"><h4>Key terms</h4>
-<p><strong>Web server</strong> — a networked computer that stores and provides web pages on request</p>
-<p style="margin-top:8px"><strong>Packet</strong> — a segment of data, usually part of a larger message</p></div>
-<div class="card"><h4>Key protocols</h4>
-<p><strong>HTTP</strong> — HyperText Transfer Protocol: rules for sending and receiving web pages</p>
-<p style="margin-top:8px"><strong>HTTPS</strong> — HTTP Secure: encrypted version of HTTP</p></div></div>
-<div class="callout">🎯 <strong>Lesson goals:</strong> Explain how data is transmitted using packets, describe what a packet header contains, and explain why HTTPS is more secure than HTTP.</div>` },
-  { type:`concept`, title:`Requesting a Web Page`, body:`<p>Every time you visit a website, your browser and a web server exchange messages:</p>
-<div class="three-col">
-<div class="card"><h4>Step 1: Request</h4><p>Your <strong>web browser</strong> sends a message to the web server asking for the page:<br><em>"Send me example.com"</em></p></div>
-<div class="card"><h4>Step 2: Locate</h4><p>The <strong>web server</strong> receives the request, finds the page files, and prepares to send them back.</p></div>
-<div class="card"><h4>Step 3: Respond</h4><p>The server sends the page data back to your browser. Your browser <strong>renders</strong> (displays) the page from this data.</p></div></div>
-<div class="callout">💡 This browser-server exchange follows the <strong>HTTP protocol</strong> — a set of agreed rules for how these requests and responses must be formatted.</div>` },
-  { type:`concept`, title:`Data Packets`, body:`<p>Large amounts of data cannot be sent as one piece — it is split into <strong>packets</strong> and reassembled at the destination.</p>
-<div class="two-col">
-<div class="card"><h4>What is in a packet?</h4><p><strong>Header</strong> (the addressing info):<br>• Source IP address<br>• Destination IP address<br>• Total number of packets<br>• Packet sequence number</p><p style="margin-top:8px"><strong>Data</strong>: the actual chunk of content</p></div>
-<div class="card"><h4>How packets travel</h4><p>• Packets may travel via <strong>different routes</strong> across the internet<br>• They may <strong>arrive out of order</strong><br>• They are <strong>reassembled in order</strong> at the destination using the sequence numbers<br>• Missing packets are re-requested</p></div></div>
-<div class="callout">📦 Sending a photo: split into hundreds of packets → each finds its own route → reassembled in order at the destination. The order of steps: (1) some packets arrive → (2) all packets arrive → (3) find packet 1, read data → (4) find next packet → (5) continue until image reconstructed.</div>` },
-  { type:`concept`, title:`HTTP vs HTTPS`, body:`<p>HTTP and HTTPS both transfer web pages — but HTTPS adds a critical layer of security:</p>
-<table class="bit-table">
-<tr><th></th><th>HTTP</th><th>HTTPS</th></tr>
-<tr><td><strong>Full name</strong></td><td>HyperText Transfer Protocol</td><td>HTTP Secure</td></tr>
-<tr><td><strong>Data</strong></td><td>Sent unencrypted — readable by anyone intercepting</td><td class="bit-highlight">Encrypted — unreadable if intercepted</td></tr>
-<tr><td><strong>Use for</strong></td><td>Non-sensitive browsing</td><td class="bit-highlight">Passwords, bank details, personal data</td></tr>
-<tr><td><strong>Indicator</strong></td><td>http://</td><td class="bit-highlight">https:// + padlock icon</td></tr>
-</table>
-<div class="callout warn">⚠️ <strong>Always check for HTTPS</strong> before entering personal information on a website. Even if an attacker intercepts HTTPS data, they cannot read it because it is <strong>encrypted</strong>.</div>` },
-  { type:`activity`, title:`Guided Tasks — WWW & Packets`, body:`<p>Test your understanding of how the web works.</p>
-<div class="task-box"><h4>📝 Task A — Packets</h4>
-<div class="answer-row"><label>1. What is a data packet?</label><input class="ans-input" id="ww1" placeholder="..."><button class="check-btn" onclick="schkAny('ww1','fww1',['a small chunk of data','segment of data','chunk of a larger message'])">Check</button><span class="fb" id="fww1"></span></div>
-<div class="answer-row"><label>2. Name one thing stored in a packet header.</label><input class="ans-input" id="ww2" placeholder="..."><button class="check-btn" onclick="schkAny('ww2','fww2',['source address','destination address','sequence number','total number of packets','packet sequence number'])">Check</button><span class="fb" id="fww2"></span></div>
-<div class="answer-row"><label>3. Do packets always travel the same route? Yes or No.</label><input class="ans-input" id="ww3" placeholder="..."><button class="check-btn" onclick="schkAny('ww3','fww3',['no','No'])">Check</button><span class="fb" id="fww3"></span></div>
-<div class="answer-row"><label>4. What is used to reassemble packets in the correct order?</label><input class="ans-input" id="ww4" placeholder="..."><button class="check-btn" onclick="schkAny('ww4','fww4',['sequence number','sequence numbers','packet sequence number'])">Check</button><span class="fb" id="fww4"></span></div>
-</div>
-<div class="task-box"><h4>📝 Task B — HTTP vs HTTPS</h4>
-<div class="answer-row"><label>5. What does HTTPS add to HTTP?</label><input class="ans-input" id="ww5" placeholder="..."><button class="check-btn" onclick="schkAny('ww5','fww5',['encryption','security','encrypts data'])">Check</button><span class="fb" id="fww5"></span></div>
-<div class="answer-row"><label>6. What web server hardware does HTTP request a page from?</label><input class="ans-input" id="ww6" placeholder="..."><button class="check-btn" onclick="schkAny('ww6','fww6',['web server','Web server'])">Check</button><span class="fb" id="fww6"></span></div>
-<div class="answer-row"><label>7. Why should you check for HTTPS before entering passwords?</label><input class="ans-input" id="ww7" placeholder="..."><button class="check-btn" onclick="schkAny('ww7','fww7',['data is encrypted','stops hackers reading your data','information is encrypted'])">Check</button><span class="fb" id="fww7"></span></div>
+  { type:`intro`, title:`What is a Spreadsheet?`, body:`<p>A spreadsheet is a grid of <strong>cells</strong> organised in rows and columns. It is one of the most widely used software tools in the world — from schools and hospitals to banks and space agencies.</p>
+<div class="two-col"><div class="card"><h4>Why Use Spreadsheets?</h4><ul><li>Store and organise large amounts of data</li><li>Automatically recalculate when data changes</li><li>Create charts and visualisations</li><li>Sort, filter and analyse data quickly</li></ul></div>
+<div class="card"><h4>Real World Uses</h4><ul><li>School: tracking student grades and attendance</li><li>Business: budgets, payroll, stock</li><li>Science: recording and analysing results</li><li>Sport: player statistics and league tables</li></ul></div></div>
+<div class="callout">🎯 Today: cells, references, formulas, formatting and data analysis using the 2016 Olympic medal table.</div>` },
+  { type:`concept`, title:`Cells, Rows & Columns`, body:`<p>Every piece of data in a spreadsheet lives in a <strong>cell</strong>:</p>
+<table class="bit-table"><tr><th>Term</th><th>Description</th><th>Example</th></tr>
+<tr><td><strong>Column</strong></td><td>Vertical — labelled A, B, C…</td><td>Column C</td></tr>
+<tr><td><strong>Row</strong></td><td>Horizontal — numbered 1, 2, 3…</td><td>Row 5</td></tr>
+<tr><td><strong>Cell</strong></td><td>One box — column letter + row number</td><td><code>C5</code></td></tr>
+<tr><td><strong>Range</strong></td><td>Group of cells from corner to corner</td><td><code>A1:D10</code></td></tr></table>
+<div class="callout">💡 After column Z comes AA, AB, AC… Spreadsheets can have thousands of columns and over a million rows!</div>
+<div class="two-col"><div class="card"><h4>Selecting Ranges</h4><p>Click and drag, or type the range into a formula. <code>B2:B8</code> means all cells from B2 to B8.</p></div>
+<div class="card"><h4>Absolute vs Relative</h4><p><code>B2</code> — relative (changes when copied)<br><code>$B$2</code> — absolute (stays fixed)</p></div></div>` },
+  { type:`concept`, title:`Formulas & Functions`, body:`<p>Every formula starts with <code>=</code>. Functions are built-in formulas:</p>
+<table class="bit-table"><tr><th>Function</th><th>What it does</th><th>Example</th></tr>
+<tr><td><code>=SUM()</code></td><td>Adds values in a range</td><td><code>=SUM(B2:B8)</code></td></tr>
+<tr><td><code>=AVERAGE()</code></td><td>Calculates the mean</td><td><code>=AVERAGE(C2:C8)</code></td></tr>
+<tr><td><code>=MAX()</code></td><td>Finds the largest value</td><td><code>=MAX(D2:D8)</code></td></tr>
+<tr><td><code>=MIN()</code></td><td>Finds the smallest value</td><td><code>=MIN(D2:D8)</code></td></tr>
+<tr><td><code>=COUNT()</code></td><td>Counts numeric cells</td><td><code>=COUNT(A1:A20)</code></td></tr>
+<tr><td><code>=IF()</code></td><td>Returns different values based on condition</td><td><code>=IF(B2>50,"Pass","Fail")</code></td></tr></table>
+<div class="callout warn">⚠️ If you see <code>#VALUE!</code> or <code>#REF!</code> — you have a formula error. Check your cell references and data types.</div>` },
+  { type:`activity`, title:`Olympic Medal Investigation`, body:`<p>You are a journalist analysing the 2016 Summer Olympics. Use the data below to answer the questions.</p>
+<table class="bit-table"><tr><th>Country</th><th>Gold 🥇</th><th>Silver 🥈</th><th>Bronze 🥉</th></tr>
+<tr><td>United States</td><td>46</td><td>37</td><td>38</td></tr>
+<tr><td>Great Britain</td><td>27</td><td>23</td><td>17</td></tr>
+<tr><td>China</td><td>26</td><td>18</td><td>26</td></tr>
+<tr><td>Russia</td><td>19</td><td>17</td><td>20</td></tr>
+<tr><td>Germany</td><td>17</td><td>10</td><td>15</td></tr></table>
+<div class="task-box"><h4>📝 Questions — write the formula</h4>
+<div class="answer-row"><label>1. Formula to total medals for USA (B2+C2+D2):</label><input class="ans-input" id="sp1" placeholder="=..."><button class="check-btn" onclick="schkAny('sp1','fsp1',['=b2+c2+d2','=B2+C2+D2','=sum(b2:d2)','=SUM(B2:D2)','b2+c2+d2','sum(b2:d2)'])">Check</button><span class="fb" id="fsp1"></span></div>
+<div class="answer-row"><label>2. Which function finds the highest value?</label><input class="ans-input" id="sp2" placeholder="..."><button class="check-btn" onclick="schkAny('sp2','fsp2',['max','MAX','=MAX()','=max()','MAX()','max()'])">Check</button><span class="fb" id="fsp2"></span></div>
+<div class="answer-row"><label>3. Cell reference for column C, row 4?</label><input class="ans-input" id="sp3" placeholder="..."><button class="check-btn" onclick="schkAny('sp3','fsp3',['c4','C4'])">Check</button><span class="fb" id="fsp3"></span></div>
+<div class="answer-row"><label>4. What does = always start?</label><input class="ans-input" id="sp4" placeholder="..."><button class="check-btn" onclick="schkAny('sp4','fsp4',['formula','a formula'])">Check</button><span class="fb" id="fsp4"></span></div>
 </div>` },
-  { type:`summary`, title:`Lesson Summary`, body:`<ul>
-<li>A <strong>web server</strong> stores web pages and sends them to browsers on request</li>
-<li>Data is split into <strong>packets</strong> — each with a header (source address, destination address, sequence number, total packets) and the data</li>
-<li>Packets may travel via <strong>different routes</strong> and arrive out of order — reassembled using sequence numbers</li>
-<li><strong>HTTP</strong> = rules for transferring web pages (unencrypted)</li>
-<li><strong>HTTPS</strong> = encrypted HTTP — data cannot be read if intercepted</li>
-<li>Always check for HTTPS before entering personal information</li>
-</ul>
-<div class="callout success">✅ Exit quiz answers: HTTPS = stops hackers reading data · packet = small chunk of data · HTTP requests from web server · HTTP = agreed rules for communication · packets travel different routes and may arrive out of order · packet header contains source address, total packets, sequence number</div>` },
-  { type:`compete`, title:`🏆 WWW & Packets Speed Round`, body:`<div class="compete-board"><h4>🏆 World Wide Web Speed Round</h4>
-<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question. Faster = more points!</p>
+  { type:`summary`, title:`Topic Summary`, body:`<ul>
+<li>A spreadsheet stores data in <strong>cells</strong> identified by column letter + row number (e.g. <code>C5</code>)</li>
+<li>A <strong>range</strong> covers multiple cells: <code>A1:D10</code></li>
+<li>All formulas start with <code>=</code></li>
+<li>Key functions: <code>SUM</code>, <code>AVERAGE</code>, <code>MAX</code>, <code>MIN</code>, <code>IF</code></li>
+<li>Relative references change when copied; absolute references (<code>$A$1</code>) stay fixed</li>
+<li>Spreadsheets recalculate automatically when data changes — use formulas, not typed answers</li>
+</ul><div class="callout success">✅ Year 7 complete! Well done!</div>` },
+  { type:`compete`, title:`🏆 Spreadsheet Speed Challenge`, body:`<div class="compete-board"><h4>🏆 Spreadsheet Speed Challenge</h4>
+<div id="comp-start-area"><p style="font-size:14px;color:var(--muted);margin-bottom:12px">15 seconds per question!</p>
 <input class="compete-input" id="comp-name" placeholder="Your name...">
 <button class="compete-btn" onclick="startComp()">🚀 Start!</button>
-<div style="margin-top:12px"><ul class="leaderboard" id="leaderboard"></ul></div></div>
+<ul class="leaderboard" id="leaderboard"></ul></div>
 <div id="comp-game-area" style="display:none">
 <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px"><span id="comp-qnum"></span><span id="comp-timeleft" style="color:var(--warning)"></span></div>
 <div class="timer-bar"><div class="timer-fill" id="comp-timer-fill"></div></div>
 <div class="compete-q" id="comp-q"></div>
 <input class="compete-input" id="comp-ans" placeholder="Answer..." autocomplete="off">
 <button class="compete-btn" onclick="submitCompAns()">Submit ↵</button>
-<div style="display:flex;justify-content:space-between;margin-top:8px">
-<span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span>
-<span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span style="font-size:13px;color:var(--muted)">Score: <strong style="color:var(--warning);font-family:var(--mono)" id="comp-score">0</strong></span><span id="comp-feedback" style="font-size:13px;font-weight:700"></span></div>
+</div>
 <div id="comp-end-area" style="display:none;text-align:center">
-<div style="font-size:40px;margin-bottom:8px">🎉</div>
-<p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
+<div style="font-size:40px">🎉</div><p style="font-size:18px;font-weight:700">Well done, <span id="comp-final-name"></span>!</p>
 <div class="score-display" id="comp-final-score">0</div>
 <button class="compete-btn" onclick="resetComp()">🔄 Play Again</button>
 <ul class="leaderboard" id="leaderboard"></ul></div></div>` },
 ];
+
 const COMP_Qs = [
-  { q:`What is a data packet?`, answers:[`a small chunk of data`,`segment of data that is part of a larger message`] },
-  { q:`Name something stored in a packet header.`, answers:[`source address`,`destination address`,`sequence number`,`total number of packets`] },
-  { q:`Do packets always travel the same route?`, answers:[`no`,`No`] },
-  { q:`What does HTTPS add to HTTP?`, answers:[`encryption`,`encrypts data`] },
-  { q:`What does a web server do?`, answers:[`stores and provides web pages`,`sends web pages on request`] },
-  { q:`What does HTTP stand for?`, answers:[`HyperText Transfer Protocol`] },
-  { q:`What is HTTPS used for?`, answers:[`secure data transmission`,`encrypted web communication`] },
-  { q:`How are packets reassembled in order?`, answers:[`using sequence numbers`,`packet sequence numbers`] },
-  { q:`What provides agreed rules for communication between browser and server?`, answers:[`protocol`,`HTTP`] },
-  { q:`What indicator shows a website uses HTTPS?`, answers:[`padlock`,`https:// and padlock`] },
-  { q:`Can packets arrive at the destination out of order?`, answers:[`yes`,`Yes`] },
-  { q:`What happens to HTTPS data if intercepted?`, answers:[`cannot be read`,`it is encrypted`,`unreadable`] },
+  { q:`What does every formula in Excel start with?`, answers:[`=`] },
+  { q:`What is the cell reference for column B, row 3?`, answers:[`B3`] },
+  { q:`Which function adds all values in a range?`, answers:[`SUM`,`=SUM`] },
+  { q:`What does =AVERAGE(B2:B8) calculate?`, answers:[`the mean`,`average`,`the average`] },
+  { q:`What is the range from A1 to D4 written as?`, answers:[`A1:D4`] },
+  { q:`Which function finds the largest value?`, answers:[`MAX`,`=MAX`] },
+  { q:`What does =IF(A1>10,"Yes","No") return if A1 is 15?`, answers:[`Yes`] },
+  { q:`What does $B$2 mean in a formula?`, answers:[`absolute reference`,`fixed reference`] },
+  { q:`What error appears when a formula references a deleted cell?`, answers:[`#REF!`,`REF`] },
+  { q:`How many rows does the range B2:B6 cover?`, answers:[`5`] },
+  { q:`Which function counts numeric cells?`, answers:[`COUNT`,`=COUNT`] },
+  { q:`What direction do columns run?`, answers:[`vertical`,`up and down`] },
 ];
+
 // ── RENDER ──────────────────────────────────────────────────
 let cur = 0;
 function render() {
@@ -261,7 +248,8 @@ window.addEventListener('message', e => {
 
 // ── TASK CHECK HELPER ────────────────────────────────────────
 function chk(inputId, fbId, correct) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
+  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  correct = String(correct).toLowerCase().replace(/[^a-z0-9]/g,'');
   const ans = String(correct).toLowerCase().replace(/\s+/g,'');
   const ok  = val === ans;
   const fb  = document.getElementById(fbId);
@@ -269,8 +257,9 @@ function chk(inputId, fbId, correct) {
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + correct;
 }
 function chkAny(inputId, fbId, answers) {
-  const val = document.getElementById(inputId).value.trim().toLowerCase().replace(/\s+/g,'');
-  const ok  = answers.map(a=>String(a).toLowerCase().replace(/\s+/g,'')).includes(val);
+  const clean = s => String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const val = clean(document.getElementById(inputId).value.trim());
+  const ok  = answers.map(a=>clean(a)).includes(val);
   const fb  = document.getElementById(fbId);
   fb.className = 'fb ' + (ok ? 'ok' : 'no');
   fb.textContent = ok ? '✓ Correct!' : '✗ Try again — answer: ' + answers[0];
@@ -386,7 +375,6 @@ document.addEventListener('keydown', e => {
 render();
 
 
-function setFilter(t){if(t==='ng'){document.body.classList.remove('superpower');const on=document.body.classList.toggle('nature-green');localStorage.setItem('ks3_ng',on?'1':'0');localStorage.setItem('ks3_sp','0');}else{document.body.classList.remove('nature-green');const on=document.body.classList.toggle('superpower');localStorage.setItem('ks3_sp',on?'1':'0');localStorage.setItem('ks3_ng','0');}syncFB();}
-function syncFB(){const ng=document.body.classList.contains('nature-green'),sp=document.body.classList.contains('superpower');document.querySelectorAll('.ng-btn').forEach(b=>b.classList.toggle('on-ng',ng));document.querySelectorAll('.sp-btn').forEach(b=>b.classList.toggle('on-sp',sp));}
-(function(){if(localStorage.getItem('ks3_ng')==='1')document.body.classList.add('nature-green');if(localStorage.getItem('ks3_sp')==='1')document.body.classList.add('superpower');syncFB();})();
-</script></body></html>
+</script>
+</body>
+</html>
